@@ -1,0 +1,6 @@
+定时任务：
+    用来确定所有的定时任务，比如能量的增长，任务的完成进度等
+    prefix=sche_{cid}_energy 能力增长的定时任务
+    prefix=sche_{cid}_task 任务的定时任务，当完成的时候可以去查找这个任务
+    key={jobdetail}
+
