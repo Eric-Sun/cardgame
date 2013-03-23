@@ -24,7 +24,7 @@ public class UserService {
     }
 
 
-    public void login(String name, String pwd) throws UserNameOrPwdErrorException {
-        userDAO.login(name, pwd);
+    public long login(String name, String pwd) throws UserNameOrPwdErrorException {
+        return userDAO.login(name, pwd);
     }
 }

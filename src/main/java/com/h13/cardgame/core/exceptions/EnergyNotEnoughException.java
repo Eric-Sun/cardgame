@@ -7,14 +7,14 @@ package com.h13.cardgame.core.exceptions;
  * Time: 下午4:05
  * To change this template use File | Settings | File Templates.
  */
-public class UserNameOrPwdErrorException extends Exception {
-    public static String CODE = "1000";
+public class EnergyNotEnoughException extends Exception {
+    public static String CODE = "1001";
 
-    public UserNameOrPwdErrorException(String msg) {
+    public EnergyNotEnoughException(String msg) {
         super(msg);
     }
 
-    public UserNameOrPwdErrorException(String msg, Throwable t) {
+    public EnergyNotEnoughException(String msg, Throwable t) {
         super(msg, t);
     }
 }

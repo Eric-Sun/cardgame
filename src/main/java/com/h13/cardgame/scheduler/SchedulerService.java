@@ -41,12 +41,18 @@ public class SchedulerService {
         for (JobType jobType : jobMap.keySet()) {
             List<JobDetailCO> list = new ArrayList<JobDetailCO>();
             for (JobDetailCO detail : list) {
+                LOG.info("Start to handle job. " + detail);
                 controller.dispatch(detail);
             }
         }
     }
 
-
+    /**
+     * 触发一种任务的所有的检测，不返回任何值，只会修改数据库中的内容
+     *
+     * @param cid
+     * @param jobType
+     */
     public void attemptTrigger(long cid, JobType jobType) {
         List<JobDetailCO> list = cache.get(cid, jobType);
         for (JobDetailCO detail : list) {
@@ -60,6 +66,35 @@ public class SchedulerService {
         JobDetailCO detail = new JobDetailCO(cid, jobId, jobType, startTs, attachment);
         cache.put(cid, detail);
         LOG.info("Add job." + jobId + ":" + detail.toString());
+    }
+
+    /**
+     * 判断一种类型的job是否存在，如果存在的话返回true,不存在返回job
+     * 用来判断是否已经有能量的事件了， 如果有的话就不用在添加了
+     *
+     * @param cid
+     * @param jobType
+     * @return
+     */
+    public boolean haveJob(long cid, JobType jobType) {
+        List<JobDetailCO> list = cache.get(cid, jobType);
+        if (list.size() == 0)
+            return false;
+        else
+            return true;
+    }
+
+    /**
+     * 检查是否存在一种任务，如果存的话放弃，不存在的话添加
+     *
+     * @param cid
+     * @param jobType
+     * @param attachment
+     */
+    public void checkAndAddJob(long cid, JobType jobType, Object attachment) {
+        if (haveJob(cid, jobType))
+            return;
+        addJob(cid, jobType, attachment);
     }
 
 }

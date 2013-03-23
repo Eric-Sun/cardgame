@@ -2,9 +2,12 @@ package com.h13.cardgame.scheduler.handler;
 
 import com.h13.cardgame.cache.co.JobDetailCO;
 import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.core.exceptions.ParameterIllegalException;
 import com.h13.cardgame.core.service.CaptainService;
 import com.h13.cardgame.core.service.ConfigService;
 import com.h13.cardgame.scheduler.JobHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EnergyJobHandler implements JobHandler {
+    private static Log LOG = LogFactory.getLog(EnergyJobHandler.class);
 
     @Autowired
     CaptainService captainService;
@@ -33,7 +37,12 @@ public class EnergyJobHandler implements JobHandler {
         if (value == 0) {
             return true;
         } else {
-            captainService.addEnergy(detail.getCid(), value);
+            try {
+                captainService.addEnergy(detail.getCid(), value);
+            } catch (ParameterIllegalException e) {
+                LOG.error("scheduler error. detail=" + detail, e);
+            }
+
         }
         return true;
     }

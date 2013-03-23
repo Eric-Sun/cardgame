@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CaptainCO;
 import com.h13.cardgame.cache.co.CaptainTaskCO;
 import com.h13.cardgame.core.JdbcQueueTemplate;
+import com.h13.cardgame.core.exceptions.ParameterIllegalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -34,9 +35,9 @@ public class CaptainDAO {
     @Autowired
     JdbcQueueTemplate q;
 
-    public CaptainCO get(long cid) {
+    public CaptainCO get(long cid) throws ParameterIllegalException {
         String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_info from captain where id=?";
-        List<CaptainCO> list = j.query(sql, new Object[]{}, new RowMapper<CaptainCO>() {
+        List<CaptainCO> list = j.query(sql, new Object[]{cid}, new RowMapper<CaptainCO>() {
             @Override
             public CaptainCO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 CaptainCO co = new CaptainCO();
@@ -53,7 +54,7 @@ public class CaptainDAO {
             }
         });
         if (list.size() == 0)
-            return null;
+            throw new ParameterIllegalException("captainId=" + cid);
         else
             return list.get(0);
     }
@@ -66,9 +67,9 @@ public class CaptainDAO {
 
     public long create(final CaptainCO captain) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        final String sql = "insert into captain (user_id,name,level,energy,gold,silver,task_info,create_time)" +
-                " values (?,?,?,?,?,?,?,now())";
-        j.update(sql, new PreparedStatementCreator() {
+        final String sql = "insert into captain (user_id,name,level,energy,gold,silver,task_info,create_time,exp)" +
+                " values (?,?,?,?,?,?,?,now(),?)";
+        j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -79,6 +80,7 @@ public class CaptainDAO {
                 pstmt.setInt(5, captain.getGold());
                 pstmt.setInt(6, captain.getSilver());
                 pstmt.setString(7, JSON.toJSONString(captain.getTaskInfo()));
+                pstmt.setInt(8, captain.getExp());
                 return pstmt;
             }
         }, keyHolder);

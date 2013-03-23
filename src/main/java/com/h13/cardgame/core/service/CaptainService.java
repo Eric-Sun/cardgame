@@ -1,66 +1,78 @@
 package com.h13.cardgame.core.service;
 
 import com.h13.cardgame.cache.co.CaptainCO;
-import com.h13.cardgame.cache.co.LevelCO;
-import com.h13.cardgame.cache.service.CaptainCache;
-import com.h13.cardgame.core.dao.CaptainDAO;
-import com.h13.cardgame.scheduler.JobType;
-import com.h13.cardgame.scheduler.SchedulerService;
+import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.helper.CaptainHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
- * Date: 13-3-15
- * Time: 下午2:55
+ * Date: 13-3-20
+ * Time: 下午6:52
  * To change this template use File | Settings | File Templates.
  */
-
 @Service
 public class CaptainService {
+    private static Log LOG = LogFactory.getLog(CaptainService.class);
 
     @Autowired
-    CaptainCache captainCache;
+    CaptainHelper captainHelper;
 
-    @Autowired
-    LevelService levelService;
+    /**
+     * 添加能量
+     *
+     * @param cid
+     * @param value
+     * @throws ParameterIllegalException
+     */
+    public void addEnergy(long cid, int value) throws ParameterIllegalException {
+        CaptainCO captain = captainHelper.get(cid);
+        captainHelper.addEnergy(captain, value);
+        captainHelper.cacheCaptain(captain);
+        LOG.info("captain add energy. id=" + captain.getId() + " value=" + value);
+    }
 
-    @Autowired
-    CaptainDAO captainDAO;
+    /**
+     * 减少能量
+     *
+     * @param cid
+     * @param value
+     * @throws ParameterIllegalException
+     */
+    public void subEnergy(long cid, int value) throws ParameterIllegalException {
+        CaptainCO captain = captainHelper.get(cid);
+        captainHelper.subEnergy(captain, value);
+        captainHelper.cacheCaptain(captain);
+        LOG.info("captain sub energy. id=" + captain.getId() + " value=" + value);
+    }
 
-    @Autowired
-    SchedulerService schedulerService;
-
-    public CaptainCO get(long cid) {
-        schedulerService.attemptTrigger(cid, JobType.ENERGY_JOB);
-        CaptainCO captain = captainCache.get(cid);
-        if (captain == null) {
-            // load data from db
-            captain = captainDAO.get(cid);
-            captainCache.put(captain);
-        }
+    /**
+     * 创建一个captain
+     *
+     * @param uid
+     * @param name
+     * @return
+     */
+    public CaptainCO create(long uid, String name) throws ParameterIllegalException {
+        CaptainCO captain = captainHelper.create(uid, name);
+        LOG.info("create captain. " + captain);
         return captain;
     }
 
 
-    public void addEnergy(long cid, int value) {
-        //获得当前这个人物的满级的energy
-        CaptainCO captain = get(cid);
-        LevelCO level = levelService.get(captain.getLevel());
-
-        if (level.getEnergy() >= captain.getEnergy() + value) {
-            // full
-            captain.setEnergy(level.getEnergy());
-        } else {
-            captain.setEnergy(captain.getEnergy() + value);
-            // add new scheduler
-            schedulerService.addJob(cid, JobType.ENERGY_JOB, null);
-        }
-
-        // update cache
-        captainCache.put(captain);
-        // update db
-        captainDAO.updateEnergy(captain.getId(), captain.getEnergy());
+    /**
+     * 读取captain的相关信息
+     * @param cid
+     * @return
+     * @throws ParameterIllegalException
+     */
+    public CaptainCO get(long cid) throws ParameterIllegalException {
+        CaptainCO captain = captainHelper.get(cid);
+        LOG.info("load captain. " + captain);
+        return captain;
     }
 }

@@ -89,4 +89,19 @@ public class CaptainCO {
     public void setTaskInfo(CaptainTaskCO taskInfo) {
         this.taskInfo = taskInfo;
     }
+
+    @Override
+    public String toString() {
+        return "CaptainCO{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
+                ", level=" + level +
+                ", energy=" + energy +
+                ", exp=" + exp +
+                ", gold=" + gold +
+                ", silver=" + silver +
+                ", taskInfo=" + taskInfo +
+                '}';
+    }
 }

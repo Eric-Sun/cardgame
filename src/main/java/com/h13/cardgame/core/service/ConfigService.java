@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created with IntelliJ IDEA.
+ * 获取全局配置的相关信息
  * User: sunbo
  * Date: 13-3-15
  * Time: 下午5:48

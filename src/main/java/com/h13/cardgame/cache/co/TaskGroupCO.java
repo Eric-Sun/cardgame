@@ -1,5 +1,8 @@
 package com.h13.cardgame.cache.co;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
@@ -25,7 +28,7 @@ public class TaskGroupCO {
     /**
      * 这个任务组包含的所有的任务的id
      */
-    private long[] taskIdArray;
+    private List<Long> taskIdList = new LinkedList<Long>();
 
     public long getId() {
         return id;
@@ -51,12 +54,12 @@ public class TaskGroupCO {
         this.nextTaskGroupId = nextTaskGroupId;
     }
 
-    public long[] getTaskIdArray() {
-        return taskIdArray;
+    public List<Long> getTaskIdList() {
+        return taskIdList;
     }
 
-    public void setTaskIdArray(long[] taskIdArray) {
-        this.taskIdArray = taskIdArray;
+    public void setTaskIdList(List<Long> taskIdList) {
+        this.taskIdList = taskIdList;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class TaskGroupCO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", nextTaskGroupId=" + nextTaskGroupId +
-                ", taskIdArray=" + taskIdArray +
+                ", taskIdList=" + taskIdList +
                 '}';
     }
 }

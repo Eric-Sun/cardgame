@@ -36,6 +36,15 @@ public class TaskCO {
      */
     private long cooldown;
     private long taskGroupId;
+    private ConditionCO condition;
+
+    public ConditionCO getCondition() {
+        return condition;
+    }
+
+    public void setCondition(ConditionCO condition) {
+        this.condition = condition;
+    }
 
     public long getId() {
         return id;

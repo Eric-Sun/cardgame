@@ -1,3 +1,6 @@
+service 层请求的时候，传id，自己去缓存拿，最后也会放到缓存中，完成整体的流程
+helper  的时候穿的是对象，不用去缓存拿
+
 
 get_city_building
 [{"id":"_1361093727041","type":"o","num":1,"message":null,"error":0},

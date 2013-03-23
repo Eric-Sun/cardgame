@@ -60,4 +60,12 @@ public class UserDAO {
         }
     }
 
+    public boolean check(long uid) {
+        String sql = "select count(1) from user where id=?";
+        int cnt = j.queryForInt(sql, new Object[]{uid});
+        if (cnt >= 1)
+            return true;
+        else
+            return false;
+    }
 }

@@ -44,6 +44,8 @@ public class JobDetailCO {
         this.attachment = attachment;
     }
 
+    public JobDetailCO(){}
+
     public String getJobId() {
         return jobId;
     }

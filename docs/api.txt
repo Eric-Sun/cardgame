@@ -1,0 +1,7 @@
+Controller层发送dto
+
+创建用户
+登陆用户
+创建captain
+获取captain
+完成任务

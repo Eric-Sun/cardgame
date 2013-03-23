@@ -1,4 +1,4 @@
-package com.h13.cardgame.core.service;
+package com.h13.cardgame.core.helper;
 
 import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.service.LevelCache;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class LevelService {
+public class LevelHelper {
 
     @Autowired
     LevelDAO levelDAO;

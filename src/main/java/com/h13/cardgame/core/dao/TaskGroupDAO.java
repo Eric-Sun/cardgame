@@ -1,6 +1,7 @@
 package com.h13.cardgame.core.dao;
 
 import com.h13.cardgame.cache.co.TaskGroupCO;
+import com.h13.cardgame.core.exceptions.ParameterIllegalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,17 @@ public class TaskGroupDAO {
     public List<TaskGroupCO> getAllTaskGroup() {
         String sql = "select * from task_group";
         return j.query(sql, new Object[]{}, new BeanPropertyRowMapper<TaskGroupCO>(TaskGroupCO.class));
+    }
+
+
+    public TaskGroupCO get(long taskGroupId) throws ParameterIllegalException {
+        String sql = "select * from task_group where task_group_id=?";
+        List<TaskGroupCO> list = j.query(sql, new Object[]{taskGroupId},
+                new BeanPropertyRowMapper<TaskGroupCO>(TaskGroupCO.class));
+        if (list.size() == 0)
+            throw new ParameterIllegalException("taskGroupId=" + taskGroupId);
+        else
+            return list.get(0);
     }
 
 

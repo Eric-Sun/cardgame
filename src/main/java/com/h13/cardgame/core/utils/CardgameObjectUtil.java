@@ -12,7 +12,7 @@ import com.h13.cardgame.cache.co.CaptainTaskCO;
  */
 public class CardgameObjectUtil {
 
-    public CaptainCO newCaptain(long uid, String name) {
+    public static CaptainCO newCaptain(long uid, String name) {
         CaptainCO cap = new CaptainCO();
         cap.setName(name);
         cap.setUserId(uid);

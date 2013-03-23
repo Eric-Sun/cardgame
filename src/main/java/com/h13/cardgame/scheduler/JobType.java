@@ -8,5 +8,6 @@ package com.h13.cardgame.scheduler;
  * To change this template use File | Settings | File Templates.
  */
 public enum JobType {
-    ENERGY_JOB
+    ENERGY_JOB,
+    TASK_COOLDOWN_JOB
 }

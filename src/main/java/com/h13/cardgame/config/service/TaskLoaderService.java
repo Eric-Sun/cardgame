@@ -48,6 +48,7 @@ public class TaskLoaderService {
                 List<TaskCO> taskList = taskDAO.getTaskByGroupId(group.getId());
                 for (TaskCO task : taskList) {
                     taskCache.put(task);
+                    group.getTaskIdList().add(task.getId());
                     LOG.info("loaded task " + task.toString());
                 }
                 taskGroupCache.put(group);

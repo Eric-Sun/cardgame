@@ -1,6 +1,8 @@
 package com.h13.cardgame.core.controller;
 
+import com.h13.cardgame.core.exceptions.ServerErrorException;
 import com.h13.cardgame.core.exceptions.UserNameExistedException;
+import com.h13.cardgame.core.exceptions.UserNameOrPwdErrorException;
 import com.h13.cardgame.core.service.UserService;
 import com.h13.cardgame.core.utils.DTOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +38,25 @@ public class UserController {
             return DTOUtils.getOriginalResponse(uid, -1);
         } catch (UserNameExistedException e) {
             return DTOUtils.getFailureResponse(-1, -1, UserNameExistedException.CODE);
+        } catch (Exception e) {
+            return DTOUtils.getFailureResponse(-1, -1, ServerErrorException.CODE);
         }
     }
 
     @RequestMapping("/login")
     @ResponseBody
     public String login(HttpServletRequest request, HttpServletResponse response) {
-        return null;
+        String name = request.getParameter("name");
+        String pwd = request.getParameter("pwd");
+        long cid = -1;
+        try {
+            cid = userSerivce.login(name, pwd);
+            return DTOUtils.getOriginalResponse(-1, cid);
+        } catch (UserNameOrPwdErrorException e) {
+            return DTOUtils.getFailureResponse(-1, cid, UserNameOrPwdErrorException.CODE);
+        } catch (Exception e) {
+            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        }
     }
 
 }
