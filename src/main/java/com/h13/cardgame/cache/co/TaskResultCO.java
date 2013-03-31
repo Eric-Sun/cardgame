@@ -35,4 +35,13 @@ public class TaskResultCO {
     public void setSilver(int silver) {
         this.silver = silver;
     }
+
+    @Override
+    public String toString() {
+        return "TaskResultCO{" +
+                "exp=" + exp +
+                ", gold=" + gold +
+                ", silver=" + silver +
+                '}';
+    }
 }

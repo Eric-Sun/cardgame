@@ -62,7 +62,7 @@ public class CaptainDAO {
 
     public void updateEnergy(long cid, int energy) {
         String sql = "update captain set energy=? where id=?";
-        q.update(sql, new Object[]{energy});
+        q.update(sql, new Object[]{energy, cid});
     }
 
     public long create(final CaptainCO captain) {
@@ -85,5 +85,10 @@ public class CaptainDAO {
             }
         }, keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    public void addTaskResult(long id, int exp, int gold, int silver) {
+        String sql = "update captain set exp=exp+?,gold=gold+?,silver=silver+? where id=?";
+        q.update(sql, new Object[]{exp, gold, silver, id});
     }
 }

@@ -2,8 +2,11 @@ package com.h13.cardgame.core.controller;
 
 import com.h13.cardgame.core.exceptions.EnergyNotEnoughException;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.exceptions.TaskIsOverException;
 import com.h13.cardgame.core.service.TaskService;
 import com.h13.cardgame.core.utils.DTOUtils;
+import com.h13.cardgame.core.vo.TaskGroupVO;
+import com.h13.cardgame.core.vo.TaskVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +39,12 @@ public class TaskController {
         long uid = new Long(request.getParameter("uid"));
         long taskId = new Long(request.getParameter("taskId"));
         try {
-            taskService.d(cid, taskId);
+            boolean flag = taskService.d(cid, taskId);
+            if(!flag){
+                // 需要获取下一个任务
+                List<TaskVO> taskList = taskService.nextTask(cid);
+                return DTOUtils.getSucessResponse(uid, cid,taskList);
+            }
             return DTOUtils.getOriginalResponse(uid, cid);
         } catch (ParameterIllegalException e) {
             LOG.error("", e);
@@ -43,6 +52,27 @@ public class TaskController {
         } catch (EnergyNotEnoughException e) {
             LOG.error("", e);
             return DTOUtils.getFailureResponse(-1, cid, EnergyNotEnoughException.CODE);
+        } catch (TaskIsOverException e) {
+            LOG.error("", e);
+            return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
+    @RequestMapping("")
+    @ResponseBody
+    public String task(HttpServletRequest request, HttpServletResponse response) {
+
+        long cid = new Long(request.getParameter("cid"));
+        long uid = new Long(request.getParameter("uid"));
+        try {
+            List<TaskVO> taskList = taskService.task(cid);
+            List<TaskGroupVO> taskGroupList = taskService.taskGroup(cid);
+            return DTOUtils.getSucessResponse(uid, cid, taskGroupList, taskList);
+        } catch (ParameterIllegalException e) {
+            LOG.error("error", e);
+            return DTOUtils.getFailureResponse(uid, cid, ParameterIllegalException.CODE);
+        }
+    }
+
+
 }

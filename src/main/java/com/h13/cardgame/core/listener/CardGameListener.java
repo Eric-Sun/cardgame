@@ -2,8 +2,10 @@ package com.h13.cardgame.core.listener;
 
 import com.h13.cardgame.config.ConfigStarter;
 import com.h13.cardgame.core.utils.WebApplicationContentHolder;
-import com.h13.cardgame.queue.worker.DBTaskWokerRunner;
-import com.h13.cardgame.queue.worker.DBTaskWorker;
+import com.h13.cardgame.db.DBTaskWokerRunner;
+import com.h13.cardgame.db.DBTaskWorker;
+import com.h13.cardgame.scheduler.SchedulerWorker;
+import com.h13.cardgame.scheduler.SchedulerWorkerRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,6 +32,12 @@ public class CardGameListener implements ServletContextListener {
         DBTaskWokerRunner runner = new DBTaskWokerRunner(worker);
         Thread t = new Thread(runner);
         t.start();
+
+        SchedulerWorker schedulerWorker = WebApplicationContentHolder.getApplicationContext().getBean(SchedulerWorker.class);
+        SchedulerWorkerRunner schedulerRunner = new SchedulerWorkerRunner(schedulerWorker);
+        Thread t1 = new Thread(schedulerRunner);
+        t1.start();
+
         LOG.info("worker thread started successfully.");
     }
 

@@ -1,7 +1,6 @@
 package com.h13.cardgame.core.interceptor;
 
 import com.h13.cardgame.core.utils.WebApplicationContentHolder;
-import com.h13.cardgame.scheduler.SchedulerService;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,12 +18,12 @@ public class JobTriggerInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getParameter("cid") == null) {
-            return true;
-        }
-        long cid = new Long(request.getParameter("cid"));
-        SchedulerService service = WebApplicationContentHolder.getApplicationContext().getBean(SchedulerService.class);
-        service.attemptTrigger(cid);
+//        if (request.getParameter("cid") == null) {
+//            return true;
+//        }
+//        long cid = new Long(request.getParameter("cid"));
+//        SchedulerService service = WebApplicationContentHolder.getApplicationContext().getBean(SchedulerService.class);
+//        service.attemptTrigger(cid);
         return true;
     }
 

@@ -37,6 +37,15 @@ public class TaskCO {
     private long cooldown;
     private long taskGroupId;
     private ConditionCO condition;
+    private int isLast;
+
+    public int getLast() {
+        return isLast;
+    }
+
+    public void setLast(int last) {
+        isLast = last;
+    }
 
     public ConditionCO getCondition() {
         return condition;

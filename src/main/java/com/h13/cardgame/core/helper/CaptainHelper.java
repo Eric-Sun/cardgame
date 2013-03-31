@@ -2,12 +2,15 @@ package com.h13.cardgame.core.helper;
 
 import com.h13.cardgame.cache.co.CaptainCO;
 import com.h13.cardgame.cache.co.LevelCO;
+import com.h13.cardgame.cache.co.TaskResultCO;
 import com.h13.cardgame.cache.service.CaptainCache;
 import com.h13.cardgame.core.dao.CaptainDAO;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.service.SchedulerService;
 import com.h13.cardgame.core.utils.CardgameObjectUtil;
-import com.h13.cardgame.scheduler.JobType;
-import com.h13.cardgame.scheduler.SchedulerService;
+import com.h13.cardgame.scheduler.SchedulerType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +23,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CaptainHelper {
+    private static Log LOG = LogFactory.getLog(CaptainHelper.class);
     @Autowired
     CaptainCache captainCache;
     @Autowired
-    LevelHelper levelService;
+    LevelHelper levelHelper;
     @Autowired
     CaptainDAO captainDAO;
     @Autowired
-    SchedulerService schedulerService;
+    TaskHelper taskHelper;
     @Autowired
-    LevelHelper levelHelper;
+    SchedulerService schedulerService;
 
     @Autowired
     UserHelper userHelper;
@@ -42,7 +46,6 @@ public class CaptainHelper {
      * @throws ParameterIllegalException
      */
     public CaptainCO get(long cid) throws ParameterIllegalException {
-        schedulerService.attemptTrigger(cid, JobType.ENERGY_JOB);
         CaptainCO captain = captainCache.get(cid);
         if (captain == null) {
             // load data from db
@@ -63,14 +66,14 @@ public class CaptainHelper {
      */
     public void addEnergy(CaptainCO captain, int value) throws ParameterIllegalException {
         //获得当前这个人物的满级的energy
-        LevelCO level = levelService.get(captain.getLevel());
-        if (level.getEnergy() >= captain.getEnergy() + value) {
+        LevelCO level = levelHelper.get(captain.getLevel());
+        if (level.getEnergy() <= captain.getEnergy() + value) {
             // full
             captain.setEnergy(level.getEnergy());
         } else {
             captain.setEnergy(captain.getEnergy() + value);
             // add new scheduler
-            schedulerService.checkAndAddJob(captain.getId(), JobType.ENERGY_JOB, null);
+            schedulerService.checkAndAddEnergyUpJob(captain);
         }
         // update db
         captainDAO.updateEnergy(captain.getId(), captain.getEnergy());
@@ -87,9 +90,9 @@ public class CaptainHelper {
     public void subEnergy(CaptainCO captain, int value) throws ParameterIllegalException {
         if (captain.getEnergy() - value < 0)
             throw new ParameterIllegalException("energy  is not enough . need=" + value + " have=" + captain.getEnergy());
+        schedulerService.checkAndAddEnergyUpJob(captain);
+        captainDAO.updateEnergy(captain.getId(), captain.getEnergy() - value);
         captain.setEnergy(captain.getEnergy() - value);
-        captainDAO.updateEnergy(captain.getId(), captain.getEnergy());
-        schedulerService.checkAndAddJob(captain.getId(), JobType.ENERGY_JOB, null);
     }
 
     /**
@@ -109,7 +112,6 @@ public class CaptainHelper {
      * @return
      */
     public CaptainCO create(long uid, String name) throws ParameterIllegalException {
-
         if (!userHelper.check(uid))
             throw new ParameterIllegalException("user not existed . uid=" + uid);
         CaptainCO captain = CardgameObjectUtil.newCaptain(uid, name);
@@ -117,5 +119,14 @@ public class CaptainHelper {
         long cid = captainDAO.create(captain);
         captain.setId(cid);
         return captain;
+    }
+
+
+    public void addTaskResult(CaptainCO captain, TaskResultCO result) {
+        captain.setExp(captain.getExp() + result.getExp());
+        captain.setGold(captain.getGold() + result.getGold());
+        captain.setSilver(captain.getSilver() + result.getSilver());
+        captainDAO.addTaskResult(captain.getId(), result.getExp(), result.getGold(), result.getSilver());
+        LOG.info("add result. cid=" + captain.getId() + " result=" + result);
     }
 }

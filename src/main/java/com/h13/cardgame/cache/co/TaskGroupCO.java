@@ -29,6 +29,15 @@ public class TaskGroupCO {
      * 这个任务组包含的所有的任务的id
      */
     private List<Long> taskIdList = new LinkedList<Long>();
+    private int isLast;
+
+    public int getLast() {
+        return isLast;
+    }
+
+    public void setLast(int last) {
+        isLast = last;
+    }
 
     public long getId() {
         return id;

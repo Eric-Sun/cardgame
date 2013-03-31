@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 @Service
 public class LevelCache {
 
-    private static String PREFIX = "level:";
+    private static String PREFIX = "cg:system:level:";
 
     @Resource(name = "redisStringLevelCOTemplate")
     private RedisTemplate<String, LevelCO> levelCOTemplate;

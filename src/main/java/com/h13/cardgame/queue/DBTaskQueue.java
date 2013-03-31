@@ -20,21 +20,21 @@ public class DBTaskQueue {
 
     private static Log LOG = LogFactory.getLog(DBTaskQueue.class);
 
-    private static String KEY = "dbtask:queue";
+    private static String KEY = "cg:queue:db";
 
     @Resource(name = "dbTaskDetailTemplate")
-    private RedisTemplate<String, DBTaskDetail> dbTaskQueueRedisTemplate;
+    private RedisTemplate<String, DBTaskMessage> dbTaskQueueRedisTemplate;
 
-    public void push(DBTaskDetail detail) {
+    public void push(DBTaskMessage detail) {
         dbTaskQueueRedisTemplate.opsForList().leftPush(KEY, detail);
     }
 
     public void push(String sql, Object[] params) {
-        DBTaskDetail detail = new DBTaskDetail(QueueUtil.getId(), sql, params);
+        DBTaskMessage detail = new DBTaskMessage(QueueUtil.getId(), sql, params);
         dbTaskQueueRedisTemplate.opsForList().leftPush(KEY, detail);
     }
 
-    public DBTaskDetail peek() {
+    public DBTaskMessage peek() {
         return dbTaskQueueRedisTemplate.opsForList().rightPop(KEY);
     }
 

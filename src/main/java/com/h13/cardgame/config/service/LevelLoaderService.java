@@ -37,7 +37,6 @@ public class LevelLoaderService {
             }
             LOG.info("load level info successfully.");
         } catch (Exception e) {
-            LOG.error("load error", e);
             throw new LoadException("load task info error");
         }
     }

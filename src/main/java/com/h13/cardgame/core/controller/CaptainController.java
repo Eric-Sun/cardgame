@@ -55,7 +55,7 @@ public class CaptainController {
             uid = new Long(request.getParameter("uid"));
             String name = request.getParameter("name");
             CaptainCO captain = captainService.create(uid, name);
-            return DTOUtils.getSucessResponse(uid,captain.getId(),JSON.toJSONString(captain));
+            return DTOUtils.getSucessResponse(uid, captain.getId(), JSON.toJSONString(captain));
         } catch (ParameterIllegalException e) {
             LOG.error("error", e);
             return DTOUtils.getFailureResponse(uid, -1, ParameterIllegalException.CODE);

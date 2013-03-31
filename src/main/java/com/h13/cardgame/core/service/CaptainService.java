@@ -3,6 +3,8 @@ package com.h13.cardgame.core.service;
 import com.h13.cardgame.cache.co.CaptainCO;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
 import com.h13.cardgame.core.helper.CaptainHelper;
+import com.h13.cardgame.core.helper.LevelHelper;
+import com.h13.cardgame.core.helper.TaskHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,10 @@ public class CaptainService {
 
     @Autowired
     CaptainHelper captainHelper;
+    @Autowired
+    LevelHelper levelHelper;
+    @Autowired
+    TaskHelper taskHelper;
 
     /**
      * 添加能量
@@ -66,6 +72,7 @@ public class CaptainService {
 
     /**
      * 读取captain的相关信息
+     *
      * @param cid
      * @return
      * @throws ParameterIllegalException
@@ -75,4 +82,7 @@ public class CaptainService {
         LOG.info("load captain. " + captain);
         return captain;
     }
+
+
+
 }

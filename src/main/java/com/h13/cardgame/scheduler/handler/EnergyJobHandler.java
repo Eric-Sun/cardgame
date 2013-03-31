@@ -1,11 +1,11 @@
 package com.h13.cardgame.scheduler.handler;
 
-import com.h13.cardgame.cache.co.JobDetailCO;
+import com.h13.cardgame.queue.SchedulerMessage;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
 import com.h13.cardgame.core.service.CaptainService;
 import com.h13.cardgame.core.service.ConfigService;
-import com.h13.cardgame.scheduler.JobHandler;
+import com.h13.cardgame.scheduler.SchedulerHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class EnergyJobHandler implements JobHandler {
+public class EnergyJobHandler implements SchedulerHandler {
     private static Log LOG = LogFactory.getLog(EnergyJobHandler.class);
 
     @Autowired
@@ -29,20 +29,11 @@ public class EnergyJobHandler implements JobHandler {
     ConfigService confService;
 
     @Override
-    public boolean doHandle(JobDetailCO detail) {
-        long currentMs = System.currentTimeMillis();
-        long detailMs = detail.getStartTs();
-        long conf = new Long(confService.get(Configuration.Scheduler.ENERGY_UP_MS));
-        int value = new Long((currentMs - detailMs) / conf).intValue();
-        if (value == 0) {
-            return true;
-        } else {
-            try {
-                captainService.addEnergy(detail.getCid(), value);
-            } catch (ParameterIllegalException e) {
-                LOG.error("scheduler error. detail=" + detail, e);
-            }
-
+    public boolean doHandle(SchedulerMessage detail) {
+        try {
+            captainService.addEnergy(detail.getCid(), 1);
+        } catch (ParameterIllegalException e) {
+            LOG.error("scheduler error. detail=" + detail, e);
         }
         return true;
     }

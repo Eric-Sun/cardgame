@@ -9,7 +9,7 @@ package com.h13.cardgame.config;
  */
 public class Configuration {
     public static class Scheduler {
-        public static String ENERGY_UP_MS = "scheduler:energy_up_ms";
+        public static String ENERGY_UP_S = "scheduler:energy_up_s";
     }
 
     public static class Captain {

@@ -1,6 +1,7 @@
 package com.h13.cardgame.scheduler.handler;
 
-import com.h13.cardgame.cache.co.JobDetailCO;
+import com.h13.cardgame.core.dao.QueueMessageDAO;
+import com.h13.cardgame.queue.SchedulerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,21 @@ public class HandlerController {
 
     @Autowired
     EnergyJobHandler energyHandler;
+    @Autowired
+    TaskCooldownJobHandler taskHandler;
+    @Autowired
+    QueueMessageDAO queueMessageDAO;
 
-    public boolean dispatch(JobDetailCO detail) {
+    public boolean dispatch(SchedulerMessage detail) {
         switch (detail.getJobType()) {
             case ENERGY_JOB:
-                return energyHandler.doHandle(detail);
+                energyHandler.doHandle(detail);
+                break;
+            case TASK_COOLDOWN_JOB:
+                taskHandler.doHandle(detail);
+                break;
         }
-        return false;
+        queueMessageDAO.delete(detail.getJobId());
+        return true;
     }
 }

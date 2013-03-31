@@ -12,18 +12,20 @@ import org.apache.commons.logging.LogFactory;
 public class DTOUtils {
     private static Log LOG = LogFactory.getLog(DTOUtils.class);
 
-    public static String getSucessResponse(long uid, long cid, Object info) {
+    public static String getOriginalResponse(long uid, long cid) {
         List<Object> list = new ArrayList<Object>();
         list.add(new BaseDTO(uid, cid, Constants.ResponseStatus.SUCCESS));
-        list.add(info);
         String json = JSON.toJSONString(list);
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;
     }
 
-    public static String getOriginalResponse(long uid, long cid) {
+    public static String getSucessResponse(long uid, long cid, Object... info) {
         List<Object> list = new ArrayList<Object>();
         list.add(new BaseDTO(uid, cid, Constants.ResponseStatus.SUCCESS));
+        for (Object obj : info) {
+            list.add(obj);
+        }
         String json = JSON.toJSONString(list);
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;

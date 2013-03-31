@@ -7,6 +7,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +21,7 @@ import javax.annotation.Resource;
 @Service
 public class TaskGroupCache {
 
-    private static String PREFIX = "taskGroup:";
+    private static String PREFIX = "cg:system:taskGroup:";
 
     @Resource(name = "redisStringTaskGroupCOTemplate")
     private RedisTemplate<String, TaskGroupCO> taskGroupCOTemplate;
@@ -35,5 +38,13 @@ public class TaskGroupCache {
         return co;
     }
 
+    public List<TaskGroupCO> list() {
+        List<TaskGroupCO> list = new ArrayList<TaskGroupCO>();
+        Set<String> keySet = taskGroupCOTemplate.keys("*"+PREFIX+"*");
+        for (String key : keySet) {
+            list.add(taskGroupCOTemplate.opsForValue().get(key));
+        }
+        return list;
+    }
 
 }

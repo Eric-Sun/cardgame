@@ -72,6 +72,6 @@ public class TaskDAO {
 
     public void updateTaskInfo(long cid, CaptainTaskCO captainTask) {
         String sql = "update captain set task_info=? where id=?";
-        q.update(sql, new Object[]{cid, JSON.toJSONString(captainTask)});
+        q.update(sql, new Object[]{ JSON.toJSONString(captainTask),cid});
     }
 }

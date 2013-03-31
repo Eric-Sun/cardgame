@@ -28,6 +28,17 @@
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
         <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainCO"/>
     </bean>
+
+    <bean id="cardCOSerailizer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CardCO"/>
+    </bean>
+
+    <bean id="randomAwardCOSerailizer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.RandomAwardCO"/>
+    </bean>
+
     <bean id="captainTaskCOSerailizer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
         <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainTaskCO"/>
@@ -45,7 +56,7 @@
 
     <bean id="JobDetailCOSerailizer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.JobDetailCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.SchedulerMessage"/>
     </bean>
 
     <bean id="redisStringLevelCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
@@ -55,6 +66,11 @@
     <bean id="redisStringCaptainCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="captainCOSerailizer">
+    </bean>
+
+    <bean id="redisStringCardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="cardCOSerailizer">
     </bean>
 
     <bean id="redisStringTaskCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
@@ -77,14 +93,28 @@
           p:valueSerializer-ref="JobDetailCOSerailizer">
     </bean>
 
+    <bean id="redisStringRandomAwardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="randomAwardCOSerailizer">
+    </bean>
+
     <!-- dbqueuetemplate -->
     <bean id="dbTaskDetailSerializer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.DBTaskDetail"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.DBTaskMessage"/>
     </bean>
     <bean id="dbTaskDetailTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="dbTaskDetailSerializer">
+    </bean>
+
+    <bean id="schedulerDetailSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.SchedulerMessage"/>
+    </bean>
+    <bean id="schedulerDetailTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="schedulerDetailSerializer">
     </bean>
 
 </beans>

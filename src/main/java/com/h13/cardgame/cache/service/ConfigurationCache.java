@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 @Service
 public class ConfigurationCache {
 
-    private static String PREFIX = "config:";
+    private static String PREFIX = "cg:system:config:";
 
     @Resource(name = "redisStringConfigurationCOTemplate")
     private RedisTemplate<String, String> configurationCOTemplate;

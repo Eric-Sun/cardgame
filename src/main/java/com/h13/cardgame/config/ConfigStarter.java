@@ -9,6 +9,7 @@ package com.h13.cardgame.config;
  */
 
 import com.h13.cardgame.config.exception.LoadException;
+import com.h13.cardgame.config.service.CardLoaderService;
 import com.h13.cardgame.config.service.ConfigLoaderService;
 import com.h13.cardgame.config.service.LevelLoaderService;
 import com.h13.cardgame.config.service.TaskLoaderService;
@@ -31,12 +32,16 @@ public class ConfigStarter {
     @Autowired
     ConfigLoaderService configLoaderService;
 
+    @Autowired
+    CardLoaderService cardLoaderService;
+
     public void init() {
         try {
             // 添加任务相关的信息到缓存中
             taskLoaderService.load();
             levelLoaderService.load();
             configLoaderService.load();
+            cardLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);

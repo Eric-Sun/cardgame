@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 @Service
 public class CaptainCache {
 
-    private static String PREFIX = "captain:";
+    private static String PREFIX = "cg:captain:";
 
     @Resource(name = "redisStringCaptainCOTemplate")
     private RedisTemplate<String, CaptainCO> captainCOTemplate;

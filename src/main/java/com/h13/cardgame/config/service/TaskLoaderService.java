@@ -56,7 +56,6 @@ public class TaskLoaderService {
             }
             LOG.info("load task info successfully.");
         } catch (Exception e) {
-            LOG.error("load task info error", e);
             throw new LoadException("load task info error", e);
         }
     }
