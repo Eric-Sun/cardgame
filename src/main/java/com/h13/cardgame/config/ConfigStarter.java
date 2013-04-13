@@ -9,10 +9,7 @@ package com.h13.cardgame.config;
  */
 
 import com.h13.cardgame.config.exception.LoadException;
-import com.h13.cardgame.config.service.CardLoaderService;
-import com.h13.cardgame.config.service.ConfigLoaderService;
-import com.h13.cardgame.config.service.LevelLoaderService;
-import com.h13.cardgame.config.service.TaskLoaderService;
+import com.h13.cardgame.config.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,9 @@ public class ConfigStarter {
     @Autowired
     CardLoaderService cardLoaderService;
 
+    @Autowired
+    DropGroupLoaderService dropGroupLoaderService;
+
     public void init() {
         try {
             // 添加任务相关的信息到缓存中
@@ -42,6 +42,7 @@ public class ConfigStarter {
             levelLoaderService.load();
             configLoaderService.load();
             cardLoaderService.load();
+            dropGroupLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);

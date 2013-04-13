@@ -3,10 +3,13 @@ package com.h13.cardgame.core.service;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.core.exceptions.EnergyNotEnoughException;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.exceptions.RandomRewardException;
 import com.h13.cardgame.core.exceptions.TaskIsOverException;
 import com.h13.cardgame.core.helper.CaptainHelper;
 import com.h13.cardgame.core.helper.TaskHelper;
 import com.h13.cardgame.core.vo.TaskGroupVO;
+import com.h13.cardgame.core.vo.TaskRewardResultVO;
+import com.h13.cardgame.core.vo.TaskRewardVO;
 import com.h13.cardgame.core.vo.TaskVO;
 import com.h13.cardgame.scheduler.SchedulerType;
 import org.apache.commons.logging.Log;
@@ -34,18 +37,21 @@ public class TaskService {
     private SchedulerService schedulerService;
     @Autowired
     private TaskHelper taskHelper;
+    @Autowired
+    private DropGroupService dropGroupService;
 
     /**
      * 尝试完成一个任务
      * <p/>
-     * 返回false:说明需要进行获取下一组任务
+     * 返回一个list，第一个对象为获得的奖励，第二对象true/false:说明需要进行获取下一组任务
      *
      * @param cid
      * @param taskId
      * @throws ParameterIllegalException
      * @throws EnergyNotEnoughException
      */
-    public boolean d(long cid, long taskId) throws ParameterIllegalException, EnergyNotEnoughException, TaskIsOverException {
+    public List<Object> d(long cid, long taskId) throws ParameterIllegalException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException {
+        List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
         CaptainCO captain = captainHelper.get(cid);
         long taskGroupId = captain.getTaskInfo().getTaskGroupId();
@@ -69,8 +75,11 @@ public class TaskService {
             captainHelper.subEnergy(captain, task.getCondition().getEnergy());
             // 完成任务并且把captain写回缓存，并且更新数据库的energy
             taskHelper.addTaskInfo(captain, taskId);
-            captainHelper.addTaskResult(captain, task.getResult());
-            schedulerService.addTaskCooldownJob(captain, task);
+            // 奖励
+            TaskRewardResultVO result = taskHelper.reward(captain, task);
+            resultList.add(result);
+            if (task.getCooldown() != 0)
+                schedulerService.addTaskCooldownJob(captain, task);
             // 保存用户的新的状态
             captainHelper.cacheCaptain(captain);
             if (taskHelper.isLastTaskInGroup(task)) {
@@ -78,10 +87,12 @@ public class TaskService {
                     throw new TaskIsOverException("");
                 } else {
                     // 给他传下一个任务组的信息
-                    return false;
+                    resultList.add(false);
+                    return resultList;
                 }
             }
-            return true;
+            resultList.add(true);
+            return resultList;
         } else {
             // 不可以完成任务
             throw new ParameterIllegalException("taskId[" + taskId + "] is cooldowning");
@@ -115,7 +126,7 @@ public class TaskService {
         // convert co to vo
         List<TaskVO> returnList = new ArrayList<TaskVO>();
         cvtTaskCO2VO(captain, taskList, returnList);
-        return returnList;  //To change body of created methods use File | Settings | File Templates.
+        return returnList;
     }
 
     private void cvtTaskCO2VO(CaptainCO captain, List<TaskCO> coList, List<TaskVO> voList) {
@@ -126,7 +137,13 @@ public class TaskService {
             vo.setDesc(task.getDescription());
             vo.setCount(task.getCount());
             vo.setCondition(task.getCondition());
-            vo.setResult(task.getResult());
+            TaskRewardVO rewardVO = new TaskRewardVO();
+            DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
+            if (dropGroup.getData().getExp().isDrop())
+                rewardVO.setExp(dropGroup.getData().getExp().getMax());
+            if (dropGroup.getData().getSilver().isDrop())
+                rewardVO.setSilver(dropGroup.getData().getSilver().getMax());
+            vo.setReward(rewardVO);
             vo.setSum((captain.getTaskInfo().getTaskMap().get(task.getId()) == null) ? 0 :
                     captain.getTaskInfo().getTaskMap().get(task.getId()).getCount());
             voList.add(vo);
@@ -149,6 +166,7 @@ public class TaskService {
 
     /**
      * 当前任务已经完成之后，调用，清楚captain中的相关任务信息，并且获取下一任务组的信息
+     *
      * @param cid
      * @return
      * @throws ParameterIllegalException

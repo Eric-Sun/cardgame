@@ -1,7 +1,6 @@
 package com.h13.cardgame.core.vo;
 
 import com.h13.cardgame.cache.co.ConditionCO;
-import com.h13.cardgame.cache.co.TaskResultCO;
 
 /**
  * 任务对象，用来显示，当前有几个任务，和每个任务的完成情况
@@ -15,7 +14,7 @@ public class TaskVO {
     private long id;
     private String name;
     private String desc;
-    private TaskResultCO result;
+    private TaskRewardVO reward;
     private ConditionCO condition;
     private int sum;
     private int count;
@@ -53,12 +52,12 @@ public class TaskVO {
         this.desc = desc;
     }
 
-    public TaskResultCO getResult() {
-        return result;
+    public TaskRewardVO getReward() {
+        return reward;
     }
 
-    public void setResult(TaskResultCO result) {
-        this.result = result;
+    public void setReward(TaskRewardVO reward) {
+        this.reward = reward;
     }
 
     public ConditionCO getCondition() {

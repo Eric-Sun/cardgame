@@ -12,6 +12,7 @@ public class LevelCO {
     private int level;
     private int exp;
     private int energy;
+    private boolean isMax;
 
     @Override
     public String toString() {
@@ -20,7 +21,16 @@ public class LevelCO {
                 ", level=" + level +
                 ", exp=" + exp +
                 ", energy=" + energy +
+                ", isMax=" + isMax +
                 '}';
+    }
+
+    public boolean isMax() {
+        return isMax;
+    }
+
+    public void setMax(boolean max) {
+        isMax = max;
     }
 
     public int getId() {

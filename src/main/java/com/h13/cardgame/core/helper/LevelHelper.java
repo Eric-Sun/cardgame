@@ -26,6 +26,8 @@ public class LevelHelper {
         if (levelCO == null) {
             // load from db
             levelCO = levelDAO.get(level);
+            if (levelCO==null)
+                return null;
             levelCache.put(levelCO);
         }
         return levelCO;

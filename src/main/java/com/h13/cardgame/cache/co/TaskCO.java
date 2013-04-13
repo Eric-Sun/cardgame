@@ -1,9 +1,5 @@
 package com.h13.cardgame.cache.co;
 
-import com.alibaba.fastjson.JSON;
-
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
@@ -29,7 +25,7 @@ public class TaskCO {
     /**
      * 任务的奖励
      */
-    private TaskResultCO result;
+    private Long dropGroupId;
 
     /**
      * 任务本次完成之后下一次完成需要的时间（秒）
@@ -87,13 +83,6 @@ public class TaskCO {
         this.count = count;
     }
 
-    public TaskResultCO getResult() {
-        return result;
-    }
-
-    public void setResult(TaskResultCO result) {
-        this.result = result;
-    }
 
     public long getCooldown() {
         return cooldown;
@@ -111,6 +100,14 @@ public class TaskCO {
         this.taskGroupId = taskGroupId;
     }
 
+    public Long getDropGroupId() {
+        return dropGroupId;
+    }
+
+    public void setDropGroupId(Long dropGroupId) {
+        this.dropGroupId = dropGroupId;
+    }
+
     @Override
     public String toString() {
         return "TaskCO{" +
@@ -118,9 +115,11 @@ public class TaskCO {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", count=" + count +
-                ", result=" + result +
+                ", dropGroupId=" + dropGroupId +
                 ", cooldown=" + cooldown +
                 ", taskGroupId=" + taskGroupId +
+                ", condition=" + condition +
+                ", isLast=" + isLast +
                 '}';
     }
 }

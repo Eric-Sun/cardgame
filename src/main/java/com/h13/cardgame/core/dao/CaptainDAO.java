@@ -87,8 +87,9 @@ public class CaptainDAO {
         return keyHolder.getKey().longValue();
     }
 
-    public void addTaskResult(long id, int exp, int gold, int silver) {
-        String sql = "update captain set exp=exp+?,gold=gold+?,silver=silver+? where id=?";
-        q.update(sql, new Object[]{exp, gold, silver, id});
+
+    public void updateReward(long id, int exp, int silver) {
+        String sql = "update captain set exp=exp+?, silver=silver+? where id=?";
+        q.update(sql, new Object[]{exp, silver, id});
     }
 }

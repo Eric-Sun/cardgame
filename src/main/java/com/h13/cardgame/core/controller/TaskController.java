@@ -2,6 +2,7 @@ package com.h13.cardgame.core.controller;
 
 import com.h13.cardgame.core.exceptions.EnergyNotEnoughException;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.exceptions.RandomRewardException;
 import com.h13.cardgame.core.exceptions.TaskIsOverException;
 import com.h13.cardgame.core.service.TaskService;
 import com.h13.cardgame.core.utils.DTOUtils;
@@ -39,13 +40,14 @@ public class TaskController {
         long uid = new Long(request.getParameter("uid"));
         long taskId = new Long(request.getParameter("taskId"));
         try {
-            boolean flag = taskService.d(cid, taskId);
-            if(!flag){
+            List<Object> resultList = taskService.d(cid, taskId);
+            boolean flag = (Boolean) resultList.get(1);
+            if (!flag) {
                 // 需要获取下一个任务
                 List<TaskVO> taskList = taskService.nextTask(cid);
-                return DTOUtils.getSucessResponse(uid, cid,taskList);
+                return DTOUtils.getSucessResponse(uid, cid, resultList.get(0), taskList);
             }
-            return DTOUtils.getOriginalResponse(uid, cid);
+            return DTOUtils.getSucessResponse(uid, cid, resultList.get(0));
         } catch (ParameterIllegalException e) {
             LOG.error("", e);
             return DTOUtils.getFailureResponse(-1, cid, ParameterIllegalException.CODE);
@@ -55,6 +57,9 @@ public class TaskController {
         } catch (TaskIsOverException e) {
             LOG.error("", e);
             return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);  //To change body of catch statement use File | Settings | File Templates.
+        } catch (RandomRewardException e) {
+            LOG.error("", e);
+            return DTOUtils.getFailureResponse(-1, cid, RandomRewardException.CODE);
         }
     }
 

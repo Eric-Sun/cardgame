@@ -7,11 +7,16 @@ import com.h13.cardgame.cache.service.TaskGroupCache;
 import com.h13.cardgame.core.dao.TaskDAO;
 import com.h13.cardgame.core.dao.TaskGroupDAO;
 import com.h13.cardgame.core.exceptions.ParameterIllegalException;
+import com.h13.cardgame.core.exceptions.RandomRewardException;
+import com.h13.cardgame.core.service.DropGroupService;
+import com.h13.cardgame.core.vo.CardVO;
+import com.h13.cardgame.core.vo.TaskRewardResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +37,17 @@ public class TaskHelper {
     private CaptainCache captainCache;
     @Autowired
     private TaskGroupCache taskGroupCache;
+    @Autowired
+    private CardHelper cardHelper;
+    @Autowired
+    private CaptainHelper captainHelper;
+
+    @Autowired
+    private LevelHelper levelHelper;
+
+    @Autowired
+    private DropGroupService dropGroupService;
+
 
     /**
      * 通过groupid获得对应的任务组的信息，包括基本信息和包含哪些子任务
@@ -133,4 +149,69 @@ public class TaskHelper {
     }
 
 
+    /**
+     * 进行任务奖励
+     *
+     * @param captain
+     * @param task
+     * @return
+     * @throws RandomRewardException
+     */
+    public TaskRewardResultVO reward(CaptainCO captain, TaskCO task) throws RandomRewardException {
+        DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
+        // 依次判断 exp ,silver 等是否有问题
+        int exp = randomCommonItem(dropGroup.getData().getExp());
+        int silver = randomCommonItem(dropGroup.getData().getSilver());
+        long cardId = randomCard(dropGroup.getData());
+
+        captain.setExp(captain.getExp() + exp);
+        captain.setSilver(captain.getSilver() + silver);
+        captainHelper.updateReward(captain.getId(), exp, silver);
+        // add package
+
+        CardCO cardCO = cardHelper.get(cardId);
+        CardVO cardVO = new CardVO();
+        cardVO.setId(cardCO.getId());
+        cardVO.setName(cardCO.getName());
+        cardVO.setImg(cardCO.getImg());
+
+        TaskRewardResultVO vo = new TaskRewardResultVO();
+        vo.setCard(cardVO);
+        vo.setExp(exp);
+        vo.setSilver(silver);
+        return vo;
+    }
+
+
+    /**
+     * 随机掉落item
+     *
+     * @param item
+     * @return
+     */
+    private int randomCommonItem(CommonRewardItemCO item) {
+        if (!item.isDrop())
+            return 0;
+        if (!item.isRandom())
+            return item.getMax();
+        Random random = new Random();
+        int v = random.nextInt(item.getMax() - item.getMin());
+        return v;
+    }
+
+    private long randomCard(DropGroupDataCO cardDropGroup) throws RandomRewardException {
+        int weight = cardDropGroup.getWeightSum();
+        int random = new Random().nextInt(weight);
+        int v = 0;
+        for (CardRewardItemCO cardItem : cardDropGroup.getCardDropList()) {
+            v += cardItem.getWeight();
+            if (random < v)
+                return cardItem.getCardId();
+        }
+        throw new RandomRewardException(cardDropGroup.toString());
+    }
+
+
 }
+
+

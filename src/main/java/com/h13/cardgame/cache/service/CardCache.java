@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * Created with IntelliJ IDEA.
+ * 卡牌缓存的配置
  * User: sunbo
  * Date: 13-3-10
  * Time: 下午1:55

@@ -34,9 +34,9 @@
         <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CardCO"/>
     </bean>
 
-    <bean id="randomAwardCOSerailizer"
+    <bean id="dropGroupCOSerailizer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.RandomAwardCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.DropGroupCO"/>
     </bean>
 
     <bean id="captainTaskCOSerailizer"
@@ -93,9 +93,9 @@
           p:valueSerializer-ref="JobDetailCOSerailizer">
     </bean>
 
-    <bean id="redisStringRandomAwardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+    <bean id="dropGroupTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="randomAwardCOSerailizer">
+          p:valueSerializer-ref="dropGroupCOSerailizer">
     </bean>
 
     <!-- dbqueuetemplate -->
