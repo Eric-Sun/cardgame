@@ -15,4 +15,6 @@ public class Configuration {
     public static class Captain {
         public static String LEVEL = "captain:level";
     }
+
+    public static int ATTACK_TARGET_PAGE_SIZE = 10;
 }

@@ -117,4 +117,48 @@
           p:valueSerializer-ref="schedulerDetailSerializer">
     </bean>
 
+    <!--  card level -->
+    <bean id="cardLevelCOSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CardLevelCO"/>
+    </bean>
+    <bean id="cardLevelCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="cardLevelCOSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- captain card -->
+    <bean id="captainCardCOSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainCardCO"/>
+    </bean>
+    <bean id="captainCardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="captainCardCOSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- package -->
+    <bean id="packageCOSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.PackageCO"/>
+    </bean>
+    <bean id="packageCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="packageCOSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- squard -->
+    <bean id="squardCOSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.SquardCO"/>
+    </bean>
+    <bean id="squardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="squardCOSerializer">
+    </bean>
+    <!-- -->
+
 </beans>

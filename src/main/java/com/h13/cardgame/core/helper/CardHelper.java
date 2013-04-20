@@ -1,7 +1,11 @@
 package com.h13.cardgame.core.helper;
 
+import com.h13.cardgame.cache.co.CaptainCO;
+import com.h13.cardgame.cache.co.CaptainCardCO;
 import com.h13.cardgame.cache.co.CardCO;
+import com.h13.cardgame.cache.service.CaptainCardCache;
 import com.h13.cardgame.cache.service.CardCache;
+import com.h13.cardgame.core.dao.CaptainCardDAO;
 import com.h13.cardgame.core.dao.CardDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,10 @@ public class CardHelper {
     CardCache cardCache;
     @Autowired
     CardDAO cardDAO;
+    @Autowired
+    CaptainCardDAO captainCardDAO;
+    @Autowired
+    CaptainCardCache captainCardCache;
 
     public CardCO get(long cardId) {
         CardCO card = cardCache.get(cardId);
@@ -28,6 +36,32 @@ public class CardHelper {
             cardCache.put(card);
         }
         return card;
+    }
+
+
+    public void addCardToCaptain(CaptainCO captain, CardCO card) {
+        long id = captainCardDAO.add(captain.getId(), card);
+        CaptainCardCO captainCard = new CaptainCardCO();
+        captainCard.setId(id);
+        captainCard.setAttackMax(card.getAttackMax());
+        captainCard.setAttackMin(card.getAttackMin());
+        captainCard.setCardId(card.getId());
+        captainCard.setDefenceMax(card.getDefenceMax());
+        captainCard.setDefenceMin(card.getDefenceMin());
+        captainCard.setImg(card.getImg());
+        captainCard.setLevel(1);
+        captainCard.setName(card.getName());
+        captainCardCache.put(captainCard);
+    }
+
+
+    public CaptainCardCO getCaptianCard(long ccId) {
+        CaptainCardCO cc = captainCardCache.get(ccId);
+        if (cc == null) {
+            cc = captainCardDAO.get(ccId);
+            captainCardCache.put(cc);
+        }
+        return cc;
     }
 
 

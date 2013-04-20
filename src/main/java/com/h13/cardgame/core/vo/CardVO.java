@@ -12,6 +12,42 @@ public class CardVO {
     private long id;
     private String name;
     private String img;
+    private int attackMin;
+    private int attackMax;
+    private int defenceMin;
+    private int defenceMax;
+
+    public int getAttackMin() {
+        return attackMin;
+    }
+
+    public void setAttackMin(int attackMin) {
+        this.attackMin = attackMin;
+    }
+
+    public int getAttackMax() {
+        return attackMax;
+    }
+
+    public void setAttackMax(int attackMax) {
+        this.attackMax = attackMax;
+    }
+
+    public int getDefenceMin() {
+        return defenceMin;
+    }
+
+    public void setDefenceMin(int defenceMin) {
+        this.defenceMin = defenceMin;
+    }
+
+    public int getDefenceMax() {
+        return defenceMax;
+    }
+
+    public void setDefenceMax(int defenceMax) {
+        this.defenceMax = defenceMax;
+    }
 
     public long getId() {
         return id;

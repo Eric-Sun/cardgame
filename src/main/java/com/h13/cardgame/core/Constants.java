@@ -6,5 +6,9 @@ public class Constants {
         public static String SUCCESS = "0";
     }
 
+    public static enum CardType {
+        HUMAN, WEAPON, ARMOR, HORSE, TREASURE, TREASURE_SEGMENT
+    }
+
 
 }

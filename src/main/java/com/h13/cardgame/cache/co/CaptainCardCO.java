@@ -11,24 +11,43 @@ public class CaptainCardCO {
     private long id;
     private long cardId;
     private String name;
-    private String url;
+    private String img;
     private int level;
     private int attackMin;
     private int attackMax;
     private int defenceMin;
     private int defenceMax;
 
+
     @Override
     public String toString() {
         return "CaptainCardCO{" +
                 "id=" + id +
                 ", cardId=" + cardId +
+                ", name='" + name + '\'' +
+                ", img='" + img + '\'' +
                 ", level=" + level +
                 ", attackMin=" + attackMin +
                 ", attackMax=" + attackMax +
                 ", defenceMin=" + defenceMin +
                 ", defenceMax=" + defenceMax +
                 '}';
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getId() {

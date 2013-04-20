@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 用来提供关于captain的所有院子的操作
  * User: sunbo
@@ -129,6 +131,7 @@ public class CaptainHelper {
     /**
      * 当可以升级的时候返回下一个等级的信息，如果已经满级了，抛出异常
      * 如果不可以升级返回null
+     *
      * @param captain
      * @param level
      * @param toExp
@@ -144,7 +147,12 @@ public class CaptainHelper {
             int nextLevel = level + 1;
             LevelCO nextLevelCO = levelHelper.get(nextLevel);
             return nextLevelCO;
-        }else
+        } else
             return null;
+    }
+
+    public List<Long> searchAttackTarget(long cid, int fromLevel, int toLevel, int pageNum, int pageSize) {
+        List<Long> list = captainDAO.searchAttackTarget(cid, fromLevel, toLevel, pageNum, pageSize);
+        return list;
     }
 }

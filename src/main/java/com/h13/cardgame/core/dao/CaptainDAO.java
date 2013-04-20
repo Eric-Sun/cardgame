@@ -92,4 +92,9 @@ public class CaptainDAO {
         String sql = "update captain set exp=exp+?, silver=silver+? where id=?";
         q.update(sql, new Object[]{exp, silver, id});
     }
+
+    public List<Long> searchAttackTarget(long cid, int fromLevel, int toLevel, int pageNum, int pageSize) {
+        String sql = "select id from captain where level between ? and ? and id<>? limit " + (pageNum - 1) * pageSize + "," + pageSize;
+        return j.queryForList(sql, new Object[]{fromLevel, toLevel, cid}, Long.class);
+    }
 }

@@ -167,13 +167,14 @@ public class TaskHelper {
         captain.setExp(captain.getExp() + exp);
         captain.setSilver(captain.getSilver() + silver);
         captainHelper.updateReward(captain.getId(), exp, silver);
-        // add package
 
+        // add package
         CardCO cardCO = cardHelper.get(cardId);
         CardVO cardVO = new CardVO();
         cardVO.setId(cardCO.getId());
         cardVO.setName(cardCO.getName());
         cardVO.setImg(cardCO.getImg());
+        cardHelper.addCardToCaptain(captain, cardCO);
 
         TaskRewardResultVO vo = new TaskRewardResultVO();
         vo.setCard(cardVO);

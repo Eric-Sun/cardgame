@@ -10,6 +10,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
@@ -82,6 +84,7 @@ public class CaptainService {
         LOG.info("load captain. " + captain);
         return captain;
     }
+
 
 
 

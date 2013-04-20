@@ -15,22 +15,11 @@ import java.util.Map;
 public class PackageCO {
 
     private long id;
-    private long captain_id;
+    private long captainId;
     private int max;
     private int current;
     // cardId 和 captainCardId 的关联
     private Map<Long, List<Long>> cardData = new HashMap<Long, List<Long>>();
-
-    @Override
-    public String toString() {
-        return "PackageCO{" +
-                "id=" + id +
-                ", captain_id=" + captain_id +
-                ", max=" + max +
-                ", current=" + current +
-                ", cardData=" + cardData +
-                '}';
-    }
 
     public long getId() {
         return id;
@@ -40,12 +29,12 @@ public class PackageCO {
         this.id = id;
     }
 
-    public long getCaptain_id() {
-        return captain_id;
+    public long getCaptainId() {
+        return captainId;
     }
 
-    public void setCaptain_id(long captain_id) {
-        this.captain_id = captain_id;
+    public void setCaptainId(long captainId) {
+        this.captainId = captainId;
     }
 
     public int getMax() {
@@ -70,6 +59,17 @@ public class PackageCO {
 
     public void setCardData(Map<Long, List<Long>> cardData) {
         this.cardData = cardData;
+    }
+
+    @Override
+    public String toString() {
+        return "PackageCO{" +
+                "id=" + id +
+                ", captainId=" + captainId +
+                ", max=" + max +
+                ", current=" + current +
+                ", cardData=" + cardData +
+                '}';
     }
 }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * Created with IntelliJ IDEA.
+ * captain緩存
  * User: sunbo
  * Date: 13-3-10
  * Time: 下午1:55
