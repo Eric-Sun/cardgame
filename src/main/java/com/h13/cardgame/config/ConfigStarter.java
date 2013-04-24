@@ -45,7 +45,6 @@ public class ConfigStarter {
             configLoaderService.load();
             cardLoaderService.load();
             dropGroupLoaderService.load();
-            packageLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);

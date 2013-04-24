@@ -32,7 +32,6 @@ public class SquardService {
     @Autowired
     CardHelper cardHelper;
 
-
     /**
      * 获得小队中所有的卡牌的小列表
      *
@@ -40,7 +39,7 @@ public class SquardService {
      */
     public SimpleSquardVO getSimpleSquard(long cid) {
         SimpleSquardVO ss = new SimpleSquardVO();
-        SquardCO squard = squardHelper.get(cid);
+        SquardCO squard = squardHelper.getByCid(cid);
         List<Long> list = squard.getMembers();
         List<CardVO> cList = new ArrayList<CardVO>();
         for (long ccId : list) {
@@ -60,7 +59,7 @@ public class SquardService {
      * 添加一个新的队员
      */
     public void addMember(long cid, long ccId) {
-        SquardCO squard = squardHelper.get(cid);
+        SquardCO squard = squardHelper.getByCid(cid);
         squardHelper.addMember(squard, ccId);
         squardHelper.cacheSquard(squard);
     }
@@ -71,7 +70,7 @@ public class SquardService {
      * @return
      */
     public CombatAttributesVO getCombatAttributes(long cid) {
-        SquardCO squard = squardHelper.get(cid);
+        SquardCO squard = squardHelper.getByCid(cid);
         CombatAttributesVO attributes = new CombatAttributesVO();
         for (Long ccId : squard.getMembers()) {
             CaptainCardCO cc = cardHelper.getCaptianCard(ccId);
@@ -91,7 +90,7 @@ public class SquardService {
      */
     public SimpleSquardVO getLargeSquard(long cid) {
         SimpleSquardVO ss = new SimpleSquardVO();
-        SquardCO squard = squardHelper.get(cid);
+        SquardCO squard = squardHelper.getByCid(cid);
         List<Long> list = squard.getMembers();
         List<CardVO> cList = new ArrayList<CardVO>();
         for (long ccId : list) {
@@ -113,6 +112,7 @@ public class SquardService {
 
     /**
      * 攻击别人
+     *
      * @param fromCid
      * @param toCid
      * @return
@@ -142,15 +142,16 @@ public class SquardService {
 
     /**
      * 获得可以攻击的对象列表
+     *
      * @param cid
      * @param pageNum
      * @return
      * @throws com.h13.cardgame.core.exceptions.ParameterIllegalException
+     *
      */
     public List<AttackTargetVO> searchAttackTarget(long cid, int pageNum) throws ParameterIllegalException {
         return squardHelper.getAttackTarget(cid, pageNum, Configuration.ATTACK_TARGET_PAGE_SIZE);
     }
-
 
 
 }

@@ -51,6 +51,7 @@ public class CaptainHelper {
         if (captain == null) {
             // load data from db
             captain = captainDAO.get(cid);
+
             captainCache.put(captain);
         }
         return captain;

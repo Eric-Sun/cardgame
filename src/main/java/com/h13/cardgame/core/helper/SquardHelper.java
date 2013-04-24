@@ -34,7 +34,7 @@ public class SquardHelper {
     @Autowired
     CaptainHelper captainHelper;
 
-    public SquardCO get(long cid) {
+    public SquardCO getByCid(long cid) {
         SquardCO squard = squardCache.get(cid);
         if (squard == null) {
             squard = squardDAO.getByCaptainId(cid);
@@ -77,7 +77,7 @@ public class SquardHelper {
         int toLevel = level + 10;
         List<Long> cidList = captainHelper.searchAttackTarget(cid, fromLevel, toLevel, pageNum, pageSize);
         for (Long id : cidList) {
-            SquardCO squard = get(id);
+            SquardCO squard = getByCid(id);
             AttackTargetVO target = new AttackTargetVO();
             target.setAttackMax(squard.getAttackMax());
             target.setAttackMin(squard.getAttackMin());

@@ -60,4 +60,20 @@ public class PackageDAO {
             }
         });
     }
+
+    public PackageCO getByCid(long cid) {
+        String sql = "select * from package where captain_id=?";
+        return j.queryForObject(sql, new Object[]{cid}, new RowMapper<PackageCO>() {
+            @Override
+            public PackageCO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PackageCO p = new PackageCO();
+                p.setId(rs.getInt(1));
+                p.setCaptainId(rs.getInt(2));
+                p.setMax(rs.getInt(3));
+                p.setCurrent(rs.getInt(4));
+                p.setCardData(JSON.parseObject(rs.getString(5), Map.class));
+                return p;
+            }
+        });
+    }
 }
