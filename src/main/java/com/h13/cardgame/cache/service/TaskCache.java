@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 public class TaskCache {
     private static String PREFIX = "cg:system:task:";
 
-    @Resource(name = "redisStringTaskCOTemplate")
+    @Resource(name = "taskCacheTemplate")
     private RedisTemplate<String, TaskCO> taskCOTemplate;
 
     public void put(TaskCO task) {

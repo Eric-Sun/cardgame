@@ -1,6 +1,5 @@
 package com.h13.cardgame.cache.service;
 
-import com.h13.cardgame.cache.co.CaptainCO;
 import com.h13.cardgame.cache.co.CardCO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

@@ -24,7 +24,7 @@ public class PackageCache {
 
 
     public void put(PackageCO pck) {
-        String key = PREFIX + pck.getCaptainId();
+        String key = PREFIX + pck.getCityId();
         packageCOTemplate.opsForValue().set(key, pck);
     }
 

@@ -26,7 +26,6 @@ public class TaskCO {
      * 任务的奖励
      */
     private Long dropGroupId;
-
     /**
      * 任务本次完成之后下一次完成需要的时间（秒）
      */

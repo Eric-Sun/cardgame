@@ -3,7 +3,7 @@ package com.h13.cardgame.config.service;
 import com.h13.cardgame.cache.co.ConfigCO;
 import com.h13.cardgame.cache.service.ConfigurationCache;
 import com.h13.cardgame.config.exception.LoadException;
-import com.h13.cardgame.core.dao.ConfigDAO;
+import com.h13.cardgame.jupiter.dao.ConfigDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

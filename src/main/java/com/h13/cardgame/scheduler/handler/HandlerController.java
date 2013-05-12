@@ -1,6 +1,6 @@
 package com.h13.cardgame.scheduler.handler;
 
-import com.h13.cardgame.core.dao.QueueMessageDAO;
+import com.h13.cardgame.jupiter.dao.QueueMessageDAO;
 import com.h13.cardgame.queue.SchedulerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

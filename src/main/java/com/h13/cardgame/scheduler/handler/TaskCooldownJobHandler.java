@@ -2,10 +2,10 @@ package com.h13.cardgame.scheduler.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.queue.SchedulerMessage;
 import com.h13.cardgame.cache.co.TaskCO;
-import com.h13.cardgame.core.exceptions.ParameterIllegalException;
-import com.h13.cardgame.core.service.TaskService;
+import com.h13.cardgame.jupiter.service.TaskService;
 import com.h13.cardgame.scheduler.SchedulerHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +35,7 @@ public class TaskCooldownJobHandler implements SchedulerHandler {
         if (task.getCooldown() <= currentMs - detailMs) {
             try {
                 taskService.resumeTask(detail.getCid(), task.getId());
-            } catch (ParameterIllegalException e) {
+            } catch (UserNotExistsException e) {
                 LOG.error("", e);
             } finally {
                 return true;

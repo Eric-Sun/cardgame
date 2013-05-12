@@ -1,6 +1,6 @@
 package com.h13.cardgame.cache.co;
 
-import com.h13.cardgame.core.Constants;
+import com.h13.cardgame.jupiter.Constants;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,6 +1,6 @@
 package com.h13.cardgame.scheduler;
 
-import com.h13.cardgame.core.utils.WebApplicationContentHolder;
+import com.h13.cardgame.jupiter.utils.WebApplicationContentHolder;
 import com.h13.cardgame.queue.SchedulerMessage;
 import com.h13.cardgame.scheduler.handler.HandlerController;
 import org.apache.commons.logging.Log;

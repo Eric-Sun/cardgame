@@ -1,15 +1,9 @@
 package com.h13.cardgame.config.service;
 
 import com.h13.cardgame.cache.co.CardCO;
-import com.h13.cardgame.cache.co.TaskCO;
-import com.h13.cardgame.cache.co.TaskGroupCO;
 import com.h13.cardgame.cache.service.CardCache;
-import com.h13.cardgame.cache.service.TaskCache;
-import com.h13.cardgame.cache.service.TaskGroupCache;
 import com.h13.cardgame.config.exception.LoadException;
-import com.h13.cardgame.core.dao.CardDAO;
-import com.h13.cardgame.core.dao.TaskDAO;
-import com.h13.cardgame.core.dao.TaskGroupDAO;
+import com.h13.cardgame.jupiter.dao.CardDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
