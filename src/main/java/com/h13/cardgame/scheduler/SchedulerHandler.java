@@ -1,6 +1,7 @@
 package com.h13.cardgame.scheduler;
 
 import com.h13.cardgame.queue.SchedulerMessage;
+import com.h13.cardgame.scheduler.exception.JobShouldBeRerunException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,5 +16,5 @@ public interface SchedulerHandler {
      * @param detail
      * @return
      */
-    public boolean doHandle(SchedulerMessage detail);
+    public boolean doHandle(SchedulerMessage detail) throws JobShouldBeRerunException;
 }

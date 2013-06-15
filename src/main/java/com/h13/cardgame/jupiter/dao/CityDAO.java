@@ -2,7 +2,7 @@ package com.h13.cardgame.jupiter.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCO;
-import com.h13.cardgame.cache.co.CityTaskCO;
+import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.jupiter.JdbcQueueTemplate;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class CityDAO {
     JdbcQueueTemplate q;
 
     public CityCO get(long cid) throws UserNotExistsException {
-        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_info from city where id=?";
+        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_status from city where id=?";
         List<CityCO> list = j.query(sql, new Object[]{cid}, new RowMapper<CityCO>() {
             @Override
             public CityCO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -49,7 +49,7 @@ public class CityDAO {
                 co.setEnergy(rs.getInt(6));
                 co.setGold(rs.getInt(7));
                 co.setSilver(rs.getInt(8));
-                co.setTaskInfo(JSON.parseObject(rs.getString(9), CityTaskCO.class));
+                co.setTaskStatus(JSON.parseObject(rs.getString(9), CityTaskStatusCO.class));
                 return co;
             }
         });
@@ -67,7 +67,7 @@ public class CityDAO {
 
     public long create(final CityCO captain) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        final String sql = "insert into city (user_id,name,level,energy,gold,silver,task_info,create_time,exp)" +
+        final String sql = "insert into city (user_id,name,level,energy,gold,silver,task_status,create_time,exp)" +
                 " values (?,?,?,?,?,?,?,now(),?)";
         j.update(new PreparedStatementCreator() {
             @Override
@@ -79,7 +79,7 @@ public class CityDAO {
                 pstmt.setInt(4, captain.getEnergy());
                 pstmt.setInt(5, captain.getGold());
                 pstmt.setInt(6, captain.getSilver());
-                pstmt.setString(7, JSON.toJSONString(captain.getTaskInfo()));
+                pstmt.setString(7, JSON.toJSONString(captain.getTaskStatus()));
                 pstmt.setInt(8, captain.getExp());
                 return pstmt;
             }
@@ -105,5 +105,10 @@ public class CityDAO {
             return false;
         else
             return true;
+    }
+
+    public void updateSilver(CityCO city) {
+        String sql = "update city set silver=? where id=?";
+        q.update(sql, new Object[]{city.getSilver(), city.getId()});
     }
 }

@@ -9,7 +9,7 @@ import com.h13.cardgame.jupiter.dao.TaskGroupDAO;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.RandomRewardException;
 import com.h13.cardgame.jupiter.service.DropGroupService;
-import com.h13.cardgame.jupiter.vo.CardVO;
+import com.h13.cardgame.jupiter.vo.CityCardVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,7 @@ public class TaskHelper {
      * @param taskId
      */
     public void addTaskInfo(CityCO captain, long taskId) {
-        CityTaskCO taskInfo = captain.getTaskInfo();
+        CityTaskStatusCO taskInfo = captain.getTaskStatus();
         if (taskInfo.getTaskMap().get(taskId) == null) {
             taskInfo.getTaskMap().put(taskId, new CityPerTaskCO(1, false));
         } else {
@@ -93,8 +93,8 @@ public class TaskHelper {
 
 
     public void resumeTask(CityCO captain, long taskId) {
-        captain.getTaskInfo().getTaskMap().get(taskId).setCanBeDo(true);
-        taskDAO.updateTaskInfo(captain.getId(), captain.getTaskInfo());
+        captain.getTaskStatus().getTaskMap().get(taskId).setCanBeDo(true);
+        taskDAO.updateTaskInfo(captain.getId(), captain.getTaskStatus());
     }
 
     /**
@@ -131,6 +131,7 @@ public class TaskHelper {
      * @param taskGroupId
      * @return
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
+     *
      */
     public List<TaskCO> getTaskList(long taskGroupId) throws UserNotExistsException {
         List<TaskCO> taskList = new ArrayList<TaskCO>();
@@ -157,27 +158,33 @@ public class TaskHelper {
      * @return
      * @throws RandomRewardException
      */
-    public TaskRewardResultVO reward(CityCO captain, TaskCO task) throws RandomRewardException {
+    public TaskRewardResultVO reward(CityCO city, TaskCO task) throws RandomRewardException {
         DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
         // 依次判断 exp ,silver 等是否有问题
         int exp = randomCommonItem(dropGroup.getData().getExp());
         int silver = randomCommonItem(dropGroup.getData().getSilver());
         long cardId = randomCard(dropGroup.getData());
 
-        captain.setExp(captain.getExp() + exp);
-        captain.setSilver(captain.getSilver() + silver);
-        cityHelper.updateReward(captain.getId(), exp, silver);
+        city.setExp(city.getExp() + exp);
+        city.setSilver(city.getSilver() + silver);
+        cityHelper.updateReward(city.getId(), exp, silver);
 
         // add package
         CardCO cardCO = cardHelper.get(cardId);
-        CardVO cardVO = new CardVO();
-        cardVO.setId(cardCO.getId());
-        cardVO.setName(cardCO.getName());
-        cardVO.setImg(cardCO.getImg());
-        cardHelper.addCardToCaptain(captain, cardCO);
+        CityCardVO cityCardVO = new CityCardVO();
+        cityCardVO.setId(cardCO.getId());
+        cityCardVO.setName(cardCO.getName());
+        cityCardVO.setIcon(cardCO.getIcon());
+        switch (cardCO.getCardType()) {
+            case EQUIPMENT:
+                cardHelper.addEquipmentCardToCaptain(city, cardCO);
+                break;
+            default:
+                cardHelper.addHumanCardToCaptain(city, cardCO);
+        }
 
         TaskRewardResultVO vo = new TaskRewardResultVO();
-        vo.setCard(cardVO);
+        vo.setCard(cityCardVO);
         vo.setExp(exp);
         vo.setSilver(silver);
         return vo;

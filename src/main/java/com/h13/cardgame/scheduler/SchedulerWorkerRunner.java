@@ -17,10 +17,16 @@ public class SchedulerWorkerRunner implements Runnable {
     private static Log LOG = LogFactory.getLog(SchedulerWorkerRunner.class);
 
     private SchedulerWorker worker;
+    private boolean isStopped = true;
 
     public SchedulerWorkerRunner(SchedulerWorker worker) {
         this.worker = worker;
     }
+
+    public void stop() {
+        isStopped = false;
+    }
+
 
     @Override
     public void run() {
@@ -29,7 +35,7 @@ public class SchedulerWorkerRunner implements Runnable {
         } catch (SchedulerException e) {
             LOG.error("scheduler start error.", e);
         }
-        while (true) {
+        while (isStopped) {
             try {
                 worker.process();
                 Thread.sleep(10L);
@@ -37,5 +43,6 @@ public class SchedulerWorkerRunner implements Runnable {
                 LOG.error("scheduler error", e);
             }
         }
+        worker.stop();
     }
 }

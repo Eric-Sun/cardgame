@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.dao;
 
 import com.alibaba.fastjson.JSON;
-import com.h13.cardgame.cache.co.CityTaskCO;
+import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.ConditionCO;
 import com.h13.cardgame.cache.co.TaskCO;
 import com.h13.cardgame.jupiter.JdbcQueueTemplate;
@@ -66,8 +66,8 @@ public class TaskDAO {
             return list.get(0);
     }
 
-    public void updateTaskInfo(long cid, CityTaskCO captainTask) {
-        String sql = "update captain set task_info=? where id=?";
-        q.update(sql, new Object[]{JSON.toJSONString(captainTask), cid});
+    public void updateTaskInfo(long cid, CityTaskStatusCO taskStatus) {
+        String sql = "update city set task_status=? where id=?";
+        q.update(sql, new Object[]{JSON.toJSONString(taskStatus), cid});
     }
 }

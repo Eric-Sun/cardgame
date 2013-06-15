@@ -1,9 +1,9 @@
 package com.h13.cardgame.config.service;
 
-import com.h13.cardgame.cache.co.PackageCO;
-import com.h13.cardgame.cache.service.PackageCache;
+import com.h13.cardgame.cache.co.StorageCO;
+import com.h13.cardgame.cache.service.StorageCache;
 import com.h13.cardgame.config.exception.LoadException;
-import com.h13.cardgame.jupiter.dao.PackageDAO;
+import com.h13.cardgame.jupiter.dao.StorageDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,15 @@ public class PackageLoaderService {
     private static Log LOG = LogFactory.getLog(PackageLoaderService.class);
 
     @Autowired
-    PackageDAO packageDAO;
+    StorageDAO storageDAO;
     @Autowired
-    PackageCache packageCache;
+    StorageCache storageCache;
 
     public void load() throws LoadException {
         try {
-            List<PackageCO> list = packageDAO.getAll();
-            for (PackageCO pck : list) {
-                packageCache.put(pck);
+            List<StorageCO> list = storageDAO.getAll();
+            for (StorageCO pck : list) {
+                storageCache.put(pck);
                 LOG.info("loaded package info. " + pck);
             }
             LOG.info("load package info successfully.");

@@ -1,11 +1,10 @@
 package com.h13.cardgame.jupiter.vo;
 
 /**
- * Created with IntelliJ IDEA.
+ * 用于在任务列表中显示每个任务给的奖励是什么
  * User: sunbo
  * Date: 13-4-12
  * Time: 下午6:27
- * To change this template use File | Settings | File Templates.
  */
 public class TaskRewardVO {
     private int silver;

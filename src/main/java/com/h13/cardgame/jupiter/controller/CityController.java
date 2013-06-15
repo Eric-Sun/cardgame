@@ -3,6 +3,7 @@ package com.h13.cardgame.jupiter.controller;
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.jupiter.exceptions.CityExistsException;
+import com.h13.cardgame.jupiter.exceptions.UserIllegalParamterException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
 import com.h13.cardgame.jupiter.service.CityService;
@@ -32,17 +33,22 @@ public class CityController {
     @Autowired
     CityService cityService;
 
-    @RequestMapping("")
+    @RequestMapping("/")
     @ResponseBody
     public String index(HttpServletRequest request, HttpServletResponse response) {
         long cid = -1;
+        long uid = -1;
         try {
             cid = new Long(request.getParameter("cid"));
-            CityCO captain = cityService.get(cid);
-            return JSON.toJSONString(captain);
+            uid = new Long(request.getParameter("uid"));
+            CityCO city = cityService.get(uid, cid);
+            return DTOUtils.getSucessResponse(uid, cid, city);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
             return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
+        } catch (UserIllegalParamterException e) {
+            LogWriter.warn(LogWriter.CITY, e);
+            return DTOUtils.getFailureResponse(-1, cid, UserIllegalParamterException.CODE);
         } catch (Exception e) {
             LogWriter.error(LogWriter.CITY, e);
             return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);

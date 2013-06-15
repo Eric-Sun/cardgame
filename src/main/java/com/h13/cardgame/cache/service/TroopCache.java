@@ -16,9 +16,9 @@ import javax.annotation.Resource;
 @Service
 public class TroopCache {
 
-    private static String PREFIX = "cg:squard:";
+    private static String PREFIX = "cg:troop:";
 
-    @Resource(name = "squardCOTemplate")
+    @Resource(name = "troopCOTemplate")
     private RedisTemplate<String, TroopCO> squardCOTemplate;
 
 

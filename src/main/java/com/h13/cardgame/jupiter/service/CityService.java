@@ -1,12 +1,12 @@
 package com.h13.cardgame.jupiter.service;
 
 import com.h13.cardgame.cache.co.CityCO;
+import com.h13.cardgame.cache.co.StorageCO;
+import com.h13.cardgame.cache.co.TroopCO;
 import com.h13.cardgame.jupiter.exceptions.CityExistsException;
-import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
+import com.h13.cardgame.jupiter.exceptions.UserIllegalParamterException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.helper.CityHelper;
-import com.h13.cardgame.jupiter.helper.LevelHelper;
-import com.h13.cardgame.jupiter.helper.TaskHelper;
+import com.h13.cardgame.jupiter.helper.*;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,10 @@ public class CityService {
     LevelHelper levelHelper;
     @Autowired
     TaskHelper taskHelper;
+    @Autowired
+    StorageHelper storageHelper;
+    @Autowired
+    TroopHelper troopHelper;
 
     /**
      * 添加能量
@@ -34,8 +38,8 @@ public class CityService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void addEnergy(long cid, int value) throws UserNotExistsException {
-        CityCO city = cityHelper.get(cid);
+    public void addEnergy(long uid, long cid, int value) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO city = cityHelper.get(uid, cid);
         cityHelper.addEnergy(city, value);
         cityHelper.cache(city);
         LogWriter.info(LogWriter.CITY, "city add energy. id=" + city.getId() + " value=" + value);
@@ -49,8 +53,8 @@ public class CityService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void subEnergy(long cid, int value) throws UserNotExistsException {
-        CityCO captain = cityHelper.get(cid);
+    public void subEnergy(long uid, long cid, int value) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO captain = cityHelper.get(uid, cid);
         cityHelper.subEnergy(captain, value);
         cityHelper.cache(captain);
         LogWriter.info(LogWriter.CITY, "captain sub energy. id=" + captain.getId() + " value=" + value);
@@ -65,8 +69,14 @@ public class CityService {
      */
     public CityCO create(long uid, String name) throws UserNotExistsException, CityExistsException {
         CityCO city = cityHelper.create(uid, name);
+        int troopSize = levelHelper.get(1).getTroopSize();
         cityHelper.cache(city);
         LogWriter.info(LogWriter.CITY, "create city. city=" + city);
+        StorageCO storage = storageHelper.create(city.getId());
+        storageHelper.cache(storage);
+        LogWriter.info(LogWriter.CITY, "create storage. " + storage);
+        TroopCO troop = troopHelper.create(city.getId(), troopSize);
+        LogWriter.info(LogWriter.CITY, "create troop. " + troop);
         return city;
     }
 
@@ -74,15 +84,18 @@ public class CityService {
     /**
      * 读取captain的相关信息
      *
+     * @param uid
      * @param cid
      * @return
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public CityCO get(long cid) throws UserNotExistsException {
-        CityCO captain = cityHelper.get(cid);
-        LogWriter.info(LogWriter.CITY, "load captain. " + captain);
-        return captain;
+    public CityCO get(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+
+
+        CityCO city = cityHelper.get(uid, cid);
+        LogWriter.info(LogWriter.CITY, "load city. " + city);
+        return city;
     }
 
 

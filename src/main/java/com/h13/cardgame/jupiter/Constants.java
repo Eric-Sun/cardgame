@@ -7,9 +7,4 @@ public class Constants {
         public static String FAILURE = "1";
     }
 
-    public static enum CardType {
-        HUMAN, WEAPON, ARMOR, HORSE, TREASURE, TREASURE_SEGMENT
-    }
-
-
 }

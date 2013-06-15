@@ -27,11 +27,12 @@ public class QueueMessageDAO {
     @Autowired
     JdbcTemplate j;
 
-    public void add(String messageId, long cid, long startTime, Object attachment, long interval, SchedulerType schedulerType) {
-        String sql = "insert into queue_message (message_id,cid,start_time,attachment,`interval`,scheduler_type," +
+    public void add(String messageId, long uid, long cid, long startTime, Object attachment, long interval, SchedulerType schedulerType, long actionObjectId) {
+        String sql = "insert into queue_message (message_id,uid,cid,start_time,attachment,`interval`,scheduler_type,action_object_id," +
                 "create_time)" +
-                " values(?,?,?,?,?,?,now())";
-        q.update(sql, new Object[]{messageId, cid, startTime, JSON.toJSONString(attachment), interval, schedulerType.name()});
+                " values(?,?,?,?,?,?,?,?,now())";
+        q.update(sql, new Object[]{messageId, uid, cid, startTime, JSON.toJSONString(attachment), interval, schedulerType.name(),
+                actionObjectId});
     }
 
 

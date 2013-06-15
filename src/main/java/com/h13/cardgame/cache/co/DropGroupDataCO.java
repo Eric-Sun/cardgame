@@ -19,8 +19,6 @@ public class DropGroupDataCO {
     private CommonRewardItemCO silver;
     private int weightSum;
 
-
-
     public boolean isWillDropCard() {
         return willDropCard;
     }

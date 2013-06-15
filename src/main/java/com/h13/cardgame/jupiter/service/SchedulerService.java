@@ -2,6 +2,7 @@ package com.h13.cardgame.jupiter.service;
 
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.TaskCO;
+import com.h13.cardgame.cache.service.SchedulerCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.dao.QueueMessageDAO;
 import com.h13.cardgame.jupiter.utils.QueueUtils;
@@ -33,6 +34,8 @@ public class SchedulerService {
 
     @Autowired
     ConfigService configService;
+    @Autowired
+    SchedulerCache schedulerCache;
 
     /**
      * 创建一个定时任务
@@ -42,15 +45,16 @@ public class SchedulerService {
      * @param attachment
      * @param interval      多久之后触发这个事件
      */
-    private void add(long cid, SchedulerType schedulerType, Object attachment, long interval) {
+    private void add(long uid, long cid, SchedulerType schedulerType, Object attachment, long interval, long actionObjectId) {
         long startTime = System.currentTimeMillis();
-        SchedulerMessage detail = new SchedulerMessage(cid, QueueUtils.getMessageId(cid), schedulerType,
+        SchedulerMessage detail = new SchedulerMessage(uid, cid, QueueUtils.getMessageId(cid), schedulerType,
                 startTime, interval,
-                attachment);
+                attachment, actionObjectId);
         // 添加到数据库中，用来查询
-        queueMessageDAO.add(detail.getJobId(), cid, startTime, attachment, interval, schedulerType);
+        queueMessageDAO.add(detail.getJobId(), uid, cid, startTime, attachment, interval, schedulerType, actionObjectId);
         // 添加到
         queue.push(detail);
+        schedulerCache.put(detail);
         LOG.info("push to queue. message=" + detail);
     }
 
@@ -96,17 +100,17 @@ public class SchedulerService {
     /**
      * 添加一个任务冷却的定时任务
      *
-     * @param captain
+     * @param city
      * @param task
      */
-    public void addTaskCooldownJob(CityCO captain, TaskCO task) {
-        add(captain.getId(), SchedulerType.TASK_COOLDOWN_JOB, task, task.getCooldown());
+    public void addTaskCooldownJob(CityCO city, TaskCO task) {
+        add(city.getUserId(), city.getId(), SchedulerType.TASK_COOLDOWN_JOB, task, task.getCooldown(), task.getId());
     }
 
 
-    public void addEnergyUpJob(CityCO captain) {
-        add(captain.getId(), SchedulerType.ENERGY_JOB, null,
-                new Long(configService.get(Configuration.Scheduler.ENERGY_UP_S)));
+    public void addEnergyUpJob(CityCO city) {
+        add(city.getUserId(), city.getId(), SchedulerType.ENERGY_JOB, null,
+                new Long(configService.get(Configuration.Scheduler.ENERGY_UP_S)), city.getId());
     }
 
     public void checkAndAddEnergyUpJob(CityCO captain) {

@@ -31,6 +31,8 @@ public class PassportController {
     @RequestMapping("/register")
     @ResponseBody
     public String register(HttpServletRequest request, HttpServletResponse response) {
+
+        LogWriter.logRequest(request);
         String mail = request.getParameter("mail");
         String name = request.getParameter("name");
         String pwd = request.getParameter("pwd");

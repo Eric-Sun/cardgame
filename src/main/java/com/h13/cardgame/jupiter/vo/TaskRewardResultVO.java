@@ -12,24 +12,24 @@ public class TaskRewardResultVO {
     public static int NORMAL = 0;
     public static int LEVEL_UP = 1;
 
-    private int captainStatus = NORMAL;
-    private CardVO card;
+    private int cityStatus = NORMAL;
+    private CityCardVO card;
     private int silver;
     private int exp;
 
-    public int getCaptainStatus() {
-        return captainStatus;
+    public int getCityStatus() {
+        return cityStatus;
     }
 
-    public void setCaptainStatus(int captainStatus) {
-        this.captainStatus = captainStatus;
+    public void setCityStatus(int cityStatus) {
+        this.cityStatus = cityStatus;
     }
 
-    public CardVO getCard() {
+    public CityCardVO getCard() {
         return card;
     }
 
-    public void setCard(CardVO card) {
+    public void setCard(CityCardVO card) {
         this.card = card;
     }
 
@@ -52,7 +52,7 @@ public class TaskRewardResultVO {
     @Override
     public String toString() {
         return "TaskRewardVO{" +
-                "captainStatus=" + captainStatus +
+                "cityStatus=" + cityStatus +
                 ", card=" + card +
                 ", silver=" + silver +
                 ", exp=" + exp +

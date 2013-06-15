@@ -1,11 +1,9 @@
 package com.h13.cardgame.jupiter.controller;
 
-import com.h13.cardgame.jupiter.exceptions.EnergyNotEnoughException;
-import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.RandomRewardException;
-import com.h13.cardgame.jupiter.exceptions.TaskIsOverException;
+import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.service.TaskService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
+import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
 import com.h13.cardgame.jupiter.vo.TaskVO;
 import org.apache.commons.logging.Log;
@@ -29,37 +27,51 @@ import java.util.List;
 @Controller
 @RequestMapping("/task")
 public class TaskController {
-    private static Log LOG = LogFactory.getLog(CityController.class);
     @Autowired
     TaskService taskService;
 
+    /**
+     * 完成任务
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping("/d")
     @ResponseBody
     public String d(HttpServletRequest request, HttpServletResponse response) {
-        long cid = new Long(request.getParameter("cid"));
-        long uid = new Long(request.getParameter("uid"));
-        long taskId = new Long(request.getParameter("taskId"));
+        long cid = -1;
+        long uid = -1;
         try {
-            List<Object> resultList = taskService.d(cid, taskId);
+            cid = new Long(request.getParameter("cid"));
+            uid = new Long(request.getParameter("uid"));
+            long taskId = new Long(request.getParameter("taskId"));
+            List<Object> resultList = taskService.d(uid, cid, taskId);
             boolean flag = (Boolean) resultList.get(1);
             if (!flag) {
                 // 需要获取下一个任务
-                List<TaskVO> taskList = taskService.nextTask(cid);
+                List<TaskVO> taskList = taskService.nextTask(uid, cid);
                 return DTOUtils.getSucessResponse(uid, cid, resultList.get(0), taskList);
             }
             return DTOUtils.getSucessResponse(uid, cid, resultList.get(0));
         } catch (UserNotExistsException e) {
-            LOG.error("", e);
+            LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
         } catch (EnergyNotEnoughException e) {
-            LOG.error("", e);
+            LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, EnergyNotEnoughException.CODE);
         } catch (TaskIsOverException e) {
-            LOG.error("", e);
+            LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);  //To change body of catch statement use File | Settings | File Templates.
         } catch (RandomRewardException e) {
-            LOG.error("", e);
+            LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, RandomRewardException.CODE);
+        } catch (UserIllegalParamterException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, UserIllegalParamterException.CODE);
+        } catch (Exception e) {
+            LogWriter.error(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
         }
     }
 
@@ -67,15 +79,23 @@ public class TaskController {
     @ResponseBody
     public String task(HttpServletRequest request, HttpServletResponse response) {
 
-        long cid = new Long(request.getParameter("cid"));
-        long uid = new Long(request.getParameter("uid"));
+        long cid = -1;
+        long uid = -1;
         try {
-            List<TaskVO> taskList = taskService.task(cid);
-            List<TaskGroupVO> taskGroupList = taskService.taskGroup(cid);
+            cid = new Long(request.getParameter("cid"));
+            uid = new Long(request.getParameter("uid"));
+            List<TaskVO> taskList = taskService.task(uid, cid);
+            List<TaskGroupVO> taskGroupList = taskService.taskGroup(uid, cid);
             return DTOUtils.getSucessResponse(uid, cid, taskGroupList, taskList);
         } catch (UserNotExistsException e) {
-            LOG.error("error", e);
+            LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+        } catch (UserIllegalParamterException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserIllegalParamterException.CODE);
+        } catch (Exception e) {
+            LogWriter.error(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, ServerErrorException.CODE);
         }
     }
 

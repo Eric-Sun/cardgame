@@ -1,5 +1,6 @@
 package com.h13.cardgame.cache.co;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,8 +14,9 @@ public class TroopCO {
     private long id;
     private long cityId;
     private String name;
-    private List<Long> members;
-    private int max;
+    private String[] members;
+    private int maxSlot;
+    private int curSlot;
     private int attackMax;
     private int attackMin;
     private int defenceMax;
@@ -22,17 +24,34 @@ public class TroopCO {
 
     @Override
     public String toString() {
-        return "SquardCO{" +
+        return "TroopCO{" +
                 "id=" + id +
                 ", cityId=" + cityId +
                 ", name='" + name + '\'' +
-                ", members=" + members +
-                ", max=" + max +
+                ", members=" + Arrays.toString(members) +
+                ", maxSlot=" + maxSlot +
+                ", curSlot=" + curSlot +
                 ", attackMax=" + attackMax +
                 ", attackMin=" + attackMin +
                 ", defenceMax=" + defenceMax +
                 ", defenceMin=" + defenceMin +
                 '}';
+    }
+
+    public int getMaxSlot() {
+        return maxSlot;
+    }
+
+    public void setMaxSlot(int maxSlot) {
+        this.maxSlot = maxSlot;
+    }
+
+    public int getCurSlot() {
+        return curSlot;
+    }
+
+    public void setCurSlot(int curSlot) {
+        this.curSlot = curSlot;
     }
 
     public long getCityId() {
@@ -59,20 +78,12 @@ public class TroopCO {
         this.name = name;
     }
 
-    public List<Long> getMembers() {
+    public String[] getMembers() {
         return members;
     }
 
-    public void setMembers(List<Long> members) {
+    public void setMembers(String[] members) {
         this.members = members;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
     }
 
     public int getAttackMax() {

@@ -1,7 +1,9 @@
 package com.h13.cardgame.scheduler.handler;
 
+import com.h13.cardgame.cache.service.SchedulerCache;
 import com.h13.cardgame.jupiter.dao.QueueMessageDAO;
 import com.h13.cardgame.queue.SchedulerMessage;
+import com.h13.cardgame.scheduler.exception.JobShouldBeRerunException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +20,27 @@ public class HandlerController {
     @Autowired
     EnergyJobHandler energyHandler;
     @Autowired
+    SchedulerCache schedulerCache;
+    @Autowired
     TaskCooldownJobHandler taskHandler;
     @Autowired
     QueueMessageDAO queueMessageDAO;
 
     public boolean dispatch(SchedulerMessage detail) {
-        switch (detail.getJobType()) {
-            case ENERGY_JOB:
-                energyHandler.doHandle(detail);
-                break;
-            case TASK_COOLDOWN_JOB:
-                taskHandler.doHandle(detail);
-                break;
+        try {
+            switch (detail.getJobType()) {
+                case ENERGY_JOB:
+                    energyHandler.doHandle(detail);
+                    break;
+                case TASK_COOLDOWN_JOB:
+                    taskHandler.doHandle(detail);
+                    break;
+            }
+            queueMessageDAO.delete(detail.getJobId());
+            schedulerCache.remove(detail);
+        } catch (JobShouldBeRerunException e) {
+            return false;
         }
-        queueMessageDAO.delete(detail.getJobId());
         return true;
     }
 }

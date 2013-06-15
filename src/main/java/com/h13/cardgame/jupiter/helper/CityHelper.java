@@ -1,13 +1,11 @@
 package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.co.CityCO;
+import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.service.CityCache;
 import com.h13.cardgame.jupiter.dao.CityDAO;
-import com.h13.cardgame.jupiter.exceptions.CityExistsException;
-import com.h13.cardgame.jupiter.exceptions.LevelIsTopException;
-import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
-import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
+import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.service.SchedulerService;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +39,19 @@ public class CityHelper {
     /**
      * 从缓存中获取city
      *
-     * @param cid
-     * @return
+     * @param uid@return
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public CityCO get(long cid) throws UserNotExistsException {
+    public CityCO get(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
         CityCO city = cityCache.get(cid);
         if (city == null) {
             // load data from db
             city = cityDAO.get(cid);
             cityCache.put(city);
+        }
+        if (city.getUserId() != uid) {
+            throw new UserIllegalParamterException("uid=" + uid + " no have the city. cid=" + cid);
         }
         return city;
     }
@@ -129,6 +129,7 @@ public class CityHelper {
         city.setSilver(0);
         city.setUserId(uid);
         city.setName(name);
+        city.setTaskStatus(new CityTaskStatusCO());
         long cid = cityDAO.create(city);
         city.setId(cid);
         LogWriter.debug(LogWriter.CITY, " create city object. city=" + city);
@@ -138,8 +139,9 @@ public class CityHelper {
     /**
      * 判断是否这个用户已经有城了
      * <p>
-     *     如果返回true表示已经有城了
+     * 如果返回true表示已经有城了
      * </p>
+     *
      * @param uid
      * @return
      */
@@ -180,5 +182,9 @@ public class CityHelper {
     public List<Long> searchAttackTarget(long cid, int fromLevel, int toLevel, int pageNum, int pageSize) {
         List<Long> list = cityDAO.searchAttackTarget(cid, fromLevel, toLevel, pageNum, pageSize);
         return list;
+    }
+
+    public void updateSilver(CityCO city) {
+        cityDAO.updateSilver(city);
     }
 }

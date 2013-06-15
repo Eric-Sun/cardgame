@@ -16,7 +16,7 @@ public class TaskVO {
     private String desc;
     private TaskRewardVO reward;
     private ConditionCO condition;
-    private int sum;
+    private int curCount;
     private int count;
     private long lastCommit;
 
@@ -68,12 +68,12 @@ public class TaskVO {
         this.condition = condition;
     }
 
-    public int getSum() {
-        return sum;
+    public int getCurCount() {
+        return curCount;
     }
 
-    public void setSum(int sum) {
-        this.sum = sum;
+    public void setCurCount(int curCount) {
+        this.curCount = curCount;
     }
 
     public int getCount() {

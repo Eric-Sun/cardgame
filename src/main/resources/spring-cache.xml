@@ -27,12 +27,18 @@
           p:valueSerializer-ref="dbTaskDetailSerializer">
     </bean>
 
-    <!-- scheduler deatil -->
+    <!-- scheduler deatil for queue -->
     <bean id="schedulerDetailSerializer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
         <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.SchedulerMessage"/>
     </bean>
     <bean id="schedulerDetailTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="schedulerDetailSerializer">
+    </bean>
+
+    <!-- scheduler for persistent  -->
+    <bean id="schedulerCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="schedulerDetailSerializer">
     </bean>
@@ -49,24 +55,24 @@
     <!-- -->
 
     <!-- package -->
-    <bean id="packageCOSerializer"
+    <bean id="storageCOSerializer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.PackageCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.StorageCO"/>
     </bean>
-    <bean id="packageCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+    <bean id="storageCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="packageCOSerializer">
+          p:valueSerializer-ref="storageCOSerializer">
     </bean>
     <!-- -->
 
-    <!-- squard -->
-    <bean id="squardCOSerializer"
+    <!-- troop -->
+    <bean id="troopCOSerializer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
         <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.TroopCO"/>
     </bean>
-    <bean id="squardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+    <bean id="troopCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="squardCOSerializer">
+          p:valueSerializer-ref="troopCOSerializer">
     </bean>
     <!-- -->
 

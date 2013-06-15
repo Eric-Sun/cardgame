@@ -16,7 +16,7 @@ public class CityCO {
     private int exp;
     private int gold;
     private int silver;
-    private CityTaskCO taskInfo;
+    private CityTaskStatusCO taskStatus;
 
     public long getId() {
         return id;
@@ -82,12 +82,12 @@ public class CityCO {
         this.silver = silver;
     }
 
-    public CityTaskCO getTaskInfo() {
-        return taskInfo;
+    public CityTaskStatusCO getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setTaskInfo(CityTaskCO taskInfo) {
-        this.taskInfo = taskInfo;
+    public void setTaskStatus(CityTaskStatusCO taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CityCO {
                 ", exp=" + exp +
                 ", gold=" + gold +
                 ", silver=" + silver +
-                ", taskInfo=" + taskInfo +
+                ", taskStatus=" + taskStatus +
                 '}';
     }
 }

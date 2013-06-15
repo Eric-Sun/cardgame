@@ -1,11 +1,10 @@
 package com.h13.cardgame.cache.co;
 
 /**
- * Created with IntelliJ IDEA.
+ * 任务完成的时候需要的条件，如果为0的话，任务不需要该条件
  * User: sunbo
  * Date: 13-3-19
  * Time: 下午6:58
- * To change this template use File | Settings | File Templates.
  */
 public class ConditionCO {
     private Integer energy = 0;

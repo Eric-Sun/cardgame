@@ -8,14 +8,14 @@ package com.h13.cardgame.jupiter.vo;
  * To change this template use File | Settings | File Templates.
  */
 public class CombatResultVO {
-    private CardVO card;
+    private CityCardVO card;
     private boolean result;
 
-    public CardVO getCard() {
+    public CityCardVO getCard() {
         return card;
     }
 
-    public void setCard(CardVO card) {
+    public void setCard(CityCardVO card) {
         this.card = card;
     }
 

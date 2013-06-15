@@ -1,5 +1,6 @@
 package com.h13.cardgame.scheduler;
 
+import com.h13.cardgame.cache.service.SchedulerCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.queue.SchedulerMessage;
 import com.h13.cardgame.queue.SchedulerQueue;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
@@ -34,10 +36,25 @@ public class SchedulerWorker {
     @Autowired
     SchedulerQueue queue;
 
+    @Autowired
+    SchedulerCache schedulerCache;
+
     public void start() throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
+        reload();
         LOG.info("scheduler started.");
+    }
+
+    /**
+     * 在scheduler开启之后，把之前遗留的任务放到scheduler系统中
+     */
+    private void reload() throws SchedulerException {
+        List<SchedulerMessage> list = schedulerCache.getOldMessages();
+        for (SchedulerMessage message : list) {
+            addJob(message);
+        }
+        LOG.info("reload job is ok.");
     }
 
 
@@ -47,6 +64,10 @@ public class SchedulerWorker {
             return;
         if (scheduler == null)
             throw new SchedulerFatalException("scheduler didn't started.");
+        addJob(message);
+    }
+
+    private void addJob(SchedulerMessage message) throws SchedulerException {
         JobDataMap map = new JobDataMap();
         map.put("message", message);
         JobDetail job = newJob(CardgameSchedulerJob.class).
@@ -61,10 +82,14 @@ public class SchedulerWorker {
     }
 
 
-    public void stop() throws SchedulerException {
-        if (scheduler != null)
-            scheduler.shutdown();
-        LOG.info("scheduler stoped.");
+    public void stop() {
+        try {
+            if (scheduler != null)
+                scheduler.shutdown(true);
+            LOG.info("scheduler stoped.");
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
     }
 
 

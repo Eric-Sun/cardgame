@@ -1,12 +1,10 @@
 package com.h13.cardgame.jupiter.service;
 
 import com.h13.cardgame.cache.co.*;
-import com.h13.cardgame.jupiter.exceptions.EnergyNotEnoughException;
-import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.RandomRewardException;
-import com.h13.cardgame.jupiter.exceptions.TaskIsOverException;
+import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.CityHelper;
 import com.h13.cardgame.jupiter.helper.TaskHelper;
+import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardVO;
@@ -50,26 +48,32 @@ public class TaskService {
      *
      * @throws EnergyNotEnoughException
      */
-    public List<Object> d(long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException {
+    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
-        CityCO captain = cityHelper.get(cid);
-        long taskGroupId = captain.getTaskInfo().getTaskGroupId();
+        CityCO captain = cityHelper.get(uid, cid);
+        long taskGroupId = captain.getTaskStatus().getTaskGroupId();
         TaskGroupCO taskGroup = taskHelper.getTaskGroup(taskGroupId);
         List<Long> idList = taskGroup.getTaskIdList();
         if (!idList.contains(taskId)) {
             throw new UserNotExistsException("taskId[" + taskId + "]  not in groupId[" + taskGroupId + "]");
         }
         // 重新获取captain，然后进行任务完成的逻辑
-        captain = cityHelper.get(cid);
+        captain = cityHelper.get(uid, cid);
         TaskCO task = taskHelper.getTask(taskId);
-        CityTaskCO taskInfo = captain.getTaskInfo();
-        if (taskInfo.getTaskMap().get(taskId) == null || taskInfo.getTaskMap().get(taskId).isCanBeDo()) {
+        CityTaskStatusCO taskInfo = captain.getTaskStatus();
+        if (taskInfo.getTaskMap().get(taskId) == null
+                || taskInfo.getTaskMap().get(taskId).isCanBeDo()) {
             // 可以完成任务
             // 先进行任务是否可以完成的判断，也就是资源是否足够
             if (captain.getEnergy() < task.getCondition().getEnergy()) {
                 throw new EnergyNotEnoughException("captainId = " + cid + " need " + task.getCondition().getEnergy()
                         + " have " + captain.getEnergy());
+            }
+            // 当任务完成次数过多的时候也无法完成
+            if (taskInfo.getTaskMap().get(taskId) != null &&
+                    task.getCount() == taskInfo.getTaskMap().get(taskId).getCount()) {
+                throw new TaskCompletedTooManyException("uid=" + uid + " cid=" + cid + " taskId=" + taskId);
             }
             // 减去相应的energy
             cityHelper.subEnergy(captain, task.getCondition().getEnergy());
@@ -107,11 +111,11 @@ public class TaskService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void resumeTask(long cid, long taskId) throws UserNotExistsException {
-        CityCO captain = cityHelper.get(cid);
-        taskHelper.resumeTask(captain, taskId);
-        cityHelper.cache(captain);
-        LOG.info("resume the task. cid=" + cid + " taskId=" + taskId);
+    public void resumeTask(long uid, long cid, long taskId) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO city = cityHelper.get(uid, cid);
+        taskHelper.resumeTask(city, taskId);
+        cityHelper.cache(city);
+        LogWriter.info(LogWriter.TASK, cid, taskId, city);
     }
 
 
@@ -121,12 +125,12 @@ public class TaskService {
      * @param cid
      * @return
      */
-    public List<TaskVO> task(long cid) throws UserNotExistsException {
-        CityCO captain = cityHelper.get(cid);
-        List<TaskCO> taskList = taskHelper.getTaskList(captain.getTaskInfo().getTaskGroupId());
+    public List<TaskVO> task(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO city = cityHelper.get(uid, cid);
+        List<TaskCO> taskList = taskHelper.getTaskList(city.getTaskStatus().getTaskGroupId());
         // convert co to vo
         List<TaskVO> returnList = new ArrayList<TaskVO>();
-        cvtTaskCO2VO(captain, taskList, returnList);
+        cvtTaskCO2VO(city, taskList, returnList);
         return returnList;
     }
 
@@ -145,21 +149,26 @@ public class TaskService {
             if (dropGroup.getData().getSilver().isDrop())
                 rewardVO.setSilver(dropGroup.getData().getSilver().getMax());
             vo.setReward(rewardVO);
-            vo.setSum((captain.getTaskInfo().getTaskMap().get(task.getId()) == null) ? 0 :
-                    captain.getTaskInfo().getTaskMap().get(task.getId()).getCount());
+            vo.setCurCount((captain.getTaskStatus().getTaskMap().get(task.getId()) == null) ? 0 :
+                    captain.getTaskStatus().getTaskMap().get(task.getId()).getCount());
             voList.add(vo);
         }
     }
 
-    public List<TaskGroupVO> taskGroup(long cid) throws UserNotExistsException {
+    public List<TaskGroupVO> taskGroup(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
         List<TaskGroupVO> list = new ArrayList<TaskGroupVO>();
-        CityCO captain = cityHelper.get(cid);
+        CityCO captain = cityHelper.get(uid, cid);
         List<TaskGroupCO> taskGroupList = taskHelper.getTaskGroupList();
         for (TaskGroupCO taskGroup : taskGroupList) {
             TaskGroupVO vo = new TaskGroupVO();
             vo.setId(taskGroup.getId());
             vo.setName(taskGroup.getName());
-            vo.setCurrent((captain.getTaskInfo().getTaskGroupId() == taskGroup.getId() ? true : false));
+            if (captain.getTaskStatus().getTaskGroupId() < taskGroup.getId())
+                vo.setStatus(1);
+            else if (captain.getTaskStatus().getTaskGroupId() == taskGroup.getId())
+                vo.setStatus(0);
+            else
+                vo.setStatus(-1);
             list.add(vo);
         }
         return list;
@@ -173,11 +182,11 @@ public class TaskService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public List<TaskVO> nextTask(long cid) throws UserNotExistsException {
-        CityCO captain = cityHelper.get(cid);
-        long nextTaskGroupId = captain.getTaskInfo().getTaskGroupId();
-        captain.getTaskInfo().getTaskMap().clear();
-        captain.getTaskInfo().setTaskGroupId(nextTaskGroupId);
+    public List<TaskVO> nextTask(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO captain = cityHelper.get(uid, cid);
+        long nextTaskGroupId = captain.getTaskStatus().getTaskGroupId();
+        captain.getTaskStatus().getTaskMap().clear();
+        captain.getTaskStatus().setTaskGroupId(nextTaskGroupId);
         List<TaskCO> taskList = taskHelper.getTaskList(nextTaskGroupId);
         List<TaskVO> returnList = new ArrayList<TaskVO>();
         cvtTaskCO2VO(captain, taskList, returnList);

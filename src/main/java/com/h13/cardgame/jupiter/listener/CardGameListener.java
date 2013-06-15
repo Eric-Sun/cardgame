@@ -21,6 +21,7 @@ import javax.servlet.ServletContextListener;
  */
 public class CardGameListener implements ServletContextListener {
     private static Log LOG = LogFactory.getLog(CardGameListener.class);
+    SchedulerWorkerRunner schedulerRunner = null;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -34,14 +35,15 @@ public class CardGameListener implements ServletContextListener {
         t.start();
 
         SchedulerWorker schedulerWorker = WebApplicationContentHolder.getApplicationContext().getBean(SchedulerWorker.class);
-        SchedulerWorkerRunner schedulerRunner = new SchedulerWorkerRunner(schedulerWorker);
+        schedulerRunner = new SchedulerWorkerRunner(schedulerWorker);
         Thread t1 = new Thread(schedulerRunner);
         t1.start();
-
         LOG.info("worker thread started successfully.");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        schedulerRunner.stop();
+        LOG.info("scheduler runner stopped.");
     }
 }

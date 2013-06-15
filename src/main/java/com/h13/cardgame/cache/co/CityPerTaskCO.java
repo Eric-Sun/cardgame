@@ -5,7 +5,6 @@ package com.h13.cardgame.cache.co;
  * User: sunbo
  * Date: 13-3-19
  * Time: 下午6:47
- * To change this template use File | Settings | File Templates.
  */
 public class CityPerTaskCO {
     private int count;

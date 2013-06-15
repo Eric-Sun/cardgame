@@ -10,7 +10,12 @@ package com.h13.cardgame.jupiter.vo;
 public class TaskGroupVO {
     private long id;
     private String name;
-    private boolean current;  // 是否是当前正在完成的
+    /**
+     * 0 正在完成
+     * 1 已经完成
+     * -1 还不能完成
+     */
+    private int status;  // 是否是当前正在完成的
 
     public long getId() {
         return id;
@@ -28,11 +33,11 @@ public class TaskGroupVO {
         this.name = name;
     }
 
-    public boolean isCurrent() {
-        return current;
+    public int getStatus() {
+        return status;
     }
 
-    public void setCurrent(boolean current) {
-        this.current = current;
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
