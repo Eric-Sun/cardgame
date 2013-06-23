@@ -11,37 +11,10 @@ import java.util.List;
  */
 public class DropGroupDataCO {
 
-    private boolean willDropCard ;
-    private boolean willDropExp;
-    private boolean willDropSilver;
     private List<CardRewardItemCO> cardDropList;
     private CommonRewardItemCO exp;
     private CommonRewardItemCO silver;
     private int weightSum;
-
-    public boolean isWillDropCard() {
-        return willDropCard;
-    }
-
-    public void setWillDropCard(boolean willDropCard) {
-        this.willDropCard = willDropCard;
-    }
-
-    public boolean isWillDropExp() {
-        return willDropExp;
-    }
-
-    public void setWillDropExp(boolean willDropExp) {
-        this.willDropExp = willDropExp;
-    }
-
-    public boolean isWillDropSilver() {
-        return willDropSilver;
-    }
-
-    public void setWillDropSilver(boolean willDropSilver) {
-        this.willDropSilver = willDropSilver;
-    }
 
     public List<CardRewardItemCO> getCardDropList() {
         return cardDropList;
@@ -79,9 +52,6 @@ public class DropGroupDataCO {
     @Override
     public String toString() {
         return "DropGroupCO{" +
-                ", willDropCard=" + willDropCard +
-                ", willDropExp=" + willDropExp +
-                ", willDropSilver=" + willDropSilver +
                 ", cardDropList=" + cardDropList +
                 ", exp=" + exp +
                 ", silver=" + silver +

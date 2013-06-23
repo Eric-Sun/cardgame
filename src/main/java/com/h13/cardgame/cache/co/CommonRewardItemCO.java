@@ -9,7 +9,6 @@ package com.h13.cardgame.cache.co;
  */
 public class CommonRewardItemCO {
     private boolean drop;  // 是否掉落
-    private boolean random; // 是否是随机，如果不是随机的话，min和max应该一样
     private int min;      //  随机掉落的最小值
     private int max;      //  随机掉落的最大值
 
@@ -17,18 +16,9 @@ public class CommonRewardItemCO {
     public String toString() {
         return "TaskRewardItemCO{" +
                 "drop=" + drop +
-                ", random=" + random +
                 ", min=" + min +
                 ", max=" + max +
                 '}';
-    }
-
-    public boolean isRandom() {
-        return random;
-    }
-
-    public void setRandom(boolean random) {
-        this.random = random;
     }
 
     public boolean isDrop() {
