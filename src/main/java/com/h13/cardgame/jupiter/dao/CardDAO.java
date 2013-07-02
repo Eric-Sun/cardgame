@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.Constants;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,12 +38,8 @@ public class CardDAO {
                 card.setName(rs.getString(2));
                 card.setIcon(rs.getString(3));
                 card.setCardType(CardType.valueOf(rs.getString(4)));
-                card.setAttackMin(rs.getInt(5));
-                card.setAttackMax(rs.getInt(6));
-                card.setDefenceMin(rs.getInt(7));
-                card.setDefenceMax(rs.getInt(8));
-                card.setRandomSlotCount(rs.getInt(9));
-                card.setDesc(rs.getString(10));
+                card.setSpecData(JSON.parseObject(rs.getString(5), Map.class));
+                card.setDesc(rs.getString(6));
                 return card;  //To change body of implemented methods use File | Settings | File Templates.
             }
         });
@@ -49,7 +47,19 @@ public class CardDAO {
 
     public CardCO get(long cardId) {
         String sql = "select * from card where id=?";
-        List<CardCO> list = j.query(sql, new Object[]{}, new BeanPropertyRowMapper<CardCO>(CardCO.class));
+        List<CardCO> list = j.query(sql, new Object[]{}, new RowMapper<CardCO>() {
+            @Override
+            public CardCO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                CardCO card = new CardCO();
+                card.setId(rs.getLong(1));
+                card.setName(rs.getString(2));
+                card.setIcon(rs.getString(3));
+                card.setCardType(CardType.valueOf(rs.getString(4)));
+                card.setSpecData(JSON.parseObject(rs.getString(5), Map.class));
+                card.setDesc(rs.getString(6));
+                return card;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
         if (list.size() == 0)
             return null;
         else

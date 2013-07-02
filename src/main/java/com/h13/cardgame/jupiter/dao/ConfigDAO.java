@@ -29,7 +29,7 @@ public class ConfigDAO {
 
 
     public ConfigCO get(String confKey) {
-        String sql = "select id,`key`,`value` from config where key=?";
+        String sql = "select id,`key`,`value` from config where `key`=?";
         List<ConfigCO> list = j.query(sql, new Object[]{confKey}, new BeanPropertyRowMapper<ConfigCO>(ConfigCO.class));
         if (list.size() == 0)
             return null;

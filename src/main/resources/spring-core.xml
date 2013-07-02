@@ -25,10 +25,10 @@
             </list>
         </property>
     </bean>
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <bean id="permissionsInterceptor" class="com.h13.cardgame.jupiter.interceptor.JobTriggerInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
+    <!--<mvc:interceptors>-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**"/>-->
+            <!--<bean id="permissionsInterceptor" class="com.h13.cardgame.jupiter.interceptor.JobTriggerInterceptor"/>-->
+        <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
 </beans>

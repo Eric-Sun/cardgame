@@ -13,7 +13,8 @@ public class LevelCO {
     private int exp;
     private int energy;
     private boolean isMax;
-    private int storageSize;
+    private int sStorageSize;
+    private int eStorageSize;
     private int troopSize;
 
     public int getTroopSize() {
@@ -24,25 +25,20 @@ public class LevelCO {
         this.troopSize = troopSize;
     }
 
-    public int getStorageSize() {
-        return storageSize;
+    public int getSStorageSize() {
+        return sStorageSize;
     }
 
-    public void setStorageSize(int storageSize) {
-        this.storageSize = storageSize;
+    public void setSStorageSize(int sStorageSize) {
+        this.sStorageSize = sStorageSize;
     }
 
-    @Override
-    public String toString() {
-        return "LevelCO{" +
-                "id=" + id +
-                ", level=" + level +
-                ", exp=" + exp +
-                ", energy=" + energy +
-                ", isMax=" + isMax +
-                ", storageSize=" + storageSize +
-                ", troopSize=" + troopSize +
-                '}';
+    public int getEStorageSize() {
+        return eStorageSize;
+    }
+
+    public void setEStorageSize(int eStorageSize) {
+        this.eStorageSize = eStorageSize;
     }
 
     public boolean isMax() {

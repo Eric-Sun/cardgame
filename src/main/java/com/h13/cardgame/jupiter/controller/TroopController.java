@@ -53,6 +53,25 @@ public class TroopController {
         }
     }
 
+    @RequestMapping("/attack")
+    @ResponseBody
+    public String attack(HttpServletRequest request, HttpServletResponse response) {
+        long cid = -1;
+        int pageNum = 1;
+        long uid = -1L;
+        long targetCid = -1;
+        try {
+            uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
+            targetCid = new Long(request.getParameter("targetCid"));
+            CombatResultVO result = troopService.attack(uid, cid, targetCid);
+            return DTOUtils.getSucessResponse(uid, cid, result);
+        } catch (Exception e) {
+            LOG.error("error", e);
+            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        }
+    }
+
 
     @RequestMapping("/")
     @ResponseBody
@@ -131,11 +150,15 @@ public class TroopController {
         try {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
-            long eCardId = new Long(request.getParameter("eCardId"));
-            long hCardId = new Long(request.getParameter("hCardId"));
-            String eCityCard = request.getParameter("eCityCard");
-            String hCityCard = request.getParameter("hCityCard");
-            HumanCardVO humanCardVO = troopService.recruit(uid, cid, eCardId, hCardId, eCityCard, hCityCard);
+            // 小队原卡牌的id
+            long sCardId = new Long(request.getParameter("sCardId"));
+            // 小队卡的id                                          c1
+            String sCityCard = request.getParameter("sCityCard");
+            // 合成几个兵
+            int count = new Integer(request.getParameter("count"));
+            // 合成的兵种
+            long uCardId = new Long(request.getParameter("uCardId"));
+            HumanCardVO humanCardVO = troopService.recruit(uid, cid, sCardId, sCityCard, count, uCardId);
             return DTOUtils.getSucessResponse(uid, cid, humanCardVO);
         } catch (SilverNotEnoughException e) {
             LOG.error("error", e);

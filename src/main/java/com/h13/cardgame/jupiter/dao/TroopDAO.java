@@ -72,7 +72,7 @@ public class TroopDAO {
     public TroopCO create(final TroopCO troop) {
         KeyHolder holder = new GeneratedKeyHolder();
         final String sql = "insert into troop( city_id,name,members,max_slot,cur_slot,attack_max,attack_min,defence_max,defence_min,create_time) " +
-                " values (?,?,?,?,?,?,?,?,now())";
+                " values (?,?,?,?,?,?,?,?,?,now())";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {

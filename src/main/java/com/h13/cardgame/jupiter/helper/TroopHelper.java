@@ -123,6 +123,7 @@ public class TroopHelper {
             AttackTargetVO target = new AttackTargetVO();
             target.setAttackMax(troop.getAttackMax());
             target.setAttackMin(troop.getAttackMin());
+            target.setCid(id);
             retList.add(target);
         }
         return retList;

@@ -25,17 +25,12 @@ public class ConfigStarter {
     LevelLoaderService levelLoaderService;
     @Autowired
     TaskLoaderService taskLoaderService;
-
     @Autowired
     ConfigLoaderService configLoaderService;
-
     @Autowired
     CardLoaderService cardLoaderService;
-
     @Autowired
     DropGroupLoaderService dropGroupLoaderService;
-    @Autowired
-    PackageLoaderService packageLoaderService;
 
     public void init() {
         try {

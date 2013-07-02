@@ -16,17 +16,26 @@ public class StorageCO {
 
     private long id;
     private long cityId;
-    private int max;
-    private int current;
+    private int sMax;
+    private int sCurrent;
     // cardId 和 captainCardId 的关联
-    private Map<String, List<String>> cardData = new HashMap<String, List<String>>();
+    private Map<String, List<String>> sCardData = new HashMap<String, List<String>>();
+    private int eMax;
+    private int eCurrent;
+    private Map<String, String> eCardData = new HashMap<String, String>();
 
-    public long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(long cityId) {
-        this.cityId = cityId;
+    @Override
+    public String toString() {
+        return "StorageCO{" +
+                "id=" + id +
+                ", cityId=" + cityId +
+                ", sMax=" + sMax +
+                ", sCurrent=" + sCurrent +
+                ", sCardData=" + sCardData +
+                ", eMax=" + eMax +
+                ", eCurrent=" + eCurrent +
+                ", eCardData=" + eCardData +
+                '}';
     }
 
     public long getId() {
@@ -37,39 +46,60 @@ public class StorageCO {
         this.id = id;
     }
 
-    public int getMax() {
-        return max;
+    public long getCityId() {
+        return cityId;
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setCityId(long cityId) {
+        this.cityId = cityId;
     }
 
-    public int getCurrent() {
-        return current;
+    public int getSMax() {
+        return sMax;
     }
 
-    public void setCurrent(int current) {
-        this.current = current;
+    public void setSMax(int sMax) {
+        this.sMax = sMax;
     }
 
-    public Map<String, List<String>> getCardData() {
-        return cardData;
+    public int getSCurrent() {
+        return sCurrent;
     }
 
-    public void setCardData(Map<String, List<String>> cardData) {
-        this.cardData = cardData;
+    public void setSCurrent(int sCurrent) {
+        this.sCurrent = sCurrent;
     }
 
-    @Override
-    public String toString() {
-        return "StorageCO{" +
-                "id=" + id +
-                ", cityId=" + cityId +
-                ", max=" + max +
-                ", current=" + current +
-                ", cardData=" + cardData +
-                '}';
+    public Map<String, List<String>> getSCardData() {
+        return sCardData;
+    }
+
+    public void setSCardData(Map<String, List<String>> sCardData) {
+        this.sCardData = sCardData;
+    }
+
+    public int getEMax() {
+        return eMax;
+    }
+
+    public void setEMax(int eMax) {
+        this.eMax = eMax;
+    }
+
+    public int getECurrent() {
+        return eCurrent;
+    }
+
+    public void setECurrent(int eCurrent) {
+        this.eCurrent = eCurrent;
+    }
+
+    public Map<String, String> getECardData() {
+        return eCardData;
+    }
+
+    public void setECardData(Map<String, String> eCardData) {
+        this.eCardData = eCardData;
     }
 }
 

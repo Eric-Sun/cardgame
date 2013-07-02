@@ -34,7 +34,10 @@ public class CityCardDAO {
     JdbcQueueTemplate q;
 
     public CityCardCO get(long id) {
-        String sql = "select * from city_card where id=?";
+        String sql = "select id,city_id,card_id,name,card_type,icon,attack_min,attack_max," +
+                "               defence_min,defence_max,base_attack_min,base_attack_max,base_defence_min,base_defence_max," +
+                "max_slot,status,cur_slot,u_card_id" +
+                "                 from city_card where id=?";
         return j.queryForObject(sql, new Object[]{id}, new RowMapper<CityCardCO>() {
             @Override
             public CityCardCO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -55,6 +58,8 @@ public class CityCardDAO {
                 cc.setBaseDefenceMax(rs.getInt(14));
                 cc.setMaxSlot(rs.getInt(15));
                 cc.setStatus(rs.getInt(16));
+                cc.setCurSlot(rs.getInt(17));
+                cc.setUCardId(rs.getInt(18));
                 return cc;
             }
         });
@@ -65,8 +70,8 @@ public class CityCardDAO {
         KeyHolder holder = new GeneratedKeyHolder();
         final String sql = "insert into city_card (city_id,name,icon,attack_max,attack_min," +
                 "defence_max,defence_min,base_attack_max,base_attack_min,base_defence_max,base_defence_min,create_time,card_id,cur_slot," +
-                "max_slot,card_type)" +
-                " values (?,?,?,?,?,?,?,?,?,?,?,now(),?,?,?,?)";
+                "max_slot,card_type,u_card_id)" +
+                " values (?,?,?,?,?,?,?,?,?,?,?,now(),?,?,?,?,?)";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -86,11 +91,17 @@ public class CityCardDAO {
                 pstmt.setInt(13, card.getCurSlot());
                 pstmt.setInt(14, card.getMaxSlot());
                 pstmt.setString(15, card.getCardType().name());
+                pstmt.setLong(16, card.getUCardId());
                 return pstmt;
             }
         }, holder);
         card.setId(holder.getKey().longValue());
         return card;
+    }
+
+    public void setUnitCard(CityCardCO cc, long uCardId) {
+        String sql = "update city_card set u_card_id=? where id=?";
+        q.update(sql, new Object[]{uCardId, cc.getId()});
     }
 
     public void updateAttributes(CityCardCO cc) {
@@ -101,5 +112,10 @@ public class CityCardDAO {
     public void deleteCityCard(Long cityCardId) {
         String sql = "update city_card set status=-1 where id=?";
         q.update(sql, new Object[]{cityCardId});
+    }
+
+    public void updateUCardId(long cityCardId, long uCardId) {
+        String sql = "update city_card set u_card_id=? where id=?";
+        q.update(sql, new Object[]{uCardId, cityCardId});
     }
 }

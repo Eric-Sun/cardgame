@@ -26,8 +26,17 @@ public class CityCardCO {
     private int curSlot;
     private int maxSlot;
     private int status;
+    private long uCardId;
     private CardType cardType;
 
+
+    public long getUCardId() {
+        return uCardId;
+    }
+
+    public void setUCardId(long uCardId) {
+        this.uCardId = uCardId;
+    }
 
     public int getStatus() {
         return status;

@@ -156,7 +156,7 @@ public class TroopService {
      * @param toCid
      * @return
      */
-    public CombatResultVO attack(long fromCid, long toCid) throws CityCardNotExistsException {
+    public CombatResultVO attack(long uid, long fromCid, long toCid) throws CityCardNotExistsException {
         CombatAttributesVO fromAttr = getCombatAttributes(fromCid);
         CombatAttributesVO toAttr = getCombatAttributes(toCid);
         LogWriter.info(LogWriter.TROOP, "fromId=" + fromCid + " toId=" + toCid + " from attr: " + fromAttr + " to attr: " + toAttr);
@@ -197,73 +197,91 @@ public class TroopService {
      * 对于一个human卡，进行招募
      * <p>
      * 通过银币和装备卡
+     * 通过nCardId，找到需要的的装备卡牌id，然后进行扣除，如果装备卡牌id为-1，说明不需要装备就可以合成出来
      * </p>
      *
+     * @param sCardId   小队卡牌对应的原卡id
+     * @param sCityCard 小队卡牌的id
+     * @param count     一共合成几个uCardId的兵
+     * @param uCardId   要训练成那种兵种的卡的id
      * @return
      */
-    public HumanCardVO recruit(long uid, long cid, long eCardId, long hCardId, String eCityCard, String hCityCard)
-            throws UserNotExistsException, UserIllegalParamterException, SilverNotEnoughException, ServerErrorException, CityCardNotEnoughSlotException, CityCardNotExistsException {
+    public HumanCardVO recruit(long uid, long cid, long sCardId, String sCityCard, int count, long uCardId)
+            throws UserNotExistsException, UserIllegalParamterException, SilverNotEnoughException, ServerErrorException, SquardCardNotEnoughSlotException, CityCardNotExistsException, SquardECardException, RecuitCardIsErrorException {
         CityCO city = cityHelper.get(uid, cid);
-        // 检查所有的卡是否真的拥有
+        // 准备资源
         StorageCO storage = storageHelper.getByCid(cid);
-        Map<String, List<String>> cardData = storage.getCardData();
-        String[] eCityCardArr = eCityCard.split(",");
-        // 检查银币是否够
-        int silverPerCard = new Integer(configService.get(Configuration.Core.RECUIT_SILVER_1));
-        if (city.getSilver() < eCityCardArr.length * silverPerCard) {
-            throw new SilverNotEnoughException("need " + eCityCardArr.length * silverPerCard + " but have " + city.getSilver());
-        }
-        for (String cityCardId : eCityCardArr) {
-            // 检查卡是否已经被使用过
-            CityCardCO cityCard = cityCardHelper.get(new Long(cityCardId));
+        CityCardCO squardCityCard = cityCardHelper.get(new Long(sCityCard));
+        CardCO unitCard = cardHelper.get(uCardId);
+        Map<String, String> eCardData = storage.getECardData();
+        Map<String, List<String>> sCardData = storage.getSCardData();
 
-            if (!cardData.get(eCardId + "").contains(cityCardId))
-                throw new ServerErrorException("cityCardId=" + cityCardId + " not in card data.cid=" + cid + " uid=" + uid);
+        // 判断兵种卡牌中需要的装备卡牌的id
+        long eCardId = cardHelper.getCardSpecData(unitCard, Configuration.CARD.E_CARD_ID_KEY);
+        // 检测装备仓库中装备是否有，并且数量是否够
+        // 当装备卡为0的时候，表示不需要装备，生成的是最简单的兵种
+        int eCardAmountInStorage = 0;
+        if (eCardId != Configuration.CARD.E_CARD_ID_DEFAULT_VALUE) {
+            eCardAmountInStorage = new Integer(eCardData.get(eCardId + ""));
+            if (eCardAmountInStorage < count) {
+                throw new ServerErrorException("eCardId=" + eCardId + " have " + eCardAmountInStorage + " in storage < " + count);
+            }
+            if (!sCardData.get(sCardId + "").contains(sCityCard)) {
+                throw new ServerErrorException("cityCardId=" + sCityCard + " not in card data.cid=" + cid + " uid=" + uid);
+            }
         }
-        if (!cardData.get(hCardId + "").contains(hCityCard)) {
-            throw new ServerErrorException("cityCardId=" + hCityCard + " not in card data.cid=" + cid + " uid=" + uid);
+        // 检查小队卡牌中是否已经设定了兵种，如果设定了兵种卡的话，就不可以用其他的卡了
+        // -1表示没有设置过兵种卡
+        if (squardCityCard.getUCardId() != uCardId && squardCityCard.getUCardId() != Configuration.SQUARD.DEFAULT_SQUARD_U_CARD_ID_VALUE) {
+            throw new SquardECardException("squard has " + squardCityCard.getUCardId() + " recuit uCardId=" + uCardId);
+        }
+
+        // 检查银币是否够
+        int silverPerCard = cardHelper.getCardSpecData(unitCard, Configuration.CARD.SILVER_KEY);
+        if (city.getSilver() < count * silverPerCard) {
+            throw new SilverNotEnoughException("need " + count * silverPerCard + " but have " + city.getSilver());
         }
 
         // 去掉相应的卡，和银币
-        for (String cityCardId : eCityCardArr) {
-            cardData.get(eCardId + "").remove(cityCardId + "");
-            cityCardHelper.useCityCard(new Long(eCardId));
+        if (eCardId != Configuration.CARD.E_CARD_ID_DEFAULT_VALUE) {
+            // 如果为0的话，不需要删除卡
+            eCardData.put(eCardId + "", eCardAmountInStorage - count + "");
         }
-        city.setSilver(city.getSilver() - eCityCardArr.length * silverPerCard);
+        city.setSilver(city.getSilver() - count * silverPerCard);
 
-        // 检查是否已经超出human卡的slot限制
-        CityCardCO cc = cityCardHelper.get(new Long(hCityCard));
-        if (cc.getMaxSlot() < cc.getCurSlot() + eCityCardArr.length) {
-            throw new CityCardNotEnoughSlotException("cur is " + cc.getCurSlot() +
-                    " new is " + eCityCardArr.length + " all is " + cc.getMaxSlot());
+        // 检查是否已经超出小队卡的slot限制
+        if (squardCityCard.getMaxSlot() < squardCityCard.getCurSlot() + count) {
+            throw new SquardCardNotEnoughSlotException("cur is " + squardCityCard.getCurSlot() +
+                    " new is " + count + " all is " + squardCityCard.getMaxSlot());
         }
-        // 提高human卡的属性
-        CardCO c = cardHelper.get(eCardId);
-        cc.setAttackMax(c.getAttackMax() * eCityCardArr.length);
-        cc.setAttackMin(c.getAttackMin() * eCityCardArr.length);
-        cc.setDefenceMax(c.getDefenceMax() * eCityCardArr.length);
-        cc.setDefenceMin(c.getDefenceMin() * eCityCardArr.length);
-        cc.setCurSlot(cc.getCurSlot() + eCityCardArr.length);
+        // 提高小队卡的属性
+        squardCityCard.setAttackMax(squardCityCard.getAttackMax() + cardHelper.getCardSpecData(unitCard, Configuration.CARD.ATTACK_MAX_KEY) * count);
+        squardCityCard.setAttackMin(squardCityCard.getAttackMin() + cardHelper.getCardSpecData(unitCard, Configuration.CARD.ATTACK_MIN_KEY) * count);
+        squardCityCard.setDefenceMax(squardCityCard.getDefenceMax() + cardHelper.getCardSpecData(unitCard, Configuration.CARD.DEFENCE_MAX_KEY) * count);
+        squardCityCard.setDefenceMin(squardCityCard.getDefenceMin() + cardHelper.getCardSpecData(unitCard, Configuration.CARD.DEFENCE_MIN_KEY) * count);
+        squardCityCard.setCurSlot(squardCityCard.getCurSlot() + count);
+        squardCityCard.setUCardId(uCardId);
 
         // 更新city cityCard storage的相关信息
         cityHelper.updateSilver(city);
         cityHelper.cache(city);
-        storageHelper.updateCardData(city.getId(), storage);
+        storageHelper.updateEquipmentCardData(city.getId(), storage);
         storageHelper.cache(storage);
-        cityCardHelper.updateAttributes(cc);
-        cityCardHelper.cache(cc);
+        cityCardHelper.updateAttributes(squardCityCard);
+        cityCardHelper.updateUCardId(squardCityCard, uCardId);
+        cityCardHelper.cache(squardCityCard);
 
         // 生成HumanCardVO
         HumanCardVO cardVO = new HumanCardVO();
-        cardVO.setMaxSlot(cc.getMaxSlot());
-        cardVO.setCurSlot(cc.getCurSlot());
-        cardVO.setName(cc.getName());
-        cardVO.setId(cc.getId());
-        cardVO.setIcon(cc.getIcon());
-        cardVO.setAttackMax(cc.getAttackMax());
-        cardVO.setAttackMin(cc.getAttackMin());
-        cardVO.setDefenceMax(cc.getDefenceMax());
-        cardVO.setDefenceMin(cc.getDefenceMin());
+        cardVO.setMaxSlot(squardCityCard.getMaxSlot());
+        cardVO.setCurSlot(squardCityCard.getCurSlot());
+        cardVO.setName(squardCityCard.getName());
+        cardVO.setId(squardCityCard.getId());
+        cardVO.setIcon(squardCityCard.getIcon());
+        cardVO.setAttackMax(squardCityCard.getAttackMax());
+        cardVO.setAttackMin(squardCityCard.getAttackMin());
+        cardVO.setDefenceMax(squardCityCard.getDefenceMax());
+        cardVO.setDefenceMin(squardCityCard.getDefenceMin());
 
         return cardVO;
     }

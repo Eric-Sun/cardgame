@@ -3,6 +3,7 @@ package com.h13.cardgame.jupiter.service;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.CityHelper;
+import com.h13.cardgame.jupiter.helper.StorageHelper;
 import com.h13.cardgame.jupiter.helper.TaskHelper;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
@@ -36,6 +37,8 @@ public class TaskService {
     private TaskHelper taskHelper;
     @Autowired
     private DropGroupService dropGroupService;
+    @Autowired
+    private StorageHelper storageHelper;
 
     /**
      * 尝试完成一个任务
@@ -48,7 +51,7 @@ public class TaskService {
      *
      * @throws EnergyNotEnoughException
      */
-    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException {
+    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
         CityCO captain = cityHelper.get(uid, cid);
@@ -58,6 +61,9 @@ public class TaskService {
         if (!idList.contains(taskId)) {
             throw new UserNotExistsException("taskId[" + taskId + "]  not in groupId[" + taskGroupId + "]");
         }
+        // 检查是否仓库已经满了
+        StorageCO storage = storageHelper.getByCid(cid);
+        storageHelper.checkAllStorageIsFull(storage);
         // 重新获取captain，然后进行任务完成的逻辑
         captain = cityHelper.get(uid, cid);
         TaskCO task = taskHelper.getTask(taskId);

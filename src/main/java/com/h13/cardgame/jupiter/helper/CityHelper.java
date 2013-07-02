@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.helper;
 
+import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.LevelCO;
@@ -187,4 +188,5 @@ public class CityHelper {
     public void updateSilver(CityCO city) {
         cityDAO.updateSilver(city);
     }
+
 }

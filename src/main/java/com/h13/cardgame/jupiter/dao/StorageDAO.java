@@ -37,56 +37,33 @@ public class StorageDAO {
     @Autowired
     JdbcQueueTemplate q;
 
-    public List<StorageCO> getAll() {
-        String sql = "select * from storage";
-        return j.query(sql, new Object[]{}, new RowMapper<StorageCO>() {
-            @Override
-            public StorageCO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                StorageCO p = new StorageCO();
-                p.setId(rs.getInt(1));
-                p.setCityId(rs.getInt(2));
-                p.setMax(rs.getInt(3));
-                p.setCurrent(rs.getInt(4));
-                p.setCardData(JSON.parseObject(rs.getString(5), Map.class));
-                return p;
-            }
-        });
-    }
-
-    public StorageCO get(long packageId) {
-        String sql = "select * from storage where id=?";
-        return j.queryForObject(sql, new Object[]{packageId}, new RowMapper<StorageCO>() {
-            @Override
-            public StorageCO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                StorageCO p = new StorageCO();
-                p.setId(rs.getInt(1));
-                p.setCityId(rs.getInt(2));
-                p.setMax(rs.getInt(3));
-                p.setCurrent(rs.getInt(4));
-                p.setCardData(JSON.parseObject(rs.getString(5), Map.class));
-                return p;
-            }
-        });
-    }
 
     public StorageCO getByCid(long cid) {
-        String sql = "select * from storage where city_id=?";
+        String sql = "select id,city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data from storage where city_id=?";
         return j.queryForObject(sql, new Object[]{cid}, new RowMapper<StorageCO>() {
             @Override
             public StorageCO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 StorageCO p = new StorageCO();
                 p.setId(rs.getInt(1));
                 p.setCityId(rs.getInt(2));
-                p.setMax(rs.getInt(3));
-                p.setCurrent(rs.getInt(4));
-                p.setCardData(JSON.parseObject(rs.getString(5), Map.class));
+                p.setSMax(rs.getInt(3));
+                p.setSCurrent(rs.getInt(4));
+                p.setSCardData(JSON.parseObject(rs.getString(5), Map.class));
+                p.setEMax(rs.getInt(6));
+                p.setECurrent(rs.getInt(7));
+                p.setECardData(JSON.parseObject(rs.getString(8), Map.class));
                 return p;
             }
         });
     }
 
-    public void updateCardData(long cid, int current, String cardData) {
-        String sql = "update storage set card_data=?,current=? where city_id=?";
+    public void updateSCardData(long cid, int current, String cardData) {
+        String sql = "update storage set scard_data=?,s_current=? where city_id=?";
+        q.update(sql, new Object[]{cardData, current, cid});
+    }
+
+    public void updateECardData(long cid, int current, String cardData) {
+        String sql = "update storage set ecard_data=?,e_current=? where city_id=?";
         q.update(sql, new Object[]{cardData, current, cid});
     }
 
@@ -96,15 +73,18 @@ public class StorageDAO {
      */
     public StorageCO create(final StorageCO storageCO) {
         KeyHolder holder = new GeneratedKeyHolder();
-        final String sql = "insert into storage(city_id,max,current,card_data,create_time) values (?,?,?,?,now())";
+        final String sql = "insert into storage(city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,create_time) values (?,?,?,?,?,?,?,now())";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 pstmt.setLong(1, storageCO.getCityId());
-                pstmt.setInt(2, storageCO.getMax());
-                pstmt.setInt(3, storageCO.getCurrent());
-                pstmt.setString(4, JSON.toJSONString(storageCO.getCardData()));
+                pstmt.setInt(2, storageCO.getSMax());
+                pstmt.setInt(3, storageCO.getSCurrent());
+                pstmt.setString(4, JSON.toJSONString(storageCO.getSCardData()));
+                pstmt.setInt(5, storageCO.getEMax());
+                pstmt.setInt(6, storageCO.getECurrent());
+                pstmt.setString(7, JSON.toJSONString(storageCO.getECardData()));
                 return pstmt;
             }
         }, holder);

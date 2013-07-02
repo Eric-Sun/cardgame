@@ -3,6 +3,8 @@ package com.h13.cardgame.cache.co;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.Constants;
 
+import java.util.Map;
+
 /**
  * 数据库中的card对象
  * User: sunbo
@@ -14,67 +16,19 @@ public class CardCO {
     private String name;
     private String icon;
     private CardType cardType;
-    private int attackMin = 0;
-    private int attackMax = 0;
-    private int defenceMin = 0;
-    private int defenceMax = 0;
-    private int randomSlotCount = 1;
     private String desc;
+    private Map<String,String> specData;
 
-    public int getRandomSlotCount() {
-        return randomSlotCount;
-    }
-
-    public void setRandomSlotCount(int randomSlotCount) {
-        this.randomSlotCount = randomSlotCount;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public CardType getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(CardType cardType) {
-        this.cardType = cardType;
-    }
-
-    public int getAttackMin() {
-        return attackMin;
-    }
-
-    public void setAttackMin(int attackMin) {
-        this.attackMin = attackMin;
-    }
-
-    public int getAttackMax() {
-        return attackMax;
-    }
-
-    public void setAttackMax(int attackMax) {
-        this.attackMax = attackMax;
-    }
-
-    public int getDefenceMin() {
-        return defenceMin;
-    }
-
-    public void setDefenceMin(int defenceMin) {
-        this.defenceMin = defenceMin;
-    }
-
-    public int getDefenceMax() {
-        return defenceMax;
-    }
-
-    public void setDefenceMax(int defenceMax) {
-        this.defenceMax = defenceMax;
+    @Override
+    public String toString() {
+        return "CardCO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", icon='" + icon + '\'' +
+                ", cardType=" + cardType +
+                ", desc='" + desc + '\'' +
+                ", specData=" + specData +
+                '}';
     }
 
     public long getId() {
@@ -101,19 +55,27 @@ public class CardCO {
         this.icon = icon;
     }
 
-    @Override
-    public String toString() {
-        return "CardCO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", icon='" + icon + '\'' +
-                ", cardType=" + cardType +
-                ", attackMin=" + attackMin +
-                ", attackMax=" + attackMax +
-                ", defenceMin=" + defenceMin +
-                ", defenceMax=" + defenceMax +
-                ", randomSlotCount=" + randomSlotCount +
-                ", desc='" + desc + '\'' +
-                '}';
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Map<String, String> getSpecData() {
+        return specData;
+    }
+
+    public void setSpecData(Map<String, String> specData) {
+        this.specData = specData;
     }
 }

@@ -6,8 +6,11 @@ import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.StorageCO;
 import com.h13.cardgame.cache.service.CityCardCache;
 import com.h13.cardgame.cache.service.CardCache;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.dao.CityCardDAO;
 import com.h13.cardgame.jupiter.dao.CardDAO;
+import com.h13.cardgame.jupiter.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,59 +46,61 @@ public class CardHelper {
 
 
     /**
-     * 添加一张装备牌
+     * 添加一张军备牌，存在军备仓库中
      *
      * @param city
      * @param card
      */
-    public void addEquipmentCardToCaptain(CityCO city, CardCO card) {
+    public void addEquipmentCard(CityCO city, CardCO card) {
+        // add to package
+        StorageCO storageCO = storageHelper.getByCid(city.getId());
+        storageHelper.addToEquipmentPackage(city.getUserId(), city.getId(), card.getId(), storageCO);
+        storageHelper.cache(storageCO);
+    }
+
+
+    /**
+     * 添加一张小队牌
+     *
+     * @param city
+     * @param card
+     */
+    public void addSquardCard(CityCO city, CardCO card) {
         CityCardCO cityCard = new CityCardCO();
         cityCard.setCardId(card.getId());
-        cityCard.setAttackMax(card.getAttackMax());
-        cityCard.setAttackMin(card.getAttackMin());
-        cityCard.setDefenceMax(card.getDefenceMax());
-        cityCard.setDefenceMin(card.getDefenceMin());
-        cityCard.setBaseAttackMax(card.getAttackMax());
-        cityCard.setBaseAttackMin(card.getAttackMin());
-        cityCard.setBaseDefenceMax(card.getDefenceMax());
-        cityCard.setBaseDefenceMin(card.getDefenceMin());
         cityCard.setCardType(card.getCardType());
         cityCard.setCurSlot(0);
         cityCard.setIcon(card.getIcon());
         cityCard.setName(card.getName());
         cityCard.setCityId(city.getId());
+        cityCard.setUCardId(0);
+        cityCard.setCardType(CardType.SQUARD);
+        cityCard.setMaxSlot(RandomUtils.random(getCardSpecData(card, Configuration.CARD.MIN_SLOT_KEY),
+                getCardSpecData(card, Configuration.CARD.MAX_SLOT_KEY)));
         cityCardHelper.create(cityCard);
         // add to package
         StorageCO storageCO = storageHelper.getByCid(city.getId());
-        storageHelper.addToPackage(city.getUserId(), city.getId(), card.getId(), cityCard.getId(), storageCO);
+        storageHelper.addToSquardPackage(city.getUserId(), city.getId(), card.getId(), cityCard.getId(), storageCO);
         storageHelper.cache(storageCO);
         cityCardHelper.cache(cityCard);
     }
 
-
-    public void addHumanCardToCaptain(CityCO city, CardCO card) {
-        CityCardCO cityCard = new CityCardCO();
-        cityCard.setCardId(card.getId());
-        cityCard.setAttackMax(card.getAttackMax());
-        cityCard.setAttackMin(card.getAttackMin());
-        cityCard.setDefenceMax(card.getDefenceMax());
-        cityCard.setDefenceMin(card.getDefenceMin());
-        cityCard.setBaseAttackMax(card.getAttackMax());
-        cityCard.setBaseAttackMin(card.getAttackMin());
-        cityCard.setBaseDefenceMax(card.getDefenceMax());
-        cityCard.setBaseDefenceMin(card.getDefenceMin());
-        cityCard.setCardType(card.getCardType());
-        cityCard.setCurSlot(0);
-        cityCard.setIcon(card.getIcon());
-        cityCard.setName(card.getName());
-        cityCard.setCityId(city.getId());
-        Random random = new Random();
-        cityCard.setMaxSlot(random.nextInt(card.getRandomSlotCount()));
-        cityCardHelper.create(cityCard);
-        // add to package
-        StorageCO storageCO = storageHelper.getByCid(city.getId());
-        storageHelper.addToPackage(city.getUserId(), city.getId(), card.getId(), cityCard.getId(), storageCO);
-        storageHelper.cache(storageCO);
-        cityCardHelper.cache(cityCard);
+    /**
+     * 获得card对象存储的特殊的内容
+     * <p/>
+     * squard: maxSlot minSlot
+     * </P>
+     *
+     * @param card
+     * @param key
+     * @return
+     */
+    public int getCardSpecData(CardCO card, String key) {
+        String value = card.getSpecData().get(key);
+        if (value == null)
+            throw new IllegalArgumentException("card dont have the data. key=" + key + " cardId=" + card.getId());
+        else
+            return new Integer(card.getSpecData().get(key));
     }
+
 }

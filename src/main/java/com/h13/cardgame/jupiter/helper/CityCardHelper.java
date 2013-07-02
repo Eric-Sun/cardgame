@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.helper;
 
+import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.service.CityCardCache;
@@ -49,13 +50,7 @@ public class CityCardHelper {
         cityCardDAO.updateAttributes(cc);
     }
 
-    /**
-     * 由于这个卡已经被使用（合成），需要把他的状态设置为-1
-     *
-     * @param cityCardId
-     */
-    public void useCityCard(Long cityCardId) {
-        cityCardDAO.deleteCityCard(cityCardId);
-        LogWriter.debug(LogWriter.TASK + "use card" + cityCardId);
+    public void updateUCardId(CityCardCO squardCityCard, long uCardId) {
+        cityCardDAO.updateUCardId(squardCityCard.getId(), uCardId);
     }
 }

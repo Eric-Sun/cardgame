@@ -153,7 +153,6 @@ public class TaskHelper {
     /**
      * 进行任务奖励
      *
-     * @param captain
      * @param task
      * @return
      * @throws RandomRewardException
@@ -173,14 +172,15 @@ public class TaskHelper {
         CardCO cardCO = cardHelper.get(cardId);
         CityCardVO cityCardVO = new CityCardVO();
         cityCardVO.setId(cardCO.getId());
+        cityCardVO.setCardId(cardCO.getId());
         cityCardVO.setName(cardCO.getName());
         cityCardVO.setIcon(cardCO.getIcon());
         switch (cardCO.getCardType()) {
             case EQUIPMENT:
-                cardHelper.addEquipmentCardToCaptain(city, cardCO);
+                cardHelper.addEquipmentCard(city, cardCO);
                 break;
             default:
-                cardHelper.addHumanCardToCaptain(city, cardCO);
+                cardHelper.addSquardCard(city, cardCO);
         }
 
         TaskRewardResultVO vo = new TaskRewardResultVO();
@@ -200,11 +200,11 @@ public class TaskHelper {
     private int randomCommonItem(CommonRewardItemCO item) {
         if (!item.isDrop())
             return 0;
-        if (!item.isRandom())
+        if (item.getMax() == item.getMin())
             return item.getMax();
         Random random = new Random();
         int v = random.nextInt(item.getMax() - item.getMin());
-        return v;
+        return item.getMax() + v;
     }
 
     private long randomCard(DropGroupDataCO cardDropGroup) throws RandomRewardException {

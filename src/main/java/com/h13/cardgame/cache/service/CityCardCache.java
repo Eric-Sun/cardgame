@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 @Service
 public class CityCardCache {
 
-    private static String PREFIX = "cg:captainCard:";
+    private static String PREFIX = "cg:cityCard:";
 
     @Resource(name = "captainCardCOTemplate")
     private RedisTemplate<String, CityCardCO> captainCardCOTemplate;

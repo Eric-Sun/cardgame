@@ -8,5 +8,16 @@ package com.h13.cardgame.jupiter;
  * To change this template use File | Settings | File Templates.
  */
 public enum CardType {
-    EQUIPMENT, HUMAN
+    /**
+     * 装备卡牌
+     */
+    EQUIPMENT,
+    /**
+     * 小队卡牌
+     */
+    SQUARD,
+    /**
+     * 兵种卡牌
+     */
+    UNITS
 }
