@@ -32,7 +32,7 @@ public class CityCardHelper {
             cc = cityCardDAO.get(ccId);
             if (cc == null)
                 throw new CityCardNotExistsException("cityCard not exists. cityCardId=" + ccId);
-            cityCardCache.put(cc);
+            cityCardCache.putToQueue(cc);
         }
         return cc;
     }
@@ -43,7 +43,7 @@ public class CityCardHelper {
     }
 
     public void cache(CityCardCO cityCardCO) {
-        cityCardCache.put(cityCardCO);
+        cityCardCache.putToQueue(cityCardCO);
     }
 
     public void updateAttributes(CityCardCO cc) {

@@ -54,7 +54,7 @@ public class SchedulerService {
         queueMessageDAO.add(detail.getJobId(), uid, cid, startTime, attachment, interval, schedulerType, actionObjectId);
         // 添加到
         queue.push(detail);
-        schedulerCache.put(detail);
+        schedulerCache.putToQueue(detail);
         LOG.info("push to queue. message=" + detail);
     }
 

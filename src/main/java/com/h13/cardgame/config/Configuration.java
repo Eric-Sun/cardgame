@@ -40,4 +40,25 @@ public class Configuration {
     public static class SQUARD {
         public static int DEFAULT_SQUARD_U_CARD_ID_VALUE = -1;
     }
+
+
+    public static enum CACHE {
+        QUEUE_CARD_KEY, QUEUE_CITY_KEY, QUEUE_CITYCARD_KEY,
+        QUEUE_CONFIGURATION_KEY, QUEUE_DROPGROUP_KEY,
+        QUEUE_LEVEL_KEY, QUEUE_SCHEDULER_KEY, QUEUE_STORAGE_KEY, QUEUE_TASK_KEY,
+        QUEUE_TASKGROUP_KEY, QUEUE_TROOP_KEY
+//        public  static  int QUEUE_CARD_KEY = 0;
+//        public static int QUEUE_CITY_KEY = 1;
+//        public static int QUEUE_CITYCARD_KEY = 2;
+//        public static int QUEUE_CONFIGURATION_KEY = 3;
+//        public static int QUEUE_DROPGROUP_KEY = 4;
+//        public static int QUEUE_LEVEL_KEY = 5;
+//        public static int QUEUE_SCHEDULER_KEY = 6;
+//        public static int QUEUE_STORAGE_KEY = 7;
+//        public static int QUEUE_TASK_KEY = 8;
+//        public static int QUEUE_TASKGROUP_KEY = 9;
+//        public static int QUEUE_TROOP_KEY = 10;
+
+    }
+
 }

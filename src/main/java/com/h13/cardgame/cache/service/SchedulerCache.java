@@ -1,9 +1,15 @@
 package com.h13.cardgame.cache.service;
 
+import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCO;
+import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.co.SchedulerCO;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.queue.CacheUpdateMessage;
+import com.h13.cardgame.queue.CacheUpdateQueue;
 import com.h13.cardgame.queue.SchedulerMessage;
 import com.h13.cardgame.scheduler.SchedulerType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +31,8 @@ public class SchedulerCache {
 
     @Resource(name = "schedulerCOTemplate")
     private RedisTemplate<String, SchedulerMessage> schedulerCOTemplate;
-
+    @Autowired
+    CacheUpdateQueue cacheUpdateQueue;
 
     public void put(SchedulerMessage sche) {
         String key = PREFIX + sche.getUid() + ":" + sche.getJobType().name() + ":" + sche.getActionObjectId();
@@ -47,6 +54,13 @@ public class SchedulerCache {
         String keyPattern = PREFIX + "*";
         Set<String> keySet = schedulerCOTemplate.keys(keyPattern);
         return schedulerCOTemplate.opsForValue().multiGet(keySet);
+    }
+
+    public void putToQueue(SchedulerMessage obj) {
+        CacheUpdateMessage msg = new CacheUpdateMessage();
+        msg.setData(JSON.toJSONString(obj));
+        msg.setType(Configuration.CACHE.QUEUE_SCHEDULER_KEY);
+        cacheUpdateQueue.push(msg);
     }
 
 }

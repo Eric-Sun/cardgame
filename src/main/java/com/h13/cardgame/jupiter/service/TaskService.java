@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.service;
 
+import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.CityHelper;
@@ -121,7 +122,7 @@ public class TaskService {
         CityCO city = cityHelper.get(uid, cid);
         taskHelper.resumeTask(city, taskId);
         cityHelper.cache(city);
-        LogWriter.info(LogWriter.TASK, cid, taskId, city);
+        LogWriter.info(LogWriter.TASK, cid, taskId, JSON.toJSONString(city));
     }
 
 

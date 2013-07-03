@@ -49,7 +49,7 @@ public class CityHelper {
         if (city == null) {
             // load data from db
             city = cityDAO.get(cid);
-            cityCache.put(city);
+            cityCache.putToQueue(city);
         }
         if (city.getUserId() != uid) {
             throw new UserIllegalParamterException("uid=" + uid + " no have the city. cid=" + cid);
@@ -105,7 +105,7 @@ public class CityHelper {
      * @param city
      */
     public void cache(CityCO city) {
-        cityCache.put(city);
+        cityCache.putToQueue(city);
         LogWriter.debug(LogWriter.CITY, "cache city. city=" + city);
     }
 

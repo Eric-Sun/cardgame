@@ -1,7 +1,5 @@
-package com.h13.cardgame.db;
+package com.h13.cardgame.queue;
 
-import com.h13.cardgame.queue.DBTaskMessage;
-import com.h13.cardgame.queue.DBTaskQueue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

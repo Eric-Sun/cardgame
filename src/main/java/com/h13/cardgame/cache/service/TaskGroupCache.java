@@ -1,8 +1,13 @@
 package com.h13.cardgame.cache.service;
 
 import com.alibaba.fastjson.JSON;
+import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.co.TaskCO;
 import com.h13.cardgame.cache.co.TaskGroupCO;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.queue.CacheUpdateMessage;
+import com.h13.cardgame.queue.CacheUpdateQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,9 @@ public class TaskGroupCache {
     @Resource(name = "redisStringTaskGroupCOTemplate")
     private RedisTemplate<String, TaskGroupCO> taskGroupCOTemplate;
 
+    @Autowired
+    CacheUpdateQueue cacheUpdateQueue;
+
     public void put(TaskGroupCO taskGroup) {
         String key = PREFIX + taskGroup.getId();
         taskGroupCOTemplate.opsForValue().set(key, taskGroup);
@@ -46,5 +54,13 @@ public class TaskGroupCache {
         }
         return list;
     }
+
+    public void putToQueue(TaskGroupCO obj) {
+        CacheUpdateMessage msg = new CacheUpdateMessage();
+        msg.setData(JSON.toJSONString(obj));
+        msg.setType(Configuration.CACHE.QUEUE_TASKGROUP_KEY);
+        cacheUpdateQueue.push(msg);
+    }
+
 
 }

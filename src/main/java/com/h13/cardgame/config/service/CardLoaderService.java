@@ -32,7 +32,7 @@ public class CardLoaderService {
         try {
             List<CardCO> list = cardDAO.getAll();
             for (CardCO card : list) {
-                cardCache.put(card);
+                cardCache.putToQueue(card);
                 LOG.info("loaded card info. " + card);
             }
             LOG.info("load card info successfully.");

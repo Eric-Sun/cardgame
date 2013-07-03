@@ -27,7 +27,7 @@ public class DropGroupService {
         if (dg == null) {
             // load data from db
             dg = dropGroupDAO.get(dropGroupId);
-            dropGroupCache.put(dg);
+            dropGroupCache.putToQueue(dg);
         }
         return dg;
     }

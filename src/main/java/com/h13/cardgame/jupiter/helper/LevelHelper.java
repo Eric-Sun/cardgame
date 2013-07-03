@@ -28,7 +28,7 @@ public class LevelHelper {
             levelCO = levelDAO.get(level);
             if (levelCO==null)
                 return null;
-            levelCache.put(levelCO);
+            levelCache.putToQueue(levelCO);
         }
         return levelCO;
     }

@@ -24,7 +24,7 @@ public class ConfigService {
         String confValue = confCache.get(confKey);
         if (confValue == null) {
             confValue = confDAO.get(confKey).getValue();
-            confCache.put(confKey, confValue);
+            confCache.putToQueue(confKey + "," + confValue);
         } else {
             confCache.get(confKey);
         }

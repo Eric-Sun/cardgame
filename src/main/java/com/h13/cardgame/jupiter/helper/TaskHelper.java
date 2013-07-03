@@ -59,7 +59,7 @@ public class TaskHelper {
         TaskGroupCO taskGroup = taskGroupCache.get(taskGroupId);
         if (taskGroup == null) {
             taskGroup = taskGroupDAO.get(taskGroupId);
-            taskGroupCache.put(taskGroup);
+            taskGroupCache.putToQueue(taskGroup);
         }
         return taskGroup;
     }
@@ -68,7 +68,7 @@ public class TaskHelper {
         TaskCO task = taskCache.get(taskId);
         if (task == null) {
             task = taskDAO.getTask(taskId);
-            taskCache.put(task);
+            taskCache.putToQueue(task);
         }
         return task;
     }

@@ -1,4 +1,4 @@
-package com.h13.cardgame.db;
+package com.h13.cardgame.queue;
 
 import com.h13.cardgame.queue.DBTaskMessage;
 import org.springframework.beans.factory.annotation.Autowired;

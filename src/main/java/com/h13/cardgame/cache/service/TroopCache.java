@@ -1,6 +1,12 @@
 package com.h13.cardgame.cache.service;
 
+import com.alibaba.fastjson.JSON;
+import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.co.TroopCO;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.queue.CacheUpdateMessage;
+import com.h13.cardgame.queue.CacheUpdateQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,8 @@ public class TroopCache {
     @Resource(name = "troopCOTemplate")
     private RedisTemplate<String, TroopCO> squardCOTemplate;
 
+    @Autowired
+    CacheUpdateQueue cacheUpdateQueue;
 
     public void put(TroopCO squard) {
         String key = PREFIX + squard.getCityId();
@@ -31,6 +39,13 @@ public class TroopCache {
         String key = PREFIX + cid;
         TroopCO squard = squardCOTemplate.opsForValue().get(key);
         return squard;
+    }
+
+    public void putToQueue(TroopCO obj) {
+        CacheUpdateMessage msg = new CacheUpdateMessage();
+        msg.setData(JSON.toJSONString(obj));
+        msg.setType(Configuration.CACHE.QUEUE_TROOP_KEY);
+        cacheUpdateQueue.push(msg);
     }
 
 

@@ -31,7 +31,7 @@ public class LevelLoaderService {
         try {
             List<LevelCO> levelList = levelDAO.getAllLevels();
             for (LevelCO level : levelList) {
-                levelCache.put(level);
+                levelCache.putToQueue(level);
                 LOG.info("Loaded level "+level.toString());
             }
             LOG.info("load level info successfully.");

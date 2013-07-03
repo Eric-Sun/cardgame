@@ -139,7 +139,7 @@ public class StorageHelper {
     }
 
     public void cache(StorageCO storageCO) {
-        storageCache.put(storageCO);
+        storageCache.putToQueue(storageCO);
     }
 
     /**

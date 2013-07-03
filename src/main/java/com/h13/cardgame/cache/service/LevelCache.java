@@ -1,6 +1,12 @@
 package com.h13.cardgame.cache.service;
 
+import com.alibaba.fastjson.JSON;
+import com.h13.cardgame.cache.co.DropGroupCO;
 import com.h13.cardgame.cache.co.LevelCO;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.queue.CacheUpdateMessage;
+import com.h13.cardgame.queue.CacheUpdateQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +26,8 @@ public class LevelCache {
 
     @Resource(name = "redisStringLevelCOTemplate")
     private RedisTemplate<String, LevelCO> levelCOTemplate;
-
+    @Autowired
+    CacheUpdateQueue cacheUpdateQueue;
 
     public void put(LevelCO level) {
         String key = PREFIX + level.getLevel();
@@ -33,5 +40,11 @@ public class LevelCache {
         return levelCO;
     }
 
+    public void putToQueue(LevelCO obj) {
+        CacheUpdateMessage msg = new CacheUpdateMessage();
+        msg.setData(JSON.toJSONString(obj));
+        msg.setType(Configuration.CACHE.QUEUE_LEVEL_KEY);
+        cacheUpdateQueue.push(msg);
+    }
 
 }

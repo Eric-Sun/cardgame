@@ -1,17 +1,17 @@
-package com.h13.cardgame.db;
+package com.h13.cardgame.queue;
 
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
- * Date: 13-3-18
- * Time: 下午2:41
+ * Date: 13-7-2
+ * Time: 下午4:56
  * To change this template use File | Settings | File Templates.
  */
-public class DBTaskWokerRunner implements Runnable {
+public class CacheUpdateWorkerRunner implements Runnable {
 
-    private DBTaskWorker worker;
+    private CacheUpdateWorker worker;
 
-    public DBTaskWokerRunner(DBTaskWorker worker) {
+    public CacheUpdateWorkerRunner(CacheUpdateWorker worker) {
         this.worker = worker;
     }
 
@@ -28,3 +28,4 @@ public class DBTaskWokerRunner implements Runnable {
 
     }
 }
+

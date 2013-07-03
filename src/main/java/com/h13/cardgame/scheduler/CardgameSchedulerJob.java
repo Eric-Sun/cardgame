@@ -25,13 +25,13 @@ public class CardgameSchedulerJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SchedulerMessage message = (SchedulerMessage) jobExecutionContext.getJobDetail().getJobDataMap().get(KEY);
-        LOG.info("job started. jobId=" + message.getJobId() + " message=" + message);
+//        LOG.info("job started. jobId=" + message.getJobId() + " message=" + message);
         HandlerController controller = WebApplicationContentHolder.getApplicationContext().getBean(HandlerController.class);
         boolean flag = controller.dispatch(message);
         if (!flag)
             rerun(jobExecutionContext, message);
         else {
-            LOG.info("job stoped. jobId=" + message.getJobId() + " message=" + message);
+//            LOG.info("job stoped. jobId=" + message.getJobId() + " message=" + message);
         }
     }
 
