@@ -39,7 +39,7 @@ public class CardHelper {
         CardCO card = cardCache.get(cardId);
         if (card == null) {
             card = cardDAO.get(cardId);
-            cardCache.putToQueue(card);
+            cardCache.put(card);
         }
         return card;
     }

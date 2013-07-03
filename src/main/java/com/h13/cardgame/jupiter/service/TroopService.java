@@ -36,7 +36,7 @@ public class TroopService {
     StorageHelper storageHelper;
 
     @Autowired
-    ConfigService configService;
+    ConfigHelper configService;
 
     /**
      * 获得小队中所有的卡牌的小列表

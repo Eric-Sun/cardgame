@@ -3,8 +3,6 @@ package com.h13.cardgame.cache.service;
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.config.Configuration;
-import com.h13.cardgame.queue.CacheUpdateMessage;
-import com.h13.cardgame.queue.CacheUpdateQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,6 @@ public class ConfigurationCache {
     @Resource(name = "redisStringConfigurationCOTemplate")
     private RedisTemplate<String, String> configurationCOTemplate;
 
-    @Autowired
-    CacheUpdateQueue cacheUpdateQueue;
 
     public void put(String obj) {
         String confKey = obj.split(",")[0];
@@ -40,13 +36,6 @@ public class ConfigurationCache {
         String key = PREFIX + confKey;
         String value = configurationCOTemplate.opsForValue().get(key);
         return value;
-    }
-
-    public void putToQueue(String obj) {
-        CacheUpdateMessage msg = new CacheUpdateMessage();
-        msg.setData(JSON.toJSONString(obj));
-        msg.setType(Configuration.CACHE.QUEUE_CONFIGURATION_KEY);
-        cacheUpdateQueue.push(msg);
     }
 
 }

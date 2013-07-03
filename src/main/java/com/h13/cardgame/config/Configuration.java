@@ -8,7 +8,7 @@ package com.h13.cardgame.config;
  * To change this template use File | Settings | File Templates.
  */
 public class Configuration {
-    public static class Scheduler {
+    public static class CORE {
         public static String ENERGY_UP_S = "scheduler:energy_up_s";
     }
 

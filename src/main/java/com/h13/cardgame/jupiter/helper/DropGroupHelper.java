@@ -1,4 +1,4 @@
-package com.h13.cardgame.jupiter.service;
+package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.co.DropGroupCO;
 import com.h13.cardgame.cache.service.DropGroupCache;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class DropGroupService {
+public class DropGroupHelper {
 
     @Autowired
     DropGroupDAO dropGroupDAO;
@@ -27,7 +27,7 @@ public class DropGroupService {
         if (dg == null) {
             // load data from db
             dg = dropGroupDAO.get(dropGroupId);
-            dropGroupCache.putToQueue(dg);
+            dropGroupCache.put(dg);
         }
         return dg;
     }

@@ -1,4 +1,4 @@
-package com.h13.cardgame.jupiter.service;
+package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.service.ConfigurationCache;
 import com.h13.cardgame.jupiter.dao.ConfigDAO;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ConfigService {
+public class ConfigHelper {
 
     @Autowired
     ConfigurationCache confCache;
@@ -24,7 +24,7 @@ public class ConfigService {
         String confValue = confCache.get(confKey);
         if (confValue == null) {
             confValue = confDAO.get(confKey).getValue();
-            confCache.putToQueue(confKey + "," + confValue);
+            confCache.put(confKey + "," + confValue);
         } else {
             confCache.get(confKey);
         }

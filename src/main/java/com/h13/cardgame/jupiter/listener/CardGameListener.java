@@ -2,12 +2,8 @@ package com.h13.cardgame.jupiter.listener;
 
 import com.h13.cardgame.config.ConfigStarter;
 import com.h13.cardgame.jupiter.utils.WebApplicationContentHolder;
-import com.h13.cardgame.queue.CacheUpdateWorker;
-import com.h13.cardgame.queue.CacheUpdateWorkerRunner;
 import com.h13.cardgame.queue.DBTaskWokerRunner;
 import com.h13.cardgame.queue.DBTaskWorker;
-import com.h13.cardgame.scheduler.SchedulerWorker;
-import com.h13.cardgame.scheduler.SchedulerWorkerRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,9 +19,6 @@ import javax.servlet.ServletContextListener;
  */
 public class CardGameListener implements ServletContextListener {
     private static Log LOG = LogFactory.getLog(CardGameListener.class);
-    SchedulerWorkerRunner schedulerRunner = null;
-    CacheUpdateWorkerRunner cacheUpdateWorkerRunner = null;
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         WebApplicationContentHolder.setServletContext(sce.getServletContext());
@@ -34,15 +27,6 @@ public class CardGameListener implements ServletContextListener {
         DBTaskWokerRunner runner = new DBTaskWokerRunner(worker);
         Thread t = new Thread(runner);
         t.start();
-
-        SchedulerWorker schedulerWorker = WebApplicationContentHolder.getApplicationContext().getBean(SchedulerWorker.class);
-        schedulerRunner = new SchedulerWorkerRunner(schedulerWorker);
-        Thread t1 = new Thread(schedulerRunner);
-        t1.start();
-        CacheUpdateWorker cacheUpdateWorker = WebApplicationContentHolder.getApplicationContext().getBean(CacheUpdateWorker.class);
-        cacheUpdateWorkerRunner = new CacheUpdateWorkerRunner(cacheUpdateWorker);
-        Thread t2 = new Thread(cacheUpdateWorkerRunner);
-        t2.start();
 
         LOG.info("worker thread started successfully.");
 
@@ -53,7 +37,5 @@ public class CardGameListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        schedulerRunner.stop();
-        LOG.info("scheduler runner stopped.");
     }
 }

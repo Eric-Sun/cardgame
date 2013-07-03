@@ -1,6 +1,7 @@
 package com.h13.cardgame.jupiter.dao;
 
 import com.h13.cardgame.cache.co.TaskGroupCO;
+import com.h13.cardgame.jupiter.exceptions.TaskGroupIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -28,12 +29,12 @@ public class TaskGroupDAO {
     }
 
 
-    public TaskGroupCO get(long taskGroupId) throws UserNotExistsException {
+    public TaskGroupCO get(long taskGroupId) throws TaskGroupIsNotExistsException {
         String sql = "select * from task_group where task_group_id=?";
         List<TaskGroupCO> list = j.query(sql, new Object[]{taskGroupId},
                 new BeanPropertyRowMapper<TaskGroupCO>(TaskGroupCO.class));
         if (list.size() == 0)
-            throw new UserNotExistsException("taskGroupId=" + taskGroupId);
+            throw new TaskGroupIsNotExistsException("taskGroupId=" + taskGroupId);
         else
             return list.get(0);
     }

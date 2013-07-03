@@ -91,11 +91,23 @@ public class CityService {
      *
      */
     public CityCO get(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
-
-
         CityCO city = cityHelper.get(uid, cid);
         LogWriter.info(LogWriter.CITY, "load city. " + city);
         return city;
+    }
+
+
+    /**
+     * 刷新能量
+     * 计算上次记录的时间戳到现在应该产生多少的能量，并且更新缓存和数据库
+     *
+     * @param uid
+     * @param cid
+     */
+    public void flushEnergy(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+        CityCO city = cityHelper.get(uid, cid);
+        cityHelper.tryAddEnergy(city);
+        cityHelper.cache(city);
     }
 
 

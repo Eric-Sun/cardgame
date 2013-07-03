@@ -45,11 +45,11 @@ public class TaskLoaderService {
             for (TaskGroupCO group : taskGroupCOList) {
                 List<TaskCO> taskList = taskDAO.getTaskByGroupId(group.getId());
                 for (TaskCO task : taskList) {
-                    taskCache.putToQueue(task);
+                    taskCache.put(task);
                     group.getTaskIdList().add(task.getId());
                     LOG.info("loaded task " + task.toString());
                 }
-                taskGroupCache.putToQueue(group);
+                taskGroupCache.put(group);
                 LOG.info("loaded taskGroup " + group.toString());
             }
             LOG.info("load task info successfully.");

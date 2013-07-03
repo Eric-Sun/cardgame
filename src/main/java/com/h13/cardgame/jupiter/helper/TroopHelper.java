@@ -51,7 +51,7 @@ public class TroopHelper {
         TroopCO squard = squardCache.get(cid);
         if (squard == null) {
             squard = troopDAO.getByCaptainId(cid);
-            squardCache.putToQueue(squard);
+            squardCache.put(squard);
         }
         return squard;
     }
@@ -107,7 +107,7 @@ public class TroopHelper {
 
 
     public void cache(TroopCO squard) {
-        squardCache.putToQueue(squard);
+        squardCache.put(squard);
     }
 
 

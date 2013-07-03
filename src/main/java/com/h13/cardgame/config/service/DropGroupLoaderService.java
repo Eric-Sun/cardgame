@@ -32,7 +32,7 @@ public class DropGroupLoaderService {
         try {
             List<DropGroupCO> list = dropGroupDAO.getAll();
             for (DropGroupCO dg : list) {
-                dropGroupCache.putToQueue(dg);
+                dropGroupCache.put(dg);
                 LOG.info("loaded dropGroup info. " + dg);
             }
             LOG.info("load dropGroup info successfully.");

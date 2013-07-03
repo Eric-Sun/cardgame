@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,7 +37,7 @@ public class CityDAO {
     JdbcQueueTemplate q;
 
     public CityCO get(long cid) throws UserNotExistsException {
-        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_status from city where id=?";
+        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_status,cooldown_status from city where id=?";
         List<CityCO> list = j.query(sql, new Object[]{cid}, new RowMapper<CityCO>() {
             @Override
             public CityCO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -50,6 +51,7 @@ public class CityDAO {
                 co.setGold(rs.getInt(7));
                 co.setSilver(rs.getInt(8));
                 co.setTaskStatus(JSON.parseObject(rs.getString(9), CityTaskStatusCO.class));
+                co.setCooldownStatus(JSON.parseObject(rs.getString(10), Map.class));
                 return co;
             }
         });
@@ -65,22 +67,24 @@ public class CityDAO {
         q.update(sql, new Object[]{energy, cid});
     }
 
-    public long create(final CityCO captain) {
+    public long create(final CityCO city) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        final String sql = "insert into city (user_id,name,level,energy,gold,silver,task_status,create_time,exp)" +
-                " values (?,?,?,?,?,?,?,now(),?)";
+        final String sql = "insert into city (user_id,name,level,energy,gold,silver," +
+                "task_status,create_time,exp,cooldown_status)" +
+                " values (?,?,?,?,?,?,?,now(),?,?)";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                pstmt.setLong(1, captain.getUserId());
-                pstmt.setString(2, captain.getName());
-                pstmt.setInt(3, captain.getLevel());
-                pstmt.setInt(4, captain.getEnergy());
-                pstmt.setInt(5, captain.getGold());
-                pstmt.setInt(6, captain.getSilver());
-                pstmt.setString(7, JSON.toJSONString(captain.getTaskStatus()));
-                pstmt.setInt(8, captain.getExp());
+                pstmt.setLong(1, city.getUserId());
+                pstmt.setString(2, city.getName());
+                pstmt.setInt(3, city.getLevel());
+                pstmt.setInt(4, city.getEnergy());
+                pstmt.setInt(5, city.getGold());
+                pstmt.setInt(6, city.getSilver());
+                pstmt.setString(7, JSON.toJSONString(city.getTaskStatus()));
+                pstmt.setInt(8, city.getExp());
+                pstmt.setString(9, JSON.toJSONString(city.getCooldownStatus()));
                 return pstmt;
             }
         }, keyHolder);
@@ -110,5 +114,10 @@ public class CityDAO {
     public void updateSilver(CityCO city) {
         String sql = "update city set silver=? where id=?";
         q.update(sql, new Object[]{city.getSilver(), city.getId()});
+    }
+
+    public void updateCooldownStatus(long id, String data) {
+        String sql = "update city set cooldown_status=? where id=?";
+        q.update(sql, new Object[]{data,id });
     }
 }

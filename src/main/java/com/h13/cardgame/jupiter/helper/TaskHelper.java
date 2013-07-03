@@ -6,9 +6,10 @@ import com.h13.cardgame.cache.service.TaskCache;
 import com.h13.cardgame.cache.service.TaskGroupCache;
 import com.h13.cardgame.jupiter.dao.TaskDAO;
 import com.h13.cardgame.jupiter.dao.TaskGroupDAO;
+import com.h13.cardgame.jupiter.exceptions.TaskGroupIsNotExistsException;
+import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.RandomRewardException;
-import com.h13.cardgame.jupiter.service.DropGroupService;
 import com.h13.cardgame.jupiter.vo.CityCardVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class TaskHelper {
     private LevelHelper levelHelper;
 
     @Autowired
-    private DropGroupService dropGroupService;
+    private DropGroupHelper dropGroupService;
 
 
     /**
@@ -55,20 +56,20 @@ public class TaskHelper {
      * @param taskGroupId
      * @return
      */
-    public TaskGroupCO getTaskGroup(long taskGroupId) throws UserNotExistsException {
+    public TaskGroupCO getTaskGroup(long taskGroupId) throws TaskGroupIsNotExistsException {
         TaskGroupCO taskGroup = taskGroupCache.get(taskGroupId);
         if (taskGroup == null) {
             taskGroup = taskGroupDAO.get(taskGroupId);
-            taskGroupCache.putToQueue(taskGroup);
+            taskGroupCache.put(taskGroup);
         }
         return taskGroup;
     }
 
-    public TaskCO getTask(long taskId) throws UserNotExistsException {
+    public TaskCO getTask(long taskId) throws TaskIsNotExistsException {
         TaskCO task = taskCache.get(taskId);
         if (task == null) {
             task = taskDAO.getTask(taskId);
-            taskCache.putToQueue(task);
+            taskCache.put(task);
         }
         return task;
     }
@@ -92,8 +93,8 @@ public class TaskHelper {
     }
 
 
-    public void resumeTask(CityCO captain, long taskId) {
-        captain.getTaskStatus().getTaskMap().get(taskId).setCanBeDo(true);
+    public void resumeTask(CityCO captain, TaskCO task) {
+        captain.getTaskStatus().getTaskMap().get(task.getId()).setCanBeDo(true);
         taskDAO.updateTaskInfo(captain.getId(), captain.getTaskStatus());
     }
 
@@ -133,7 +134,7 @@ public class TaskHelper {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public List<TaskCO> getTaskList(long taskGroupId) throws UserNotExistsException {
+    public List<TaskCO> getTaskList(long taskGroupId) throws TaskGroupIsNotExistsException, TaskIsNotExistsException {
         List<TaskCO> taskList = new ArrayList<TaskCO>();
         TaskGroupCO taskGroup = getTaskGroup(taskGroupId);
         List<Long> taskIdList = taskGroup.getTaskIdList();

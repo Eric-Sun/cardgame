@@ -1,5 +1,8 @@
 package com.h13.cardgame.cache.co;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sunbo
@@ -17,6 +20,15 @@ public class CityCO {
     private int gold;
     private int silver;
     private CityTaskStatusCO taskStatus;
+    private Map<String, String> cooldownStatus = new HashMap<String, String>();
+
+    public Map<String, String> getCooldownStatus() {
+        return cooldownStatus;
+    }
+
+    public void setCooldownStatus(Map<String, String> cooldownStatus) {
+        this.cooldownStatus = cooldownStatus;
+    }
 
     public long getId() {
         return id;

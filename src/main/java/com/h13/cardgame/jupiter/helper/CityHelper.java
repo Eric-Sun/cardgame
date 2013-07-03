@@ -1,14 +1,14 @@
 package com.h13.cardgame.jupiter.helper;
 
-import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.service.CityCache;
 import com.h13.cardgame.jupiter.dao.CityDAO;
 import com.h13.cardgame.jupiter.exceptions.*;
-import com.h13.cardgame.jupiter.service.SchedulerService;
 import com.h13.cardgame.jupiter.utils.LogWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ import java.util.List;
  */
 @Service
 public class CityHelper {
+    private static Log LOG = LogFactory.getLog(CityHelper.class);
     @Autowired
     CityCache cityCache;
     @Autowired
@@ -31,11 +32,11 @@ public class CityHelper {
     CityDAO cityDAO;
     @Autowired
     TaskHelper taskHelper;
-    @Autowired
-    SchedulerService schedulerService;
 
     @Autowired
     UserHelper userHelper;
+    @Autowired
+    CooldownHelper cooldownHelper;
 
     /**
      * 从缓存中获取city
@@ -49,7 +50,7 @@ public class CityHelper {
         if (city == null) {
             // load data from db
             city = cityDAO.get(cid);
-            cityCache.putToQueue(city);
+            cityCache.put(city);
         }
         if (city.getUserId() != uid) {
             throw new UserIllegalParamterException("uid=" + uid + " no have the city. cid=" + cid);
@@ -65,38 +66,39 @@ public class CityHelper {
      * @param city
      * @param value
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
-     *
+     * @return  true 表示已经满了
      */
-    public void addEnergy(CityCO city, int value) throws UserNotExistsException {
+    public boolean addEnergy(CityCO city, int value) throws UserNotExistsException {
         //获得当前这个人物的满级的energy
         LevelCO level = levelHelper.get(city.getLevel());
         if (level.getEnergy() <= city.getEnergy() + value) {
             // full
             city.setEnergy(level.getEnergy());
+            return true;
         } else {
             city.setEnergy(city.getEnergy() + value);
-            // add new scheduler
-            schedulerService.checkAndAddEnergyUpJob(city);
         }
         // update db
         cityDAO.updateEnergy(city.getId(), city.getEnergy());
+        return false;
     }
 
     /**
      * 为一个captain减少能量，检测如果有能量事件的话，不做操作，如果没有的话，
      * 添加一个能量事件
      *
-     * @param captain
+     * @param city
      * @param value
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void subEnergy(CityCO captain, int value) throws UserNotExistsException {
-        if (captain.getEnergy() - value < 0)
-            throw new UserNotExistsException("energy is not enough . need=" + value + " have=" + captain.getEnergy());
-        schedulerService.checkAndAddEnergyUpJob(captain);
-        cityDAO.updateEnergy(captain.getId(), captain.getEnergy() - value);
-        captain.setEnergy(captain.getEnergy() - value);
+    public void subEnergy(CityCO city, int value) throws UserNotExistsException {
+        if (city.getEnergy() - value < 0)
+            throw new UserNotExistsException("energy is not enough . need=" + value + " have=" + city.getEnergy());
+        // 尝试看看需要不需要家energy冷却
+        cooldownHelper.attemptAddEnergyCooldown(city);
+        cityDAO.updateEnergy(city.getId(), city.getEnergy() - value);
+        city.setEnergy(city.getEnergy() - value);
     }
 
     /**
@@ -105,7 +107,7 @@ public class CityHelper {
      * @param city
      */
     public void cache(CityCO city) {
-        cityCache.putToQueue(city);
+        cityCache.put(city);
         LogWriter.debug(LogWriter.CITY, "cache city. city=" + city);
     }
 
@@ -189,4 +191,21 @@ public class CityHelper {
         cityDAO.updateSilver(city);
     }
 
+    /**
+     * 损耗的能量尝试补充，如果不满的话，需要继续记录更新的时间戳，如果已经满了，就删除掉这个cooldown
+     *
+     * @param city
+     */
+    public void tryAddEnergy(CityCO city) throws UserNotExistsException {
+        LevelCO level = levelHelper.get(city.getLevel());
+        if (city.getEnergy() == level.getExp()) {
+            // 已经满了，删除掉city中的能量cooldown
+            cooldownHelper.removeEnerygyCooldown(city);
+            LOG.debug("flush energy. exp is full.");
+        } else {
+            cooldownHelper.attemptAddEnergyCooldown(city);
+        }
+
+
+    }
 }

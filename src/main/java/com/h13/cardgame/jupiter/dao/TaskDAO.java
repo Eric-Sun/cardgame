@@ -5,6 +5,7 @@ import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.ConditionCO;
 import com.h13.cardgame.cache.co.TaskCO;
 import com.h13.cardgame.jupiter.JdbcQueueTemplate;
+import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,7 +45,7 @@ public class TaskDAO {
         return list;
     }
 
-    public TaskCO getTask(long taskId) throws UserNotExistsException {
+    public TaskCO getTask(long taskId) throws TaskIsNotExistsException {
         String sql = "select id,task_group_id,name,description,drop_group_id,count,cooldown from task where id=?";
         List<TaskCO> list = j.query(sql, new Object[]{taskId}, new RowMapper<TaskCO>() {
             @Override
@@ -61,7 +62,7 @@ public class TaskDAO {
             }
         });
         if (list.size() == 0)
-            throw new UserNotExistsException("taskId=" + taskId);
+            throw new TaskIsNotExistsException("taskId=" + taskId);
         else
             return list.get(0);
     }

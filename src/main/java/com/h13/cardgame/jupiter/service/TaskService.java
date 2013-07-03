@@ -3,9 +3,7 @@ package com.h13.cardgame.jupiter.service;
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.jupiter.exceptions.*;
-import com.h13.cardgame.jupiter.helper.CityHelper;
-import com.h13.cardgame.jupiter.helper.StorageHelper;
-import com.h13.cardgame.jupiter.helper.TaskHelper;
+import com.h13.cardgame.jupiter.helper.*;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
@@ -33,13 +31,13 @@ public class TaskService {
     @Autowired
     private CityHelper cityHelper;
     @Autowired
-    private SchedulerService schedulerService;
-    @Autowired
     private TaskHelper taskHelper;
     @Autowired
-    private DropGroupService dropGroupService;
+    private DropGroupHelper dropGroupService;
     @Autowired
     private StorageHelper storageHelper;
+    @Autowired
+    private CooldownHelper cooldownService;
 
     /**
      * 尝试完成一个任务
@@ -52,7 +50,7 @@ public class TaskService {
      *
      * @throws EnergyNotEnoughException
      */
-    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException {
+    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
         CityCO captain = cityHelper.get(uid, cid);
@@ -90,7 +88,7 @@ public class TaskService {
             TaskRewardResultVO result = taskHelper.reward(captain, task);
             resultList.add(result);
             if (task.getCooldown() != 0)
-                schedulerService.addTaskCooldownJob(captain, task);
+                cooldownService.addTaskCooldown(captain, task);
             // 保存用户的新的状态
             cityHelper.cache(captain);
             if (taskHelper.isLastTaskInGroup(task)) {
@@ -106,7 +104,7 @@ public class TaskService {
             return resultList;
         } else {
             // 不可以完成任务
-            throw new UserNotExistsException("taskId[" + taskId + "] is cooldowning");
+            throw new TaskIsCooldownException("taskId[" + taskId + "] is cooldowning");
         }
     }
 
@@ -118,9 +116,10 @@ public class TaskService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void resumeTask(long uid, long cid, long taskId) throws UserNotExistsException, UserIllegalParamterException {
+    public void resumeTask(long uid, long cid, long taskId) throws UserNotExistsException, UserIllegalParamterException, TaskIsNotExistsException {
         CityCO city = cityHelper.get(uid, cid);
-        taskHelper.resumeTask(city, taskId);
+        TaskCO task = taskHelper.getTask(taskId);
+        taskHelper.resumeTask(city, task);
         cityHelper.cache(city);
         LogWriter.info(LogWriter.TASK, cid, taskId, JSON.toJSONString(city));
     }
@@ -132,7 +131,7 @@ public class TaskService {
      * @param cid
      * @return
      */
-    public List<TaskVO> task(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public List<TaskVO> task(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskGroupIsNotExistsException, TaskIsNotExistsException {
         CityCO city = cityHelper.get(uid, cid);
         List<TaskCO> taskList = taskHelper.getTaskList(city.getTaskStatus().getTaskGroupId());
         // convert co to vo
@@ -189,7 +188,7 @@ public class TaskService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public List<TaskVO> nextTask(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public List<TaskVO> nextTask(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskGroupIsNotExistsException, TaskIsNotExistsException {
         CityCO captain = cityHelper.get(uid, cid);
         long nextTaskGroupId = captain.getTaskStatus().getTaskGroupId();
         captain.getTaskStatus().getTaskMap().clear();
@@ -198,5 +197,16 @@ public class TaskService {
         List<TaskVO> returnList = new ArrayList<TaskVO>();
         cvtTaskCO2VO(captain, taskList, returnList);
         return returnList;
+    }
+
+
+    /**
+     * @param cid
+     * @param uid
+     */
+    public void flushTaskStatus(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskIsNotExistsException {
+        CityCO city = cityHelper.get(uid, cid);
+        cooldownService.tryToFinishTaskCooldown(city);
+        cityHelper.cache(city);
     }
 }

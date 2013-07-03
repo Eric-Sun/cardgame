@@ -26,36 +26,6 @@
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="dbTaskDetailSerializer">
     </bean>
-    <!-- cache update queue-->
-    <bean id="cacheUpdateQueueRedisSerializer"
-          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.CacheUpdateMessage"/>
-    </bean>
-    <bean id="cacheUpdateQueueRedisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="cacheUpdateQueueRedisSerializer">
-    </bean>
-
-    <!-- scheduler deatil for queue -->
-    <bean id="schedulerDetailSerializer"
-          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.SchedulerMessage"/>
-    </bean>
-    <bean id="schedulerDetailTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="schedulerDetailSerializer">
-    </bean>
-
-    <!-- lock template -->
-    <bean id="lockTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="redisLongRedisSerializer">
-    </bean>
-    <!-- scheduler for persistent  -->
-    <bean id="schedulerCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="schedulerDetailSerializer">
-    </bean>
 
     <!-- captain card -->
     <bean id="captainCardCOSerializer"
@@ -155,16 +125,6 @@
           p:valueSerializer-ref="dropGroupCOSerailizer">
     </bean>
 
-
-    <!-- job detail -->
-    <bean id="JobDetailCOSerailizer"
-          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.queue.SchedulerMessage"/>
-    </bean>
-    <bean id="redisStringJobDetailCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
-          p:valueSerializer-ref="JobDetailCOSerailizer">
-    </bean>
 
     <!-- config -->
     <bean id="redisStringConfigurationCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"

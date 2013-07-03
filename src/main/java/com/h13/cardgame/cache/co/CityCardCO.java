@@ -26,7 +26,7 @@ public class CityCardCO {
     private int curSlot;
     private int maxSlot;
     private int status;
-    private long uCardId;
+    private long uCardId = -1;
     private CardType cardType;
 
 
