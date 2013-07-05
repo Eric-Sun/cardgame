@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * 这张卡已经上阵
+ * 小队卡仓库已经满了
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

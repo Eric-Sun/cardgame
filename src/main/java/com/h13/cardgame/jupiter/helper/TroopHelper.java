@@ -111,7 +111,8 @@ public class TroopHelper {
     }
 
 
-    public List<AttackTargetVO> getAttackTarget(long uid, long cid, int pageNum, int pageSize) throws UserNotExistsException, UserIllegalParamterException {
+    public List<AttackTargetVO> getAttackTarget(long uid, long cid, int pageNum, int pageSize)
+            throws UserNotExistsException, UserDontHaveThisCityException {
         List<AttackTargetVO> retList = new ArrayList<AttackTargetVO>();
         CityCO catpain = cityHelper.get(uid, cid);
         int level = catpain.getLevel();

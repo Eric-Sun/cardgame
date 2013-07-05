@@ -6,14 +6,14 @@ package com.h13.cardgame.jupiter.exceptions;
  * Date: 13-3-18
  * Time: 下午4:05
  */
-public class CityCardIsNotYoursException extends Exception {
+public class EquipmentIsNotEnoughException extends Exception {
     public static String CODE = "1010015";
 
-    public CityCardIsNotYoursException(String msg) {
+    public EquipmentIsNotEnoughException(String msg) {
         super(msg);
     }
 
-    public CityCardIsNotYoursException(String msg, Throwable t) {
+    public EquipmentIsNotEnoughException(String msg, Throwable t) {
         super(msg, t);
     }
 }

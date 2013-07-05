@@ -1,7 +1,6 @@
 package com.h13.cardgame.jupiter.controller;
 
 import com.h13.cardgame.jupiter.exceptions.MailExistedException;
-import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
 import com.h13.cardgame.jupiter.exceptions.UserNameExistedException;
 import com.h13.cardgame.jupiter.exceptions.UserNameOrPwdErrorException;
 import com.h13.cardgame.jupiter.service.PassportService;
@@ -45,9 +44,6 @@ public class PassportController {
         } catch (MailExistedException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
             return DTOUtils.getFailureResponse(-1, -1, MailExistedException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, ServerErrorException.CODE);
         }
     }
 
@@ -63,9 +59,6 @@ public class PassportController {
         } catch (UserNameOrPwdErrorException e) {
             LogWriter.warn(LogWriter.PASSPORT_LOGIN, e);
             return DTOUtils.getFailureResponse(-1, cid, UserNameOrPwdErrorException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.PASSPORT_LOGIN, e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
         }
     }
 

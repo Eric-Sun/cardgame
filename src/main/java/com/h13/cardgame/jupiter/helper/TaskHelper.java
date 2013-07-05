@@ -8,8 +8,6 @@ import com.h13.cardgame.jupiter.dao.TaskDAO;
 import com.h13.cardgame.jupiter.dao.TaskGroupDAO;
 import com.h13.cardgame.jupiter.exceptions.TaskGroupIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.RandomRewardException;
 import com.h13.cardgame.jupiter.vo.CityCardVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,9 +154,8 @@ public class TaskHelper {
      *
      * @param task
      * @return
-     * @throws RandomRewardException
      */
-    public TaskRewardResultVO reward(CityCO city, TaskCO task) throws RandomRewardException {
+    public TaskRewardResultVO reward(CityCO city, TaskCO task)  {
         DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
         // 依次判断 exp ,silver 等是否有问题
         int exp = randomCommonItem(dropGroup.getData().getExp());
@@ -208,7 +205,7 @@ public class TaskHelper {
         return item.getMax() + v;
     }
 
-    private long randomCard(DropGroupDataCO cardDropGroup) throws RandomRewardException {
+    private long randomCard(DropGroupDataCO cardDropGroup) {
         int weight = cardDropGroup.getWeightSum();
         int random = new Random().nextInt(weight);
         int v = 0;
@@ -217,7 +214,7 @@ public class TaskHelper {
             if (random < v)
                 return cardItem.getCardId();
         }
-        throw new RandomRewardException(cardDropGroup.toString());
+        return -1;
     }
 
 

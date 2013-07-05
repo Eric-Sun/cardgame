@@ -1,10 +1,9 @@
 package com.h13.cardgame.jupiter.controller;
 
-import com.h13.cardgame.jupiter.exceptions.SilverNotEnoughException;
-import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
+import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.service.TroopService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
+import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,11 +44,11 @@ public class TroopController {
             List<AttackTargetVO> list = troopService.searchAttackTarget(uid, cid, pageNum);
             return DTOUtils.getSucessResponse(uid, cid, list);
         } catch (UserNotExistsException e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+        } catch (UserDontHaveThisCityException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
@@ -66,14 +65,14 @@ public class TroopController {
             targetCid = new Long(request.getParameter("targetCid"));
             CombatResultVO result = troopService.attack(uid, cid, targetCid);
             return DTOUtils.getSucessResponse(uid, cid, result);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
         }
     }
 
 
-    @RequestMapping("/")
+    @RequestMapping("")
     @ResponseBody
     public String index(HttpServletRequest request, HttpServletResponse response) {
         long cid = -1;
@@ -83,9 +82,9 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             TroopVO troop = troopService.getTroop(cid);
             return DTOUtils.getSucessResponse(uid, cid, troop);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
         }
     }
 
@@ -101,9 +100,18 @@ public class TroopController {
             long ccId = new Long(request.getParameter("cityCardId"));
             TroopVO troop = troopService.onList(cid, index, ccId);
             return DTOUtils.getSucessResponse(uid, cid, troop);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (IndexOfTroopHaveAnotherCardException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardIsOnListException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsOnListException.CODE);
         }
     }
 
@@ -119,9 +127,21 @@ public class TroopController {
             long ccId = new Long(request.getParameter("cityCardId"));
             TroopVO troop = troopService.downList(cid, index, ccId);
             return DTOUtils.getSucessResponse(uid, cid, troop);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (IndexOfTroopHaveAnotherCardException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (IndexOfTroopHaveNoCardException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveNoCardException.CODE);
+        } catch (CityCardIsOnListException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsOnListException.CODE);
         }
     }
 
@@ -136,9 +156,9 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             CombatAttributesVO ca = troopService.getCombatAttributes(cid);
             return DTOUtils.getSucessResponse(uid, cid, ca);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
         }
     }
 
@@ -163,9 +183,27 @@ public class TroopController {
         } catch (SilverNotEnoughException e) {
             LOG.error("error", e);
             return DTOUtils.getFailureResponse(-1, cid, SilverNotEnoughException.CODE);
-        } catch (Exception e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+        } catch (RecuitCardIsErrorException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, RecuitCardIsErrorException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (UserNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+        } catch (SquardCardNotEnoughSlotException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, SquardCardNotEnoughSlotException.CODE);
+        } catch (SquardECardException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, SquardECardException.CODE);
+        } catch (EquipmentIsNotEnoughException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, EquipmentIsNotEnoughException.CODE);
+        } catch (UserDontHaveThisCityException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
         }
     }
 

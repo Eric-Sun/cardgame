@@ -62,16 +62,28 @@ public class TaskController {
             return DTOUtils.getFailureResponse(-1, cid, EnergyNotEnoughException.CODE);
         } catch (TaskIsOverException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);  //To change body of catch statement use File | Settings | File Templates.
-        } catch (RandomRewardException e) {
+            return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);
+        } catch (TaskCompletedTooManyException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, RandomRewardException.CODE);
-        } catch (UserIllegalParamterException e) {
+            return DTOUtils.getFailureResponse(-1, cid, TaskCompletedTooManyException.CODE);
+        } catch (TaskIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserIllegalParamterException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+            return DTOUtils.getFailureResponse(-1, cid, TaskIsNotExistsException.CODE);
+        } catch (TaskGroupIsNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, TaskGroupIsNotExistsException.CODE);
+        } catch (EquipmentStorageIsFullException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, EquipmentStorageIsFullException.CODE);
+        } catch (TaskIsCooldownException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, TaskIsCooldownException.CODE);
+        } catch (SquardStorageIsFullException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, SquardStorageIsFullException.CODE);
+        } catch (UserDontHaveThisCityException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
@@ -90,12 +102,15 @@ public class TaskController {
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
-        } catch (UserIllegalParamterException e) {
+        } catch (TaskIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserIllegalParamterException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, ServerErrorException.CODE);
+            return DTOUtils.getFailureResponse(uid, cid, TaskIsNotExistsException.CODE);
+        } catch (TaskGroupIsNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, TaskGroupIsNotExistsException.CODE);
+        } catch (UserDontHaveThisCityException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
         }
     }
 

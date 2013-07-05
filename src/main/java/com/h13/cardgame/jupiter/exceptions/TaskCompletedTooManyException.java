@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * 这个用户不存在
+ * 任务完成的次数过多
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

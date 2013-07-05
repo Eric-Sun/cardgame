@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * 队伍的某个位置已经有卡了
+ * 小队中的这个位置已经有另外一张卡了
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

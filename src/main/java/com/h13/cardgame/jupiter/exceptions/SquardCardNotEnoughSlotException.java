@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
+ * 小队卡没有足够的位置了
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

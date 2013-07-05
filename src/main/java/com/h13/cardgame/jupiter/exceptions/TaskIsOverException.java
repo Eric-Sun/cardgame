@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
+ * 任务已经全部完成了，没有任务做了
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

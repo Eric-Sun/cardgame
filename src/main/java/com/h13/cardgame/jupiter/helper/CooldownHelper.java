@@ -137,4 +137,13 @@ public class CooldownHelper {
         cityDAO.updateCooldownStatus(city.getId(), JSON.toJSONString(city.getCooldownStatus()));
     }
 
+
+    public long getTaskLastTimeStamp(CityCO city, long taskId) {
+        Object obj = city.getCooldownStatus().get(TASK_KEY + taskId);
+        if (obj == null)
+            return -1;
+        else
+            return new Long(city.getCooldownStatus().get(TASK_KEY + taskId));
+    }
+
 }

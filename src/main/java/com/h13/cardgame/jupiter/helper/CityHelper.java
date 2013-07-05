@@ -45,7 +45,7 @@ public class CityHelper {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public CityCO get(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public CityCO get(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityCache.get(cid);
         if (city == null) {
             // load data from db
@@ -53,7 +53,7 @@ public class CityHelper {
             cityCache.put(city);
         }
         if (city.getUserId() != uid) {
-            throw new UserIllegalParamterException("uid=" + uid + " no have the city. cid=" + cid);
+            throw new UserDontHaveThisCityException("uid=" + uid + " no have the city. cid=" + cid);
         }
         return city;
     }

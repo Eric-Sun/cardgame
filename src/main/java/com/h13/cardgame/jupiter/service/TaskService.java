@@ -37,7 +37,7 @@ public class TaskService {
     @Autowired
     private StorageHelper storageHelper;
     @Autowired
-    private CooldownHelper cooldownService;
+    private CooldownHelper cooldownHelper;
 
     /**
      * 尝试完成一个任务
@@ -50,7 +50,8 @@ public class TaskService {
      *
      * @throws EnergyNotEnoughException
      */
-    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException, EnergyNotEnoughException, TaskIsOverException, RandomRewardException, UserIllegalParamterException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException {
+    public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException,
+            EnergyNotEnoughException, TaskIsOverException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException, UserDontHaveThisCityException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
         CityCO captain = cityHelper.get(uid, cid);
@@ -88,7 +89,7 @@ public class TaskService {
             TaskRewardResultVO result = taskHelper.reward(captain, task);
             resultList.add(result);
             if (task.getCooldown() != 0)
-                cooldownService.addTaskCooldown(captain, task);
+                cooldownHelper.addTaskCooldown(captain, task);
             // 保存用户的新的状态
             cityHelper.cache(captain);
             if (taskHelper.isLastTaskInGroup(task)) {
@@ -109,29 +110,12 @@ public class TaskService {
     }
 
     /**
-     * 恢复一个任务，让他可以被继续完成
-     *
-     * @param cid
-     * @param taskId
-     * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
-     *
-     */
-    public void resumeTask(long uid, long cid, long taskId) throws UserNotExistsException, UserIllegalParamterException, TaskIsNotExistsException {
-        CityCO city = cityHelper.get(uid, cid);
-        TaskCO task = taskHelper.getTask(taskId);
-        taskHelper.resumeTask(city, task);
-        cityHelper.cache(city);
-        LogWriter.info(LogWriter.TASK, cid, taskId, JSON.toJSONString(city));
-    }
-
-
-    /**
      * 获得完成的任务组中的所有任务的信息，和完成情况
      *
      * @param cid
      * @return
      */
-    public List<TaskVO> task(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskGroupIsNotExistsException, TaskIsNotExistsException {
+    public List<TaskVO> task(long uid, long cid) throws UserNotExistsException, TaskGroupIsNotExistsException, TaskIsNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
         List<TaskCO> taskList = taskHelper.getTaskList(city.getTaskStatus().getTaskGroupId());
         // convert co to vo
@@ -140,13 +124,14 @@ public class TaskService {
         return returnList;
     }
 
-    private void cvtTaskCO2VO(CityCO captain, List<TaskCO> coList, List<TaskVO> voList) {
+    private void cvtTaskCO2VO(CityCO city, List<TaskCO> coList, List<TaskVO> voList) {
         for (TaskCO task : coList) {
             TaskVO vo = new TaskVO();
             vo.setId(task.getId());
             vo.setName(task.getName());
             vo.setDesc(task.getDescription());
             vo.setCount(task.getCount());
+            vo.setCooldown(task.getCooldown());
             vo.setCondition(task.getCondition());
             TaskRewardVO rewardVO = new TaskRewardVO();
             DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
@@ -155,13 +140,15 @@ public class TaskService {
             if (dropGroup.getData().getSilver().isDrop())
                 rewardVO.setSilver(dropGroup.getData().getSilver().getMax());
             vo.setReward(rewardVO);
-            vo.setCurCount((captain.getTaskStatus().getTaskMap().get(task.getId()) == null) ? 0 :
-                    captain.getTaskStatus().getTaskMap().get(task.getId()).getCount());
+            vo.setCurCount((city.getTaskStatus().getTaskMap().get(task.getId()) == null) ? 0 :
+                    city.getTaskStatus().getTaskMap().get(task.getId()).getCount());
+            // 获得这个任务的上次完成的时间
+            vo.setLastTimeStamp(cooldownHelper.getTaskLastTimeStamp(city,task.getId()));
             voList.add(vo);
         }
     }
 
-    public List<TaskGroupVO> taskGroup(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public List<TaskGroupVO> taskGroup(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
         List<TaskGroupVO> list = new ArrayList<TaskGroupVO>();
         CityCO captain = cityHelper.get(uid, cid);
         List<TaskGroupCO> taskGroupList = taskHelper.getTaskGroupList();
@@ -188,7 +175,7 @@ public class TaskService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public List<TaskVO> nextTask(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskGroupIsNotExistsException, TaskIsNotExistsException {
+    public List<TaskVO> nextTask(long uid, long cid) throws UserNotExistsException, TaskGroupIsNotExistsException, TaskIsNotExistsException, UserDontHaveThisCityException {
         CityCO captain = cityHelper.get(uid, cid);
         long nextTaskGroupId = captain.getTaskStatus().getTaskGroupId();
         captain.getTaskStatus().getTaskMap().clear();
@@ -204,9 +191,9 @@ public class TaskService {
      * @param cid
      * @param uid
      */
-    public void flushTaskStatus(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException, TaskIsNotExistsException {
+    public void flushTaskStatus(long uid, long cid) throws UserNotExistsException, TaskIsNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
-        cooldownService.tryToFinishTaskCooldown(city);
+        cooldownHelper.tryToFinishTaskCooldown(city);
         cityHelper.cache(city);
     }
 }

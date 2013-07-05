@@ -1,7 +1,7 @@
 package com.h13.cardgame.jupiter.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
+ * 用户名或者密码错误
  * User: sunbo
  * Date: 13-3-18
  * Time: 下午4:05

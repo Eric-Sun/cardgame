@@ -97,11 +97,14 @@
             <version>5.0.8</version>
         </dependency>
     </dependencies>
+    <properties>
+        <config>dev</config>
+    </properties>
     <build>
         <finalName>cardgame</finalName>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>config/${config}</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>

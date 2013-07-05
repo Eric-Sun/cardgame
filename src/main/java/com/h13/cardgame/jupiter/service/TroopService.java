@@ -109,9 +109,11 @@ public class TroopService {
      * @return
      */
     public CombatAttributesVO getCombatAttributes(long cid) throws CityCardNotExistsException {
-        TroopCO squard = troopHelper.getByCid(cid);
+        TroopCO troop = troopHelper.getByCid(cid);
         CombatAttributesVO attributes = new CombatAttributesVO();
-        for (String ccId : squard.getMembers()) {
+        for (String ccId : troop.getMembers()) {
+            if (ccId == null)
+                continue;
             CityCardCO cc = cityCardHelper.get(new Long(ccId));
             attributes.setAttackMax(attributes.getAttackMax() + cc.getAttackMax());
             attributes.setAttackMin(attributes.getAttackMin() + cc.getAttackMin());
@@ -188,7 +190,8 @@ public class TroopService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public List<AttackTargetVO> searchAttackTarget(long uid, long cid, int pageNum) throws UserNotExistsException, UserIllegalParamterException {
+    public List<AttackTargetVO> searchAttackTarget(long uid, long cid, int pageNum) throws
+            UserNotExistsException, UserDontHaveThisCityException {
         return troopHelper.getAttackTarget(uid, cid, pageNum, Configuration.ATTACK_TARGET_PAGE_SIZE);
     }
 
@@ -207,7 +210,7 @@ public class TroopService {
      * @return
      */
     public HumanCardVO recruit(long uid, long cid, long sCardId, String sCityCard, int count, long uCardId)
-            throws UserNotExistsException, UserIllegalParamterException, SilverNotEnoughException, ServerErrorException, SquardCardNotEnoughSlotException, CityCardNotExistsException, SquardECardException, RecuitCardIsErrorException {
+            throws UserNotExistsException, SilverNotEnoughException, SquardCardNotEnoughSlotException, CityCardNotExistsException, SquardECardException, RecuitCardIsErrorException, EquipmentIsNotEnoughException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
         // 准备资源
         StorageCO storage = storageHelper.getByCid(cid);
@@ -224,10 +227,10 @@ public class TroopService {
         if (eCardId != Configuration.CARD.E_CARD_ID_DEFAULT_VALUE) {
             eCardAmountInStorage = new Integer(eCardData.get(eCardId + ""));
             if (eCardAmountInStorage < count) {
-                throw new ServerErrorException("eCardId=" + eCardId + " have " + eCardAmountInStorage + " in storage < " + count);
+                throw new EquipmentIsNotEnoughException("eCardId=" + eCardId + " have " + eCardAmountInStorage + " in storage < " + count);
             }
             if (!sCardData.get(sCardId + "").contains(sCityCard)) {
-                throw new ServerErrorException("cityCardId=" + sCityCard + " not in card data.cid=" + cid + " uid=" + uid);
+                throw new CityCardNotExistsException("cityCardId=" + sCityCard + " not in card data.cid=" + cid + " uid=" + uid);
             }
         }
         // 检查小队卡牌中是否已经设定了兵种，如果设定了兵种卡的话，就不可以用其他的卡了
@@ -244,7 +247,7 @@ public class TroopService {
 
         // 去掉相应的卡，和银币
         if (eCardId != Configuration.CARD.E_CARD_ID_DEFAULT_VALUE) {
-            // 如果为0的话，不需要删除卡
+            // 如果为-1的话，不需要删除卡
             eCardData.put(eCardId + "", eCardAmountInStorage - count + "");
         }
         city.setSilver(city.getSilver() - count * silverPerCard);

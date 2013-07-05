@@ -4,7 +4,7 @@ import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.StorageCO;
 import com.h13.cardgame.cache.co.TroopCO;
 import com.h13.cardgame.jupiter.exceptions.CityExistsException;
-import com.h13.cardgame.jupiter.exceptions.UserIllegalParamterException;
+import com.h13.cardgame.jupiter.exceptions.UserDontHaveThisCityException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.helper.*;
 import com.h13.cardgame.jupiter.utils.LogWriter;
@@ -38,7 +38,7 @@ public class CityService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void addEnergy(long uid, long cid, int value) throws UserNotExistsException, UserIllegalParamterException {
+    public void addEnergy(long uid, long cid, int value) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
         cityHelper.addEnergy(city, value);
         cityHelper.cache(city);
@@ -53,7 +53,7 @@ public class CityService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public void subEnergy(long uid, long cid, int value) throws UserNotExistsException, UserIllegalParamterException {
+    public void subEnergy(long uid, long cid, int value) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO captain = cityHelper.get(uid, cid);
         cityHelper.subEnergy(captain, value);
         cityHelper.cache(captain);
@@ -90,7 +90,7 @@ public class CityService {
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
      *
      */
-    public CityCO get(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public CityCO get(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
         LogWriter.info(LogWriter.CITY, "load city. " + city);
         return city;
@@ -104,7 +104,7 @@ public class CityService {
      * @param uid
      * @param cid
      */
-    public void flushEnergy(long uid, long cid) throws UserNotExistsException, UserIllegalParamterException {
+    public void flushEnergy(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cid);
         cityHelper.tryAddEnergy(city);
         cityHelper.cache(city);

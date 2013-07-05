@@ -3,9 +3,8 @@ package com.h13.cardgame.jupiter.controller;
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.jupiter.exceptions.CityExistsException;
-import com.h13.cardgame.jupiter.exceptions.UserIllegalParamterException;
+import com.h13.cardgame.jupiter.exceptions.UserDontHaveThisCityException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
-import com.h13.cardgame.jupiter.exceptions.ServerErrorException;
 import com.h13.cardgame.jupiter.service.CityService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
@@ -33,7 +32,7 @@ public class CityController {
     @Autowired
     CityService cityService;
 
-    @RequestMapping("/")
+    @RequestMapping("")
     @ResponseBody
     public String index(HttpServletRequest request, HttpServletResponse response) {
         long cid = -1;
@@ -46,12 +45,9 @@ public class CityController {
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
             return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
-        } catch (UserIllegalParamterException e) {
+        } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserIllegalParamterException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(-1, cid, ServerErrorException.CODE);
+            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
@@ -70,9 +66,6 @@ public class CityController {
         } catch (CityExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
             return DTOUtils.getFailureResponse(uid, -1, CityExistsException.CODE);
-        } catch (Exception e) {
-            LogWriter.error(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(uid, -1, ServerErrorException.CODE);
         }
     }
 

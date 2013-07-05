@@ -19,6 +19,24 @@ public class TaskVO {
     private int curCount;
     private int count;
     private long lastCommit;
+    private long cooldown;
+    private long lastTimeStamp;
+
+    public long getLastTimeStamp() {
+        return lastTimeStamp;
+    }
+
+    public void setLastTimeStamp(long lastTimeStamp) {
+        this.lastTimeStamp = lastTimeStamp;
+    }
+
+    public long getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(long cooldown) {
+        this.cooldown = cooldown;
+    }
 
     public long getLastCommit() {
         return lastCommit;
