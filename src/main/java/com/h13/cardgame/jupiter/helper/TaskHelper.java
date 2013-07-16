@@ -8,6 +8,7 @@ import com.h13.cardgame.jupiter.dao.TaskDAO;
 import com.h13.cardgame.jupiter.dao.TaskGroupDAO;
 import com.h13.cardgame.jupiter.exceptions.TaskGroupIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
+import com.h13.cardgame.jupiter.utils.RandomUtils;
 import com.h13.cardgame.jupiter.vo.CityCardVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,9 +159,9 @@ public class TaskHelper {
     public TaskRewardResultVO reward(CityCO city, TaskCO task)  {
         DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
         // 依次判断 exp ,silver 等是否有问题
-        int exp = randomCommonItem(dropGroup.getData().getExp());
-        int silver = randomCommonItem(dropGroup.getData().getSilver());
-        long cardId = randomCard(dropGroup.getData());
+        int exp = RandomUtils.randomCommonItem(dropGroup.getData().getExp());
+        int silver =RandomUtils.randomCommonItem(dropGroup.getData().getSilver());
+        long cardId = RandomUtils.randomCard(dropGroup.getData().getCardDropList(),dropGroup.getData().getWeightSum());
 
         city.setExp(city.getExp() + exp);
         city.setSilver(city.getSilver() + silver);
@@ -177,6 +178,8 @@ public class TaskHelper {
             case EQUIPMENT:
                 cardHelper.addEquipmentCard(city, cardCO);
                 break;
+            case CAPTAIN:
+                cardHelper.addCaptainCard(city,cardCO);
             default:
                 cardHelper.addSquardCard(city, cardCO);
         }
@@ -189,33 +192,7 @@ public class TaskHelper {
     }
 
 
-    /**
-     * 随机掉落item
-     *
-     * @param item
-     * @return
-     */
-    private int randomCommonItem(CommonRewardItemCO item) {
-        if (!item.isDrop())
-            return 0;
-        if (item.getMax() == item.getMin())
-            return item.getMax();
-        Random random = new Random();
-        int v = random.nextInt(item.getMax() - item.getMin());
-        return item.getMax() + v;
-    }
 
-    private long randomCard(DropGroupDataCO cardDropGroup) {
-        int weight = cardDropGroup.getWeightSum();
-        int random = new Random().nextInt(weight);
-        int v = 0;
-        for (CardRewardItemCO cardItem : cardDropGroup.getCardDropList()) {
-            v += cardItem.getWeight();
-            if (random < v)
-                return cardItem.getCardId();
-        }
-        return -1;
-    }
 
 
 }

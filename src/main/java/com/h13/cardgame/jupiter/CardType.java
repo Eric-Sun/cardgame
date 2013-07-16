@@ -19,5 +19,9 @@ public enum CardType {
     /**
      * 兵种卡牌
      */
-    UNITS
+    UNITS ,
+    /**
+     * 队长卡
+     */
+    CAPTAIN
 }

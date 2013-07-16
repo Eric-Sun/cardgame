@@ -6,14 +6,14 @@ package com.h13.cardgame.jupiter.exceptions;
  * Date: 13-3-18
  * Time: 下午4:05
  */
-public class RecuitCardIsErrorException extends Exception {
+public class RecruitCardIsErrorException extends Exception {
     public static String CODE = "1010015";
 
-    public RecuitCardIsErrorException(String msg) {
+    public RecruitCardIsErrorException(String msg) {
         super(msg);
     }
 
-    public RecuitCardIsErrorException(String msg, Throwable t) {
+    public RecruitCardIsErrorException(String msg, Throwable t) {
         super(msg, t);
     }
 }

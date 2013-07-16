@@ -8,12 +8,13 @@ package com.h13.cardgame.config;
  * To change this template use File | Settings | File Templates.
  */
 public class Configuration {
-    public static class CORE {
-        public static String ENERGY_UP_S = "scheduler:energy_up_s";
+    public static class CONFIG {
+        public static String ENERGY_UP_S = "energy_up_s";
+        public static String BAR_RANDOM_GROUP="bar_random_group";
     }
 
     public static class City {
-        public static String LEVEL = "captain:level";
+        public static int DEFAULT_CITY_BAR_SIZE_VALUE = 5;
     }
 
     public static class CARD {
@@ -26,6 +27,16 @@ public class Configuration {
         public static String E_CARD_ID_KEY = "eCardId";
         public static String SILVER_KEY = "silver";
         public static int E_CARD_ID_DEFAULT_VALUE = -1;
+    }
+
+    public static class CITY_CARD {
+        public static String ATTACK_MAX_KEY = "attackMax";
+        public static String ATTACK_MIN_KEY = "attackMin";
+        public static String DEFENCE_MAX_KEY = "defenceMax";
+        public static String DEFENCE_MIN_KEY = "defenceMin";
+        public static String MAX_SLOT_KEY = "maxSlot";
+        public static String CUR_SLOT_KEY = "curSlot";
+        public static String U_CARD_ID_KEY = "uCardId";
     }
 
     public static int ATTACK_TARGET_PAGE_SIZE = 10;

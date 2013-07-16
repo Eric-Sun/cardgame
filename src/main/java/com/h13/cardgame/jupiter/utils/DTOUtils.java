@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.jupiter.BaseDTO;
 import com.h13.cardgame.jupiter.Constants;
+import com.h13.cardgame.jupiter.vo.CaptainCityCardVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,6 +53,7 @@ public class DTOUtils {
 
     /**
      * 返回一个操作失败的结果
+     *
      * @param uid
      * @param cid
      * @param errorCode
@@ -62,6 +65,17 @@ public class DTOUtils {
         String json = JSON.toJSONString(list);
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;
+    }
+
+
+    public static CaptainCityCardVO toCaptianCtiyCardVO(CityCardCO cityCard) {
+        CaptainCityCardVO vo = new CaptainCityCardVO();
+        vo.setCardId(cityCard.getCardId());
+        vo.setId(cityCard.getId());
+        vo.setDesc(cityCard.getDesc());
+        vo.setIcon(cityCard.getIcon());
+        vo.setName(cityCard.getName());
+        return vo;
     }
 
 }

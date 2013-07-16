@@ -56,7 +56,7 @@ public class TroopHelper {
         return squard;
     }
 
-    public void flushAttributes(TroopCO squard) throws CityCardNotExistsException {
+    public void flushAttributes(TroopCO squard) throws CityCardNotExistsException, CityCardIsNotYoursException {
         String[] ccidList = squard.getMembers();
         squard.setAttackMax(0);
         squard.setAttackMin(0);
@@ -65,18 +65,18 @@ public class TroopHelper {
         for (String ccId : ccidList) {
             if (ccId == null)
                 continue;
-            CityCardCO cc = cityCardHelper.get(new Long(ccId));
-            squard.setAttackMax(squard.getAttackMax() + cc.getAttackMax());
-            squard.setAttackMin(squard.getAttackMin() + cc.getAttackMin());
-            squard.setDefenceMax(squard.getDefenceMax() + cc.getDefenceMax());
-            squard.setDefenceMin(squard.getDefenceMin() + cc.getDefenceMin());
+            CityCardCO cc = cityCardHelper.get(squard.getCityId(), new Long(ccId));
+            squard.setAttackMax(squard.getAttackMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+            squard.setAttackMin(squard.getAttackMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+            squard.setDefenceMax(squard.getDefenceMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+            squard.setDefenceMin(squard.getDefenceMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
         }
         troopDAO.updateAttributes(squard.getId(), squard.getAttackMax(), squard.getAttackMin(), squard.getDefenceMax(), squard.getDefenceMin());
     }
 
     public void on(long cityId, TroopCO troop, int index, long cityCardId) throws IndexOfTroopHaveAnotherCardException,
             CityCardIsOnListException, CityCardIsNotYoursException, CityCardNotExistsException {
-        if (cityCardHelper.get(cityCardId).getCityId() != cityId) {
+        if (cityCardHelper.get(cityId, cityCardId).getCityId() != cityId) {
             throw new CityCardIsNotYoursException("don't have the cityCard. cityCardId=" + cityCardId);
         }
         if (troop.getMembers()[index] != null)
@@ -95,7 +95,7 @@ public class TroopHelper {
 
 
     public void down(long cityId, TroopCO troop, int index, long cityCardId) throws IndexOfTroopHaveNoCardException, CityCardNotExistsException, CityCardIsNotYoursException {
-        if (cityCardHelper.get(cityCardId).getCityId() != cityId) {
+        if (cityCardHelper.get(cityId, cityCardId).getCityId() != cityId) {
             throw new CityCardIsNotYoursException("don't have the cityCard.cityId=" + cityId + " cityCardId=" + cityCardId);
         }
         if (troop.getMembers()[index] == null)

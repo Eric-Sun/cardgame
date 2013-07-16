@@ -81,13 +81,13 @@ public class CooldownHelper {
             LOG.debug("flush energy. exp is full.");
             return;
         }
-        if (currentTimeStamp - lastTimeStamp < new Long(configHelper.get(Configuration.CORE.ENERGY_UP_S))) {
+        if (currentTimeStamp - lastTimeStamp < new Long(configHelper.get(Configuration.CONFIG.ENERGY_UP_S))) {
             // 不够添加1个能量的，返回
             LOG.debug("flush energy. energy is not enough to add 1. return");
             return;
         } else {
             int energyWillAdd = new Long((currentTimeStamp - lastTimeStamp)
-                    / new Long(configHelper.get(Configuration.CORE.ENERGY_UP_S))).intValue();
+                    / new Long(configHelper.get(Configuration.CONFIG.ENERGY_UP_S))).intValue();
             // 添加能量
             boolean isFull = cityHelper.addEnergy(city, energyWillAdd);
             if (!isFull)

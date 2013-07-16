@@ -4,6 +4,7 @@ import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityTaskStatusCO;
 import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.service.CityCache;
+import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.dao.CityDAO;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.utils.LogWriter;
@@ -65,8 +66,9 @@ public class CityHelper {
      *
      * @param city
      * @param value
+     * @return true 表示已经满了
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
-     * @return  true 表示已经满了
+     *
      */
     public boolean addEnergy(CityCO city, int value) throws UserNotExistsException {
         //获得当前这个人物的满级的energy
@@ -132,6 +134,7 @@ public class CityHelper {
         city.setSilver(0);
         city.setUserId(uid);
         city.setName(name);
+        city.setBarSize(Configuration.City.DEFAULT_CITY_BAR_SIZE_VALUE);
         city.setTaskStatus(new CityTaskStatusCO());
         long cid = cityDAO.create(city);
         city.setId(cid);

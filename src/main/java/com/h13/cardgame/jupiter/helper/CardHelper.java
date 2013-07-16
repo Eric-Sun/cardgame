@@ -1,9 +1,6 @@
 package com.h13.cardgame.jupiter.helper;
 
-import com.h13.cardgame.cache.co.CityCO;
-import com.h13.cardgame.cache.co.CityCardCO;
-import com.h13.cardgame.cache.co.CardCO;
-import com.h13.cardgame.cache.co.StorageCO;
+import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.cache.service.CityCardCache;
 import com.h13.cardgame.cache.service.CardCache;
 import com.h13.cardgame.config.Configuration;
@@ -14,6 +11,7 @@ import com.h13.cardgame.jupiter.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -69,13 +67,24 @@ public class CardHelper {
         CityCardCO cityCard = new CityCardCO();
         cityCard.setCardId(card.getId());
         cityCard.setCardType(card.getCardType());
-        cityCard.setCurSlot(0);
+        cityCard.setData(new HashMap<String, String>());
+
+        // 初始化data
+        cityCardHelper.putSquardStringData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY, 0);
+        cityCardHelper.putSquardStringData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY, 0);
+        cityCardHelper.putSquardStringData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY, 0);
+        cityCardHelper.putSquardStringData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY, 0);
+        cityCardHelper.putSquardStringData(cityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY, Configuration.SQUARD.DEFAULT_SQUARD_U_CARD_ID_VALUE);
+
+
+        cityCardHelper.putSquardLongData(cityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY, 0);
         cityCard.setIcon(card.getIcon());
         cityCard.setName(card.getName());
         cityCard.setCityId(city.getId());
-        cityCard.setUCardId(0);
+        cityCardHelper.putSquardLongData(cityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY,
+                Configuration.SQUARD.DEFAULT_SQUARD_U_CARD_ID_VALUE);
         cityCard.setCardType(CardType.SQUARD);
-        cityCard.setMaxSlot(RandomUtils.random(getCardSpecData(card, Configuration.CARD.MIN_SLOT_KEY),
+        cityCardHelper.putSquardLongData(cityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY, RandomUtils.random(getCardSpecData(card, Configuration.CARD.MIN_SLOT_KEY),
                 getCardSpecData(card, Configuration.CARD.MAX_SLOT_KEY)));
         cityCardHelper.create(cityCard);
         // add to package
@@ -103,4 +112,19 @@ public class CardHelper {
             return new Integer(card.getSpecData().get(key));
     }
 
+    public void addCaptainCard(CityCO city, CardCO card) {
+        StorageCO storageCO = storageHelper.getByCid(city.getId());
+        CityCardCO cityCard = new CityCardCO();
+        cityCard.setCardId(card.getId());
+        cityCard.setCardType(card.getCardType());
+        cityCard.setData(new HashMap<String, String>());
+        cityCard.setIcon(card.getIcon());
+        cityCard.setName(card.getName());
+        cityCard.setCityId(city.getId());
+        cityCardHelper.create(cityCard);
+        storageHelper.addToSquardPackage(city.getUserId(), city.getId(),
+                card.getId(), cityCard.getId(), storageCO);
+        cityCardHelper.cache(cityCard);
+        storageHelper.cache(storageCO);
+    }
 }

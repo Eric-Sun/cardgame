@@ -58,9 +58,9 @@ public class UserDAO {
 
 
     public long login(String mail, String pwd) throws UserNameOrPwdErrorException {
-        String sql = "select id from user where mail=? and pwd=?";
+        String sql = "select id from user where mail=? and password=?";
         try {
-            long id = j.queryForLong(sql, new Object[]{});
+            long id = j.queryForLong(sql, new Object[]{mail, pwd});
             return id;
         } catch (Exception e) {
             throw new UserNameOrPwdErrorException("mail or pwd error. mail=" + mail + " pwd=" + pwd);

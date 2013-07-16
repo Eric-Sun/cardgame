@@ -37,7 +37,7 @@ public class CityDAO {
     JdbcQueueTemplate q;
 
     public CityCO get(long cid) throws UserNotExistsException {
-        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_status,cooldown_status from city where id=?";
+        String sql = "select id,user_id,name,level,exp,energy,gold,silver,task_status,cooldown_status,bar_size from city where id=?";
         List<CityCO> list = j.query(sql, new Object[]{cid}, new RowMapper<CityCO>() {
             @Override
             public CityCO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -52,6 +52,7 @@ public class CityDAO {
                 co.setSilver(rs.getInt(8));
                 co.setTaskStatus(JSON.parseObject(rs.getString(9), CityTaskStatusCO.class));
                 co.setCooldownStatus(JSON.parseObject(rs.getString(10), Map.class));
+                co.setBarSize(rs.getInt(11));
                 return co;
             }
         });
@@ -70,7 +71,7 @@ public class CityDAO {
     public long create(final CityCO city) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         final String sql = "insert into city (user_id,name,level,energy,gold,silver," +
-                "task_status,create_time,exp,cooldown_status)" +
+                "task_status,create_time,exp,cooldown_status,bar_size)" +
                 " values (?,?,?,?,?,?,?,now(),?,?)";
         j.update(new PreparedStatementCreator() {
             @Override
@@ -85,6 +86,7 @@ public class CityDAO {
                 pstmt.setString(7, JSON.toJSONString(city.getTaskStatus()));
                 pstmt.setInt(8, city.getExp());
                 pstmt.setString(9, JSON.toJSONString(city.getCooldownStatus()));
+                pstmt.setInt(10, city.getBarSize());
                 return pstmt;
             }
         }, keyHolder);
@@ -118,6 +120,11 @@ public class CityDAO {
 
     public void updateCooldownStatus(long id, String data) {
         String sql = "update city set cooldown_status=? where id=?";
-        q.update(sql, new Object[]{data,id });
+        q.update(sql, new Object[]{data, id});
+    }
+
+    public void updateBarSize(long cityId, int barSize) {
+        String sql = "update city set bar_size=? where id=?";
+        q.update(sql, new Object[]{barSize, cityId});
     }
 }

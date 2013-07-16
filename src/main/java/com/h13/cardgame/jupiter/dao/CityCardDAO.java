@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.jupiter.CardType;
@@ -17,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * cityCard 会保存在cache中
@@ -34,9 +36,7 @@ public class CityCardDAO {
     JdbcQueueTemplate q;
 
     public CityCardCO get(long id) {
-        String sql = "select id,city_id,card_id,name,card_type,icon,attack_min,attack_max," +
-                "               defence_min,defence_max,base_attack_min,base_attack_max,base_defence_min,base_defence_max," +
-                "max_slot,status,cur_slot,u_card_id" +
+        String sql = "select id,city_id,card_id,name,card_type,icon,data,status" +
                 "                 from city_card where id=?";
         return j.queryForObject(sql, new Object[]{id}, new RowMapper<CityCardCO>() {
             @Override
@@ -48,18 +48,8 @@ public class CityCardDAO {
                 cc.setName(rs.getString(4));
                 cc.setCardType(CardType.valueOf(rs.getString(5)));
                 cc.setIcon(rs.getString(6));
-                cc.setAttackMin(rs.getInt(7));
-                cc.setAttackMax(rs.getInt(8));
-                cc.setDefenceMin(rs.getInt(9));
-                cc.setDefenceMax(rs.getInt(10));
-                cc.setBaseAttackMin(rs.getInt(11));
-                cc.setBaseAttackMax(rs.getInt(12));
-                cc.setBaseDefenceMin(rs.getInt(13));
-                cc.setBaseDefenceMax(rs.getInt(14));
-                cc.setMaxSlot(rs.getInt(15));
-                cc.setStatus(rs.getInt(16));
-                cc.setCurSlot(rs.getInt(17));
-                cc.setUCardId(rs.getInt(18));
+                cc.setData(JSON.parseObject(rs.getString(7), Map.class));
+                cc.setStatus(rs.getInt(8));
                 return cc;
             }
         });
@@ -68,10 +58,8 @@ public class CityCardDAO {
 
     public CityCardCO add(final CityCardCO card) {
         KeyHolder holder = new GeneratedKeyHolder();
-        final String sql = "insert into city_card (city_id,name,icon,attack_max,attack_min," +
-                "defence_max,defence_min,base_attack_max,base_attack_min,base_defence_max,base_defence_min,create_time,card_id,cur_slot," +
-                "max_slot,card_type,u_card_id)" +
-                " values (?,?,?,?,?,?,?,?,?,?,?,now(),?,?,?,?,?)";
+        final String sql = "insert into city_card (city_id,name,icon,card_id,card_type,data,create_time)" +
+                " values (?,?,?,?,?,?,now())";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -79,19 +67,9 @@ public class CityCardDAO {
                 pstmt.setLong(1, card.getCityId());
                 pstmt.setString(2, card.getName());
                 pstmt.setString(3, card.getIcon());
-                pstmt.setInt(4, card.getAttackMax());
-                pstmt.setInt(5, card.getAttackMin());
-                pstmt.setInt(6, card.getDefenceMax());
-                pstmt.setInt(7, card.getDefenceMin());
-                pstmt.setInt(8, card.getAttackMax());
-                pstmt.setInt(9, card.getAttackMin());
-                pstmt.setInt(10, card.getDefenceMax());
-                pstmt.setInt(11, card.getDefenceMin());
-                pstmt.setLong(12, card.getCardId());
-                pstmt.setInt(13, card.getCurSlot());
-                pstmt.setInt(14, card.getMaxSlot());
-                pstmt.setString(15, card.getCardType().name());
-                pstmt.setLong(16, card.getUCardId());
+                pstmt.setLong(4, card.getCardId());
+                pstmt.setString(5, card.getCardType().name());
+                pstmt.setString(6, JSON.toJSONString(card.getData()));
                 return pstmt;
             }
         }, holder);
@@ -99,23 +77,8 @@ public class CityCardDAO {
         return card;
     }
 
-    public void setUnitCard(CityCardCO cc, long uCardId) {
-        String sql = "update city_card set u_card_id=? where id=?";
-        q.update(sql, new Object[]{uCardId, cc.getId()});
-    }
-
-    public void updateAttributes(CityCardCO cc) {
-        String sql = "update city_card set attack_max=?,attack_min=?,defence_max=?,defence_min=?,cur_slot=? where id=? ";
-        q.update(sql, new Object[]{cc.getAttackMax(), cc.getAttackMin(), cc.getDefenceMax(), cc.getDefenceMin(), cc.getCurSlot(), cc.getId()});
-    }
-
-    public void deleteCityCard(Long cityCardId) {
-        String sql = "update city_card set status=-1 where id=?";
-        q.update(sql, new Object[]{cityCardId});
-    }
-
-    public void updateUCardId(long cityCardId, long uCardId) {
-        String sql = "update city_card set u_card_id=? where id=?";
-        q.update(sql, new Object[]{uCardId, cityCardId});
+    public void updateData(CityCardCO cityCard) {
+        String sql = "update city_card set data=? where id=?";
+        q.update(sql, new Object[]{JSON.toJSONString(cityCard.getData()), cityCard.getId()});
     }
 }

@@ -19,8 +19,6 @@ import java.util.Map;
 public class T {
 
     public static void main(String[] args) {
-        Map<Long, Long> map = new HashMap<Long, Long>();
-
-
+        System.out.println("ok") ;
     }
 }

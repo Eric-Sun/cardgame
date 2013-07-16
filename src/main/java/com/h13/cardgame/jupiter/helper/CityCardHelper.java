@@ -1,10 +1,14 @@
 package com.h13.cardgame.jupiter.helper;
 
+import com.alibaba.fastjson.JSONObject;
 import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.service.CityCardCache;
+import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.dao.CityCardDAO;
+import com.h13.cardgame.jupiter.exceptions.CityCardIsNotYoursException;
 import com.h13.cardgame.jupiter.exceptions.CityCardNotExistsException;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import org.apache.commons.logging.Log;
@@ -12,13 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Created with IntelliJ IDEA.
- * User: sunbo
- * Date: 13-5-29
- * Time: 下午4:29
- * To change this template use File | Settings | File Templates.
- */
+import java.util.Map;
+
 @Service
 public class CityCardHelper {
     @Autowired
@@ -26,13 +25,18 @@ public class CityCardHelper {
     @Autowired
     CityCardCache cityCardCache;
 
-    public CityCardCO get(long ccId) throws CityCardNotExistsException {
-        CityCardCO cc = cityCardCache.get(ccId);
+    public CityCardCO get(long cityId, long cityCardId) throws CityCardNotExistsException,
+            CityCardIsNotYoursException {
+        CityCardCO cc = cityCardCache.get(cityCardId);
+
         if (cc == null) {
-            cc = cityCardDAO.get(ccId);
+            cc = cityCardDAO.get(cityCardId);
             if (cc == null)
-                throw new CityCardNotExistsException("cityCard not exists. cityCardId=" + ccId);
+                throw new CityCardNotExistsException("cityCard not exists. cityCardId=" + cityCardId);
             cityCardCache.put(cc);
+        }
+        if (cc.getCityId() != cityId) {
+           throw new CityCardIsNotYoursException("cityId="+cityId+" cityCardId="+cityCardId);
         }
         return cc;
     }
@@ -47,10 +51,33 @@ public class CityCardHelper {
     }
 
     public void updateAttributes(CityCardCO cc) {
-        cityCardDAO.updateAttributes(cc);
+        cityCardDAO.updateData(cc);
     }
 
     public void updateUCardId(CityCardCO squardCityCard, long uCardId) {
-        cityCardDAO.updateUCardId(squardCityCard.getId(), uCardId);
+        putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY, uCardId);
+        cityCardDAO.updateData(squardCityCard);
     }
+
+
+    public long getSquardLongData(Map data, String key) {
+        return new Long(((Map<String, String>) data).get(key).toString());
+    }
+
+    public int getSquardIntData(Map data, String key) {
+        return new Integer(((Map<String, String>) data).get(key).toString());
+    }
+
+    public String getSquardStringData(Map data, String key) {
+        return ((Map<String, String>) data).get(key).toString();
+    }
+
+    public void putSquardLongData(Map data, String key, Object value) {
+        ((Map<String, String>) data).put(key, value.toString());
+    }
+
+    public void putSquardStringData(Map data, String key, Object value) {
+        ((Map<String, String>) data).put(key, value.toString());
+    }
+
 }

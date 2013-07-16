@@ -68,6 +68,9 @@ public class TroopController {
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -85,6 +88,9 @@ public class TroopController {
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -159,6 +165,9 @@ public class TroopController {
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -172,20 +181,21 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             // 小队原卡牌的id
             long sCardId = new Long(request.getParameter("sCardId"));
-            // 小队卡的id                                          c1
+            // 小队卡的id
             String sCityCard = request.getParameter("sCityCard");
             // 合成几个兵
             int count = new Integer(request.getParameter("count"));
             // 合成的兵种
             long uCardId = new Long(request.getParameter("uCardId"));
-            HumanCardVO humanCardVO = troopService.recruit(uid, cid, sCardId, sCityCard, count, uCardId);
+            HumanCardVO humanCardVO = troopService.recruit(uid, cid, sCardId,
+                    sCityCard, count, uCardId);
             return DTOUtils.getSucessResponse(uid, cid, humanCardVO);
         } catch (SilverNotEnoughException e) {
-            LOG.error("error", e);
-            return DTOUtils.getFailureResponse(-1, cid, SilverNotEnoughException.CODE);
-        } catch (RecuitCardIsErrorException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, RecuitCardIsErrorException.CODE);
+            return DTOUtils.getFailureResponse(-1, cid, SilverNotEnoughException.CODE);
+        } catch (RecruitCardIsErrorException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, RecruitCardIsErrorException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
@@ -204,6 +214,9 @@ public class TroopController {
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 

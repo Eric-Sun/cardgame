@@ -20,10 +20,19 @@ public class CityCO {
     private int gold;
     private int silver;
     private CityTaskStatusCO taskStatus;
+    private int barSize;
     private Map<String, String> cooldownStatus = new HashMap<String, String>();
 
     public Map<String, String> getCooldownStatus() {
         return cooldownStatus;
+    }
+
+    public int getBarSize() {
+        return barSize;
+    }
+
+    public void setBarSize(int barSize) {
+        this.barSize = barSize;
     }
 
     public void setCooldownStatus(Map<String, String> cooldownStatus) {
