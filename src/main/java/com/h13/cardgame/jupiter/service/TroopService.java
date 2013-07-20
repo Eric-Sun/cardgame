@@ -4,15 +4,13 @@ import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.*;
+import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 部队的行为，战斗，等等
@@ -88,7 +86,7 @@ public class TroopService {
                 vo.getCardList().add(null);
                 continue;
             }
-            CityCardCO cityCard = cityCardHelper.get(troop.getCityId(),new Long(id));
+            CityCardCO cityCard = cityCardHelper.get(troop.getCityId(), new Long(id));
             CityCardVO cityCardVO = new CityCardVO();
             cityCardVO.setCardId(cityCard.getCardId());
             cityCardVO.setIcon(cityCard.getIcon());
@@ -114,7 +112,7 @@ public class TroopService {
         for (String ccId : troop.getMembers()) {
             if (ccId == null)
                 continue;
-            CityCardCO cc = cityCardHelper.get(cid,new Long(ccId));
+            CityCardCO cc = cityCardHelper.get(cid, new Long(ccId));
             attributes.setAttackMax(attributes.getAttackMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
             attributes.setAttackMin(attributes.getAttackMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
             attributes.setDefenceMax(attributes.getDefenceMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
@@ -135,7 +133,7 @@ public class TroopService {
         String[] list = squard.getMembers();
         List<CityCardVO> cList = new ArrayList<CityCardVO>();
         for (String ccId : list) {
-            CityCardCO cc = cityCardHelper.get(cid,new Long(ccId));
+            CityCardCO cc = cityCardHelper.get(cid, new Long(ccId));
             CityCardVO card = new CityCardVO();
             card.setId(cc.getCardId());
             card.setIcon(cc.getIcon());
@@ -213,7 +211,7 @@ public class TroopService {
         CityCO city = cityHelper.get(uid, cid);
         // 准备资源
         StorageCO storage = storageHelper.getByCid(cid);
-        CityCardCO squardCityCard = cityCardHelper.get(cid,new Long(sCityCard));
+        CityCardCO squardCityCard = cityCardHelper.get(cid, new Long(sCityCard));
         CardCO unitCard = cardHelper.get(uCardId);
         Map<String, String> eCardData = storage.getECardData();
         Map<String, List<String>> sCardData = storage.getSCardData();
@@ -300,5 +298,36 @@ public class TroopService {
         cardVO.setDefenceMin(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
 
         return cardVO;
+    }
+
+    public List<CaptainCityCardVO> getCaptainCityCards(long uid, long cid) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        List<CityCardCO> list = cityCardHelper.getCaptainCityCards(uid, cid);
+        List<CaptainCityCardVO> returnList = new LinkedList<CaptainCityCardVO>();
+        for (CityCardCO co : list) {
+            CaptainCityCardVO vo = DTOUtils.toCaptainCityCardVO(co);
+            returnList.add(vo);
+        }
+        return returnList;
+    }
+
+    public List<SquardCityCardVO> getSquardCityCards(long uid, long cid) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        List<CityCardCO> list = cityCardHelper.getSquardCityCards(uid, cid);
+        List<SquardCityCardVO> returnList = new LinkedList<SquardCityCardVO>();
+        for (CityCardCO cityCard : list) {
+            SquardCityCardVO vo = DTOUtils.toSquardCityCardVO(cityCard);
+            returnList.add(vo);
+        }
+        return returnList;
+    }
+
+    public CaptainCityCardVO getCaptainCityCard(long uid, long cid, long captainCityCardId) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        CityCardCO co = cityCardHelper.get(cid, captainCityCardId);
+        return DTOUtils.toCaptainCityCardVO(co);
+    }
+
+
+    public SquardCityCardVO getSquardCityCard(long uid, long cid, long squardCityCardId) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        CityCardCO co = cityCardHelper.get(cid, squardCityCardId);
+        return DTOUtils.toSquardCityCardVO(co);
     }
 }

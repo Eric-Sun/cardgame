@@ -2,6 +2,7 @@ package com.h13.cardgame.jupiter.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CardCO;
+import com.h13.cardgame.cache.co.UnitsCardCO;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,23 @@ public class CardDAO {
             return null;
         else
             return list.get(0);
+    }
+
+    public List<UnitsCardCO> getAllUnitsCards() {
+        String sql = "select id,name,icon,spec_data,`desc` from card where card_type='UNITS'";
+        List<UnitsCardCO> list = j.query(sql, new Object[]{}, new RowMapper<UnitsCardCO>() {
+            @Override
+            public UnitsCardCO mapRow(ResultSet rs, int i) throws SQLException {
+                UnitsCardCO co = new UnitsCardCO();
+                co.setId(rs.getLong(1));
+                co.setName(rs.getString(2));
+                co.setIcon(rs.getString(3));
+                co.setDesc(rs.getString(5));
+                co.setSpecData(JSON.parseObject(rs.getString(4), Map.class));
+                return co;
+            }
+        });
+        return list;
     }
 
 }

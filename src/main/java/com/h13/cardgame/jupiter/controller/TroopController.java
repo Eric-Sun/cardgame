@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.controller;
 
+import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.service.TroopService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
@@ -221,4 +222,108 @@ public class TroopController {
     }
 
 
+    /**
+     * 获得所有的队长城市卡
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/captainCityCards")
+    @ResponseBody
+    public String captainCityCards(HttpServletRequest request, HttpServletResponse response) {
+        long uid = -1;
+        long cid = -1;
+        try {
+            uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
+            List<CaptainCityCardVO> list = troopService.getCaptainCityCards(uid, cid);
+            return DTOUtils.getSucessResponse(uid, cid, list);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        }
+
+    }
+
+
+    @RequestMapping("/squardCityCards")
+    @ResponseBody
+    public String squardCityCards(HttpServletRequest request, HttpServletResponse response) {
+        long uid = -1;
+        long cid = -1;
+        try {
+            uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
+            List<SquardCityCardVO> list = troopService.getSquardCityCards(uid, cid);
+            return DTOUtils.getSucessResponse(uid, cid, list);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        }
+
+    }
+
+
+    /**
+     * 获得单张的队长城市卡具体信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/captainCityCard")
+    @ResponseBody
+    public String captainCityCard(HttpServletRequest request, HttpServletResponse response) {
+        long uid = -1;
+        long cid = -1;
+        try {
+            uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
+            long captainCityCardId = new Long(request.getParameter("captainCityCardId"));
+            CaptainCityCardVO vo = troopService.getCaptainCityCard(uid, cid, captainCityCardId);
+            return DTOUtils.getSucessResponse(uid, cid, vo);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+        }
+
+    }
+
+
+    /**
+     * 获得单张小队城市卡的具体信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/squardCityCard")
+    @ResponseBody
+    public String squardCityCard(HttpServletRequest request, HttpServletResponse response) {
+        long uid = -1;
+        long cid = -1;
+        try {
+            uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
+            long squardCityCardId = new Long(request.getParameter("squardCityCardId"));
+            SquardCityCardVO vo = troopService.getSquardCityCard(uid, cid, squardCityCardId);
+            return DTOUtils.getSucessResponse(uid, cid, vo);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+        }
+    }
 }

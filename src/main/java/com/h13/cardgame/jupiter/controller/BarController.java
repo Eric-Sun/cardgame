@@ -8,9 +8,11 @@ import com.h13.cardgame.jupiter.service.BarService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.BarVO;
+import com.h13.cardgame.jupiter.vo.CaptainCardVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,7 @@ public class BarController {
      * @return
      */
     @RequestMapping("")
+    @ResponseBody
     public String show(HttpServletRequest request, HttpServletResponse response) {
         long uid = -1;
         long cid = -1;
@@ -51,6 +54,12 @@ public class BarController {
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, CityCardNotExistsException.CODE);
+        } catch (UserDontHaveThisCityException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
+        } catch (UserNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
         }
     }
 
@@ -63,25 +72,20 @@ public class BarController {
      * @return
      */
     @RequestMapping("/captain")
+    @ResponseBody
     public String captain(HttpServletRequest request, HttpServletResponse response) {
         long uid = -1;
         long cid = -1;
-        try {
-            uid = new Long(request.getParameter("uid"));
-            cid = new Long(request.getParameter("cid"));
-            BarVO bar = barService.show(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, bar);
-        } catch (CityCardIsNotYoursException e) {
-            LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardIsNotYoursException.CODE);
-        } catch (CityCardNotExistsException e) {
-            LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardNotExistsException.CODE);
-        }
+        uid = new Long(request.getParameter("uid"));
+        cid = new Long(request.getParameter("cid"));
+        long cardId = new Long(request.getParameter("cardId"));
+        CaptainCardVO card = barService.getCaptainCard(uid, cid, cardId);
+        return DTOUtils.getSucessResponse(uid, cid, card);
     }
 
 
     @RequestMapping("/recruit")
+    @ResponseBody
     public String recruit(HttpServletRequest request, HttpServletResponse response) {
 
         long uid = -1;

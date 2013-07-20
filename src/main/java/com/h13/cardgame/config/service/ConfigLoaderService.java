@@ -29,7 +29,7 @@ public class ConfigLoaderService {
     public void load() throws LoadException {
         List<ConfigCO> list = configDAO.loadAll();
         for (ConfigCO conf : list) {
-            confCache.put(conf.getKey() + "," + conf.getValue());
+            confCache.put(conf.getKey() + "#" + conf.getValue());
             LOG.info("load config. " + conf.toString());
         }
         LOG.info("Load all config successfully.");

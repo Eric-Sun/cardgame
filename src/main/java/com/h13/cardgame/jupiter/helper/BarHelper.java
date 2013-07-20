@@ -44,7 +44,7 @@ public class BarHelper {
      *
      * @param cityId
      */
-    public void flushBar(long uid, long cityId) throws UserNotExistsException, UserDontHaveThisCityException {
+    public BarCO flushBar(long uid, long cityId) throws UserNotExistsException, UserDontHaveThisCityException {
         CityCO city = cityHelper.get(uid, cityId);
         int barSize = city.getBarSize();
         BarCO bar = new BarCO();
@@ -52,6 +52,7 @@ public class BarHelper {
         bar.setSize(barSize);
         bar.setList(doRandomCardList(barSize));
         barCache.put(bar);
+        return bar;
     }
 
     /**
@@ -74,8 +75,11 @@ public class BarHelper {
     }
 
 
-    public BarCO show(long cid) {
-        return barCache.get(cid);
+    public BarCO show(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
+        BarCO bar = barCache.get(cid);
+        if (bar == null)
+            bar = flushBar(uid, cid);
+        return bar;
     }
 
     private List<String> doRandomCardList(int barSize) {

@@ -3,7 +3,10 @@ package com.h13.cardgame.jupiter.helper;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.cache.service.CityCardCache;
 import com.h13.cardgame.cache.service.CardCache;
+import com.h13.cardgame.cache.service.UnitsCardCache;
 import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.config.exception.LoadException;
+import com.h13.cardgame.config.service.UnitsCardLoaderService;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.dao.CityCardDAO;
 import com.h13.cardgame.jupiter.dao.CardDAO;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,6 +36,12 @@ public class CardHelper {
     StorageHelper storageHelper;
     @Autowired
     CityCardHelper cityCardHelper;
+
+    @Autowired
+    UnitsCardLoaderService unitsCardLoaderService;
+
+    @Autowired
+    UnitsCardCache unitsCardCache;
 
     public CardCO get(long cardId) {
         CardCO card = cardCache.get(cardId);
@@ -122,9 +132,18 @@ public class CardHelper {
         cityCard.setName(card.getName());
         cityCard.setCityId(city.getId());
         cityCardHelper.create(cityCard);
-        storageHelper.addToSquardPackage(city.getUserId(), city.getId(),
+        storageHelper.addToCaptainPackage(city.getUserId(), city.getId(),
                 card.getId(), cityCard.getId(), storageCO);
         cityCardHelper.cache(cityCard);
         storageHelper.cache(storageCO);
+    }
+
+
+    public List<UnitsCardCO> getAllUnitsCards() throws LoadException {
+        List<UnitsCardCO> list = unitsCardCache.getAll();
+        if (null == list) {
+            list = unitsCardLoaderService.load();
+        }
+        return list;
     }
 }

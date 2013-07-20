@@ -39,7 +39,8 @@ public class StorageDAO {
 
 
     public StorageCO getByCid(long cid) {
-        String sql = "select id,city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data from storage where city_id=?";
+        String sql = "select id,city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,captain_card_data,captain_current" +
+                " from storage where city_id=?";
         return j.queryForObject(sql, new Object[]{cid}, new RowMapper<StorageCO>() {
             @Override
             public StorageCO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -52,6 +53,8 @@ public class StorageDAO {
                 p.setEMax(rs.getInt(6));
                 p.setECurrent(rs.getInt(7));
                 p.setECardData(JSON.parseObject(rs.getString(8), Map.class));
+                p.setCaptainCardData(JSON.parseObject(rs.getString(9), Map.class));
+                p.setCaptainCurrent(rs.getInt(10));
                 return p;
             }
         });
@@ -59,6 +62,11 @@ public class StorageDAO {
 
     public void updateSCardData(long cid, int current, String cardData) {
         String sql = "update storage set scard_data=?,s_current=? where city_id=?";
+        q.update(sql, new Object[]{cardData, current, cid});
+    }
+
+    public void updateCaptainCardData(long cid, int current, String cardData) {
+        String sql = "update storage set captain_card_data=?,captain_current=? where city_id=?";
         q.update(sql, new Object[]{cardData, current, cid});
     }
 
@@ -85,6 +93,8 @@ public class StorageDAO {
                 pstmt.setInt(5, storageCO.getEMax());
                 pstmt.setInt(6, storageCO.getECurrent());
                 pstmt.setString(7, JSON.toJSONString(storageCO.getECardData()));
+                pstmt.setString(8, JSON.toJSONString(storageCO.getCaptainCardData()));
+                pstmt.setInt(9, storageCO.getCaptainCurrent());
                 return pstmt;
             }
         }, holder);

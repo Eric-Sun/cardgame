@@ -26,8 +26,8 @@ public class ConfigurationCache {
 
 
     public void put(String obj) {
-        String confKey = obj.split(",")[0];
-        String confValue = obj.split(",")[1];
+        String confKey = obj.split("#")[0];
+        String confValue = obj.split("#")[1];
         String key = PREFIX + confKey;
         configurationCOTemplate.opsForValue().set(key, confValue);
     }

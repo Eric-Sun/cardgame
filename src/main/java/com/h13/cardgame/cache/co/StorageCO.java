@@ -23,6 +23,32 @@ public class StorageCO {
     private int eMax;
     private int eCurrent;
     private Map<String, String> eCardData = new HashMap<String, String>();
+    private Map<String, List<String>> captainCardData = new HashMap<String, List<String>>();
+    private int captainCurrent;
+
+    public Map<String, List<String>> getCaptainCardData() {
+        return captainCardData;
+    }
+
+    public void setCaptainCardData(Map<String, List<String>> captainCardData) {
+        this.captainCardData = captainCardData;
+    }
+
+    public int getCaptainCurrent() {
+        return captainCurrent;
+    }
+
+    public void setCaptainCurrent(int captainCurrent) {
+        this.captainCurrent = captainCurrent;
+    }
+
+    public int getsMax() {
+        return sMax;
+    }
+
+    public void setsMax(int sMax) {
+        this.sMax = sMax;
+    }
 
     @Override
     public String toString() {

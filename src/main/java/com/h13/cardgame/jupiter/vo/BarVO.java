@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class BarVO {
 
-    private List<CaptainCityCardVO> list = new LinkedList<CaptainCityCardVO>();
+    private List<CaptainCardVO> list = new LinkedList<CaptainCardVO>();
 
     @Override
     public String toString() {
@@ -21,11 +21,11 @@ public class BarVO {
                 '}';
     }
 
-    public List<CaptainCityCardVO> getList() {
+    public List<CaptainCardVO> getList() {
         return list;
     }
 
-    public void setList(List<CaptainCityCardVO> list) {
+    public void setList(List<CaptainCardVO> list) {
         this.list = list;
     }
 }

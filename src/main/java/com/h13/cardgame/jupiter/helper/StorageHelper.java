@@ -66,6 +66,28 @@ public class StorageHelper {
     }
 
     /**
+     * 添加到队长城市卡的仓库中
+     *
+     * @param uid
+     * @param cid
+     * @param cardId
+     * @param captainCityCardId
+     * @param storageCO
+     */
+    public void addToCaptainPackage(long uid, long cid, long cardId, long captainCityCardId, StorageCO storageCO) {
+        if (storageCO.getCaptainCardData().containsKey(cardId + "")) {
+            storageCO.getCaptainCardData().get(cardId + "").add(captainCityCardId + "");
+        } else {
+            ArrayList<String> ccList = new ArrayList<String>();
+            ccList.add(captainCityCardId + "");
+            storageCO.getCaptainCardData().put(cardId + "", ccList);
+        }
+        int current = generateStorageCurrentSizeFromData(storageCO, CardType.CAPTAIN);
+        storageDAO.updateCaptainCardData(cid, current, JSON.toJSONString(storageCO.getCaptainCardData()));
+        LogWriter.info(LogWriter.PACKAGE, "add captain package", uid, cid, cardId, captainCityCardId);
+    }
+
+    /**
      * 查看装备仓库是不是满了
      *
      * @param storage
@@ -138,6 +160,17 @@ public class StorageHelper {
         return storageCO.getECurrent();
     }
 
+
+    /**
+     * 查看装备队长城市卡仓库信息
+     *
+     * @param storageCO
+     * @return
+     */
+    public int getCaptainStorageCurrentSize(StorageCO storageCO) {
+        return storageCO.getCaptainCurrent();
+    }
+
     public void cache(StorageCO storageCO) {
         storageCache.put(storageCO);
     }
@@ -185,6 +218,13 @@ public class StorageHelper {
                     i2 += new Integer(dataMap2.get(key2));
                 }
                 return i2;
+            case CAPTAIN:
+                Map<String,List<String>> dataMap3 = storageCO.getCaptainCardData();
+                int i3 =0;
+                for (String key3 : dataMap3.keySet()){
+                    i3 +=new Integer(dataMap3.get(key3).size());
+                }
+                return i3;
         }
         return 0;
     }

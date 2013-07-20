@@ -31,6 +31,8 @@ public class ConfigStarter {
     CardLoaderService cardLoaderService;
     @Autowired
     DropGroupLoaderService dropGroupLoaderService;
+    @Autowired
+    UnitsCardLoaderService unitsCardLoaderService;
 
     public void init() {
         try {
@@ -40,6 +42,7 @@ public class ConfigStarter {
             configLoaderService.load();
             cardLoaderService.load();
             dropGroupLoaderService.load();
+            unitsCardLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);

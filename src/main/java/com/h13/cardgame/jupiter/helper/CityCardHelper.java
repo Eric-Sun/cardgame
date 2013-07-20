@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityCardCO;
+import com.h13.cardgame.cache.co.StorageCO;
 import com.h13.cardgame.cache.service.CityCardCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.CardType;
@@ -16,6 +17,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,6 +27,22 @@ public class CityCardHelper {
     CityCardDAO cityCardDAO;
     @Autowired
     CityCardCache cityCardCache;
+    @Autowired
+    StorageHelper storageHelper;
+
+    public List<CityCardCO> getCaptainCityCards(long uid, long cid) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        StorageCO storage = storageHelper.getByCid(cid);
+        List<CityCardCO> list = new LinkedList<CityCardCO>();
+        Map<String, List<String>> map = storage.getCaptainCardData();
+        for (String key : map.keySet()) {
+            List<String> idList = map.get(key);
+            for (String id : idList) {
+                CityCardCO co = get(cid, new Long(id));
+                list.add(co);
+            }
+        }
+        return list;
+    }
 
     public CityCardCO get(long cityId, long cityCardId) throws CityCardNotExistsException,
             CityCardIsNotYoursException {
@@ -36,7 +55,7 @@ public class CityCardHelper {
             cityCardCache.put(cc);
         }
         if (cc.getCityId() != cityId) {
-           throw new CityCardIsNotYoursException("cityId="+cityId+" cityCardId="+cityCardId);
+            throw new CityCardIsNotYoursException("cityId=" + cityId + " cityCardId=" + cityCardId);
         }
         return cc;
     }
@@ -60,24 +79,37 @@ public class CityCardHelper {
     }
 
 
-    public long getSquardLongData(Map data, String key) {
+    public static long getSquardLongData(Map data, String key) {
         return new Long(((Map<String, String>) data).get(key).toString());
     }
 
-    public int getSquardIntData(Map data, String key) {
+    public static int getSquardIntData(Map data, String key) {
         return new Integer(((Map<String, String>) data).get(key).toString());
     }
 
-    public String getSquardStringData(Map data, String key) {
+    public static String getSquardStringData(Map data, String key) {
         return ((Map<String, String>) data).get(key).toString();
     }
 
-    public void putSquardLongData(Map data, String key, Object value) {
+    public static void putSquardLongData(Map data, String key, Object value) {
         ((Map<String, String>) data).put(key, value.toString());
     }
 
-    public void putSquardStringData(Map data, String key, Object value) {
+    public static void putSquardStringData(Map data, String key, Object value) {
         ((Map<String, String>) data).put(key, value.toString());
     }
 
+    public List<CityCardCO> getSquardCityCards(long uid, long cid) throws CityCardNotExistsException, CityCardIsNotYoursException {
+        StorageCO storage = storageHelper.getByCid(cid);
+        List<CityCardCO> list = new LinkedList<CityCardCO>();
+        Map<String, List<String>> map = storage.getSCardData();
+        for (String key : map.keySet()) {
+            List<String> idList = map.get(key);
+            for (String id : idList) {
+                CityCardCO co = get(cid, new Long(id));
+                list.add(co);
+            }
+        }
+        return list;
+    }
 }
