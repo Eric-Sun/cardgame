@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 @Service
 public class StorageCache {
 
-    private static String PREFIX = "cg:package:";
+    private static String PREFIX = "cg:storage:";
 
     @Resource(name = "storageCOTemplate")
     private RedisTemplate<String, StorageCO> packageCOTemplate;

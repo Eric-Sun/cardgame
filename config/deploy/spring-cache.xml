@@ -125,6 +125,27 @@
           p:valueSerializer-ref="dropGroupCOSerailizer">
     </bean>
 
+    <!-- bar -->
+    <bean id="barCOSerailizer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.BarCO"/>
+    </bean>
+    <bean id="barTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="barCOSerailizer">
+    </bean>
+
+    <!-- units card -->
+    <bean id="unitsCardSerailizer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.UnitsCardCO"/>
+    </bean>
+    <bean id="unitsCardTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="unitsCardSerailizer">
+    </bean>
+
+
 
     <!-- config -->
     <bean id="redisStringConfigurationCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
