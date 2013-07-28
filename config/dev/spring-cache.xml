@@ -60,6 +60,39 @@
     </bean>
     <!-- -->
 
+    <!-- captainLevel -->
+    <bean id="captainLevelSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainLevelCO"/>
+    </bean>
+    <bean id="captainLevelTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="captainLevelSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- captainLevel -->
+    <bean id="skillSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.SkillCO"/>
+    </bean>
+    <bean id="skillTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="skillSerializer"
+          p:valueSerializer-ref="skillSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- captainLevel -->
+    <bean id="captainTitleSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainTitleCO"/>
+    </bean>
+    <bean id="captainTitleTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="captainTitleSerializer">
+    </bean>
+    <!-- -->
+
     <!-- city -->
 
     <bean id="citySerializer"

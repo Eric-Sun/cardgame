@@ -1,14 +1,18 @@
 package com.h13.cardgame.jupiter.helper;
 
 import com.alibaba.fastjson.JSON;
+import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.co.StorageCO;
 import com.h13.cardgame.cache.service.StorageCache;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.dao.StorageDAO;
+import com.h13.cardgame.jupiter.exceptions.CaptainStorageIsFullException;
 import com.h13.cardgame.jupiter.exceptions.EquipmentStorageIsFullException;
 import com.h13.cardgame.jupiter.exceptions.SquardStorageIsFullException;
 import com.h13.cardgame.jupiter.utils.LogWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,7 @@ import java.util.Map;
  */
 @Service
 public class StorageHelper {
+    private static Log LOG = LogFactory.getLog(StorageHelper.class);
 
     @Autowired
     StorageDAO storageDAO;
@@ -98,6 +103,16 @@ public class StorageHelper {
     }
 
     /**
+     * 查看装备仓库是不是满了
+     *
+     * @param storage
+     * @return
+     */
+    public boolean isCaptainStorageFull(StorageCO storage) {
+        return storage.getCaptainCurrent() >= storage.getCaptainMax() ? true : false;
+    }
+
+    /**
      * 小队卡牌仓库是不是满了
      *
      * @param storage
@@ -135,6 +150,8 @@ public class StorageHelper {
         storage.setSCurrent(0);
         storage.setEMax(level.getEStorageSize());
         storage.setECurrent(0);
+        storage.setCaptainMax(level.getCaptainStorageSize());
+        storage.setCaptainCurrent(0);
         storageDAO.create(storage);
         return storage;
     }
@@ -219,20 +236,46 @@ public class StorageHelper {
                 }
                 return i2;
             case CAPTAIN:
-                Map<String,List<String>> dataMap3 = storageCO.getCaptainCardData();
-                int i3 =0;
-                for (String key3 : dataMap3.keySet()){
-                    i3 +=new Integer(dataMap3.get(key3).size());
+                Map<String, List<String>> dataMap3 = storageCO.getCaptainCardData();
+                int i3 = 0;
+                for (String key3 : dataMap3.keySet()) {
+                    i3 += new Integer(dataMap3.get(key3).size());
                 }
                 return i3;
         }
         return 0;
     }
 
-    public void checkAllStorageIsFull(StorageCO storage) throws EquipmentStorageIsFullException, SquardStorageIsFullException {
+    public void checkAllStorageIsFull(StorageCO storage) throws EquipmentStorageIsFullException, SquardStorageIsFullException, CaptainStorageIsFullException {
         if (isEquipmentStorageFull(storage))
             throw new EquipmentStorageIsFullException("cid=" + storage.getCityId() + " equipment storage is full.");
+        if (isCaptainStorageFull(storage))
+            throw new CaptainStorageIsFullException("cid=" + storage.getCityId() + " equipment storage is full.");
         if (isSquardStorageFull(storage))
             throw new SquardStorageIsFullException("cid=" + storage.getCityId() + " squard storage is full.");
+    }
+
+
+    /**
+     * 检查captain仓库中是否有对应的城市卡
+     *
+     * @param storage
+     * @return
+     */
+    public boolean haveTheCaptainCard(StorageCO storage, CityCardCO captainCityCard) {
+        return storage.getCaptainCardData().get(captainCityCard.getCardId()+"").contains(captainCityCard.getId()+"");
+    }
+
+    /**
+     * 从小队城市卡仓库中去掉这张卡
+     *
+     * @param storageCO
+     * @param cityCard
+     */
+    public void removeCaptainCityCard(StorageCO storageCO, CityCardCO cityCard) {
+        Map<String, List<String>> data = storageCO.getCaptainCardData();
+        List<String> list = data.get(cityCard.getCardId() + "");
+        list.remove(cityCard.getId() + "");
+        LOG.debug("storage remove card. cityId=" + storageCO.getCityId() + " cityCardId=" + cityCard.getId());
     }
 }

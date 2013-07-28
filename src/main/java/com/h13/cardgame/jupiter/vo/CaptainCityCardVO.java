@@ -13,6 +13,51 @@ public class CaptainCityCardVO {
     private String name;
     private String icon;
     private String desc;
+    private int level;
+    private int levelExp;
+    private int title;
+    private int titleExp;
+    private SkillVO skill;
+
+    public SkillVO getSkill() {
+        return skill;
+    }
+
+    public void setSkill(SkillVO skill) {
+        this.skill = skill;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevelExp() {
+        return levelExp;
+    }
+
+    public void setLevelExp(int levelExp) {
+        this.levelExp = levelExp;
+    }
+
+    public int getTitle() {
+        return title;
+    }
+
+    public void setTitle(int title) {
+        this.title = title;
+    }
+
+    public int getTitleExp() {
+        return titleExp;
+    }
+
+    public void setTitleExp(int titleExp) {
+        this.titleExp = titleExp;
+    }
 
     @Override
     public String toString() {

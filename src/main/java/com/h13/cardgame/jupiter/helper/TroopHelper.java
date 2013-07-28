@@ -8,6 +8,7 @@ import com.h13.cardgame.cache.service.TroopCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.dao.TroopDAO;
 import com.h13.cardgame.jupiter.exceptions.*;
+import com.h13.cardgame.jupiter.utils.DataUtils;
 import com.h13.cardgame.jupiter.vo.AttackTargetVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,10 +67,10 @@ public class TroopHelper {
             if (ccId == null)
                 continue;
             CityCardCO cc = cityCardHelper.get(squard.getCityId(), new Long(ccId));
-            squard.setAttackMax(squard.getAttackMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-            squard.setAttackMin(squard.getAttackMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-            squard.setDefenceMax(squard.getDefenceMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-            squard.setDefenceMin(squard.getDefenceMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+            squard.setAttackMax(squard.getAttackMax() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+            squard.setAttackMin(squard.getAttackMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+            squard.setDefenceMax(squard.getDefenceMax() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+            squard.setDefenceMin(squard.getDefenceMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
         }
         troopDAO.updateAttributes(squard.getId(), squard.getAttackMax(), squard.getAttackMin(), squard.getDefenceMax(), squard.getDefenceMin());
     }

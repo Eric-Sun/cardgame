@@ -72,7 +72,7 @@ public class CityDAO {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         final String sql = "insert into city (user_id,name,level,energy,gold,silver," +
                 "task_status,create_time,exp,cooldown_status,bar_size)" +
-                " values (?,?,?,?,?,?,?,now(),?,?)";
+                " values (?,?,?,?,?,?,?,now(),?,?,?)";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {

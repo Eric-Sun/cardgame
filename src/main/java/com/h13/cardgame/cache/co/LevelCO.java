@@ -16,6 +16,15 @@ public class LevelCO {
     private int sStorageSize;
     private int eStorageSize;
     private int troopSize;
+    private int captainStorageSize;
+
+    public int getCaptainStorageSize() {
+        return captainStorageSize;
+    }
+
+    public void setCaptainStorageSize(int captainStorageSize) {
+        this.captainStorageSize = captainStorageSize;
+    }
 
     public int getTroopSize() {
         return troopSize;

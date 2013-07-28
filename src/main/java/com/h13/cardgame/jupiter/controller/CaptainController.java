@@ -1,5 +1,6 @@
 package com.h13.cardgame.jupiter.controller;
 
+import com.h13.cardgame.jupiter.exceptions.CaptainCityCardLevelIsTopException;
 import com.h13.cardgame.jupiter.exceptions.CityCardIsNotYoursException;
 import com.h13.cardgame.jupiter.exceptions.CityCardNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.SilverNotEnoughException;
@@ -28,8 +29,11 @@ public class CaptainController {
         long cid = -1;
         long uid = -1;
         long captainCityCardId = -1;
-        try{
-            CaptainCityCardVO captainCityCard = captainService.get(uid, cid, captainCityCardId) ;
+        try {
+            cid = new Long(request.getParameter("cid"));
+            uid = new Long(request.getParameter("uid"));
+            captainCityCardId = new Long(request.getParameter("captainCityCardId"));
+            CaptainCityCardVO captainCityCard = captainService.get(uid, cid, captainCityCardId);
             return DTOUtils.getSucessResponse(uid, cid, captainCityCard);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
@@ -37,6 +41,27 @@ public class CaptainController {
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, SilverNotEnoughException.CODE);
+        }
+    }
+
+    @RequestMapping("/upgradeLevel")
+    public String upgradeLevel(HttpServletRequest request, HttpServletResponse response) {
+        long cid = -1;
+        long uid = -1;
+        try {
+            long captainCityCardId = new Long(request.getParameter("captainCityCardId"));
+            String otherCaptainCityCardIdArray = request.getParameter("otherCaptainCityCardIdArray");
+            captainService.upgradeCaptainLevel(uid, cid, captainCityCardId, otherCaptainCityCardIdArray);
+            return DTOUtils.getOriginalResponse(uid, cid);
+        } catch (CityCardIsNotYoursException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, CityCardIsNotYoursException.CODE);
+        } catch (CityCardNotExistsException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, CityCardNotExistsException.CODE);
+        } catch (CaptainCityCardLevelIsTopException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, CaptainCityCardLevelIsTopException.CODE);
         }
     }
 

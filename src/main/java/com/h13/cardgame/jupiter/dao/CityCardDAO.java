@@ -81,4 +81,5 @@ public class CityCardDAO {
         String sql = "update city_card set data=? where id=?";
         q.update(sql, new Object[]{JSON.toJSONString(cityCard.getData()), cityCard.getId()});
     }
+
 }

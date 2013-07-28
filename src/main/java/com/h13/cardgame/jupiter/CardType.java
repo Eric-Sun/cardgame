@@ -23,5 +23,6 @@ public enum CardType {
     /**
      * 队长卡
      */
-    CAPTAIN
+    CAPTAIN,
+    SKILL
 }

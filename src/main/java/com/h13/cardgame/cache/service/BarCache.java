@@ -26,7 +26,6 @@ public class BarCache {
         barCOTemplate.opsForValue().set(key, bar);
     }
 
-
     public BarCO get(long cid) {
         String key = PREFIX + cid;
         BarCO bar = barCOTemplate.opsForValue().get(key);

@@ -5,6 +5,7 @@ import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.config.exception.LoadException;
 import com.h13.cardgame.jupiter.helper.CardHelper;
 import com.h13.cardgame.jupiter.helper.CityCardHelper;
+import com.h13.cardgame.jupiter.utils.DataUtils;
 import com.h13.cardgame.jupiter.vo.UnitsCardVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,12 @@ public class CommonService {
             vo.setIcon(co.getIcon());
             vo.setName(co.getName());
             vo.setDesc(co.getDesc());
-            vo.setAttackMax(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.ATTACK_MAX_KEY));
-            vo.setAttackMin(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.ATTACK_MIN_KEY));
-            vo.setDefenceMax(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.DEFENCE_MAX_KEY));
-            vo.setDefenceMin(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.DEFENCE_MIN_KEY));
-            vo.setSilver(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.SILVER_KEY));
-            vo.seteCardId(CityCardHelper.getSquardIntData(co.getSpecData(), Configuration.CARD.E_CARD_ID_KEY));
+            vo.setAttackMax(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.ATTACK_MAX_KEY));
+            vo.setAttackMin(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.ATTACK_MIN_KEY));
+            vo.setDefenceMax(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.DEFENCE_MAX_KEY));
+            vo.setDefenceMin(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.DEFENCE_MIN_KEY));
+            vo.setSilver(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.SILVER_KEY));
+            vo.seteCardId(DataUtils.getSquardIntData(co.getSpecData(), Configuration.CARD.E_CARD_ID_KEY));
             returnList.add(vo);
         }
         Collections.sort(returnList);

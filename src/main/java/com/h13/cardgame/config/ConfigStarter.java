@@ -8,7 +8,6 @@ package com.h13.cardgame.config;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.h13.cardgame.config.exception.LoadException;
 import com.h13.cardgame.config.service.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +32,10 @@ public class ConfigStarter {
     DropGroupLoaderService dropGroupLoaderService;
     @Autowired
     UnitsCardLoaderService unitsCardLoaderService;
+    @Autowired
+    CaptainLevelLoaderService captainLevelLoaderService;
+    @Autowired
+    CaptainTitleLoaderService captainTitleLoaderService;
 
     public void init() {
         try {
@@ -43,6 +46,8 @@ public class ConfigStarter {
             cardLoaderService.load();
             dropGroupLoaderService.load();
             unitsCardLoaderService.load();
+            captainLevelLoaderService.load();
+            captainTitleLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);

@@ -26,6 +26,16 @@ public class StorageCO {
     private Map<String, List<String>> captainCardData = new HashMap<String, List<String>>();
     private int captainCurrent;
 
+    public int getCaptainMax() {
+        return captainMax;
+    }
+
+    public void setCaptainMax(int captainMax) {
+        this.captainMax = captainMax;
+    }
+
+    private int captainMax;
+
     public Map<String, List<String>> getCaptainCardData() {
         return captainCardData;
     }

@@ -12,11 +12,13 @@
 
 
 todo:
-    页面加载的时候，需要加载某一个任务的完成度
-    cg:scheduler:1:task:2-->timestamp  1: 用户id 2 任务id
-    服务器关闭的时候要保证游戏的线程中已经消费的数据消费完成，没有丢失的数据
-    服务重启的时候要把所有的scheduler加载到调度程序和缓存中
-    任务执行3次不成功的话，就放弃执行
+    captain level upgrade      ok
+    squard绑定captain          ok
+        on                                    ok
+        down 更新squard attack              ok
+        units的attack和captain attack分开存储   ok
 
+    captain title 的技能
+    战斗
 
 

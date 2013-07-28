@@ -39,7 +39,7 @@ public class StorageDAO {
 
 
     public StorageCO getByCid(long cid) {
-        String sql = "select id,city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,captain_card_data,captain_current" +
+        String sql = "select id,city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,captain_card_data,captain_current,captain_max" +
                 " from storage where city_id=?";
         return j.queryForObject(sql, new Object[]{cid}, new RowMapper<StorageCO>() {
             @Override
@@ -55,6 +55,7 @@ public class StorageDAO {
                 p.setECardData(JSON.parseObject(rs.getString(8), Map.class));
                 p.setCaptainCardData(JSON.parseObject(rs.getString(9), Map.class));
                 p.setCaptainCurrent(rs.getInt(10));
+                p.setCaptainMax(rs.getInt(11));
                 return p;
             }
         });
@@ -81,7 +82,8 @@ public class StorageDAO {
      */
     public StorageCO create(final StorageCO storageCO) {
         KeyHolder holder = new GeneratedKeyHolder();
-        final String sql = "insert into storage(city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,create_time) values (?,?,?,?,?,?,?,now())";
+        final String sql = "insert into storage(city_id,s_max,s_current,scard_data,e_max,e_current,ecard_data,captain_card_data,captain_current,captain_max" +
+                ",create_time) values (?,?,?,?,?,?,?,?,?,?,now())";
         j.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -95,6 +97,7 @@ public class StorageDAO {
                 pstmt.setString(7, JSON.toJSONString(storageCO.getECardData()));
                 pstmt.setString(8, JSON.toJSONString(storageCO.getCaptainCardData()));
                 pstmt.setInt(9, storageCO.getCaptainCurrent());
+                pstmt.setInt(10,storageCO.getCaptainMax());
                 return pstmt;
             }
         }, holder);

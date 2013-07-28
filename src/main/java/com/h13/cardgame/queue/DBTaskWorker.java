@@ -25,8 +25,8 @@ public class DBTaskWorker {
     public void doProcess() {
         DBTaskMessage detail = dbTaskQueue.peek();
         if (detail != null) {
-            handler.update(detail);
             LOG.info("Peek DB Task : " + detail.toString());
+            handler.update(detail);
         }
     }
 }

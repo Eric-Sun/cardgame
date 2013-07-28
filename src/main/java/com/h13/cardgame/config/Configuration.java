@@ -10,7 +10,11 @@ package com.h13.cardgame.config;
 public class Configuration {
     public static class CONFIG {
         public static String ENERGY_UP_S = "energy_up_s";
-        public static String BAR_RANDOM_GROUP="bar_random_group";
+        public static String BAR_RANDOM_GROUP = "bar_random_group";
+        public static String CAPTAIN_INIT_TITLE = "captain.title.init";
+        public static String CAPTAIN_INIT_TITLE_EXP = "captain.titleExp.init";
+        public static String CAPTAIN_INIT_LEVEL = "captain.level.init";
+        public static String CAPTAIN_INIT_LEVEL_EXP = "captain.levelExp.init";
     }
 
     public static class City {
@@ -39,6 +43,19 @@ public class Configuration {
         public static String U_CARD_ID_KEY = "uCardId";
     }
 
+    public static class CAPTAIN_CITY_CARD {
+        public static String LEVEL_KEY = "level";
+        public static String LEVEL_EXP_KEY = "levelExp";
+        public static String TITLE_KEY = "title";
+        public static String TITLE_EXP_KEY = "titleExp";
+        public static String SKILL_ID_KEY = "skillId";
+        public static int DEFAULT_SKILL_ID_VALUE = 0;
+        public static String ATTACK_MAX_KEY = "attackMax";
+        public static String ATTACK_MIN_KEY = "attackMin";
+        public static String DEFENCE_MAX_KEY = "defenceMax";
+        public static String DEFENCE_MIN_KEY = "defenceMin";
+    }
+
     public static int ATTACK_TARGET_PAGE_SIZE = 10;
 
     public static class Troop {
@@ -48,28 +65,27 @@ public class Configuration {
         public static int INIT_DEFENCE_MIN = 0;
     }
 
-    public static class SQUARD {
+    public static class SQUARD_CITY_CARD {
         public static int DEFAULT_SQUARD_U_CARD_ID_VALUE = -1;
+        public static String CAPTAIN_ID_KEY = "captainId";
+        public static int DEFAULT_CAPTAIN_ID_VALUE = 0;
+        public static String CAPTAIN_ATTACK_MAX_KEY = "captainAttackMax";
+        public static String CAPTAIN_ATTACK_MIN_KEY = "captainAttackMin";
+        public static String CAPTAIN_DEFENCE_MAX_KEY = "captainDefenceMax";
+        public static String CAPTAIN_DEFENCE_MIN_KEY = "captainDefenceMin";
+        public static int CAPTAIN_INIT_ATTACK_MAX = 0;
+        public static int CAPTAIN_INIT_ATTACK_MIN = 0;
+        public static int CAPTAIN_INIT_DEFENCE_MAX = 0;
+        public static int CAPTAIN_INIT_DEFENCE_MIN = 0;
     }
 
-
-    public static enum CACHE {
-        QUEUE_CARD_KEY, QUEUE_CITY_KEY, QUEUE_CITYCARD_KEY,
-        QUEUE_CONFIGURATION_KEY, QUEUE_DROPGROUP_KEY,
-        QUEUE_LEVEL_KEY, QUEUE_SCHEDULER_KEY, QUEUE_STORAGE_KEY, QUEUE_TASK_KEY,
-        QUEUE_TASKGROUP_KEY, QUEUE_TROOP_KEY
-//        public  static  int QUEUE_CARD_KEY = 0;
-//        public static int QUEUE_CITY_KEY = 1;
-//        public static int QUEUE_CITYCARD_KEY = 2;
-//        public static int QUEUE_CONFIGURATION_KEY = 3;
-//        public static int QUEUE_DROPGROUP_KEY = 4;
-//        public static int QUEUE_LEVEL_KEY = 5;
-//        public static int QUEUE_SCHEDULER_KEY = 6;
-//        public static int QUEUE_STORAGE_KEY = 7;
-//        public static int QUEUE_TASK_KEY = 8;
-//        public static int QUEUE_TASKGROUP_KEY = 9;
-//        public static int QUEUE_TROOP_KEY = 10;
-
+    public static class SKILL {
+        public static int TARGET_TYPE_CAVALRY = 0;
+        public static int TARGET_TYPE_BOWMAN = 1;
+        public static int TARGET_TYPE_INFANTRY = 2;
+        public static String TARGET_TYPE_KEY = "type";
+        public static String TARGET_TYPE_BASE = "base";
     }
+
 
 }

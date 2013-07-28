@@ -84,6 +84,9 @@ public class TaskController {
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
+        } catch (CaptainStorageIsFullException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(-1, cid, CaptainStorageIsFullException.CODE);
         }
     }
 

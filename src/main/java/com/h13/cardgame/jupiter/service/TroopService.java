@@ -5,6 +5,7 @@ import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.*;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
+import com.h13.cardgame.jupiter.utils.DataUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class TroopService {
     CityHelper cityHelper;
     @Autowired
     StorageHelper storageHelper;
+    @Autowired
+    CaptainHelper captainHelper;
 
     @Autowired
     ConfigHelper configService;
@@ -91,10 +94,10 @@ public class TroopService {
             cityCardVO.setCardId(cityCard.getCardId());
             cityCardVO.setIcon(cityCard.getIcon());
             cityCardVO.setName(cityCard.getName());
-            cityCardVO.setAttackMax(cityCardHelper.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-            cityCardVO.setAttackMin(cityCardHelper.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-            cityCardVO.setDefenceMax(cityCardHelper.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-            cityCardVO.setDefenceMin(cityCardHelper.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+            cityCardVO.setAttackMax(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+            cityCardVO.setAttackMin(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+            cityCardVO.setDefenceMax(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+            cityCardVO.setDefenceMin(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
             cityCardVO.setId(cityCard.getId());
             vo.getCardList().add(cityCardVO);
         }
@@ -113,11 +116,23 @@ public class TroopService {
             if (ccId == null)
                 continue;
             CityCardCO cc = cityCardHelper.get(cid, new Long(ccId));
-            attributes.setAttackMax(attributes.getAttackMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-            attributes.setAttackMin(attributes.getAttackMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-            attributes.setDefenceMax(attributes.getDefenceMax() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-            attributes.setDefenceMin(attributes.getDefenceMin() + cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+            attributes.setAttackMax(attributes.getAttackMax() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+            attributes.setAttackMin(attributes.getAttackMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+            attributes.setDefenceMax(attributes.getDefenceMax() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+            attributes.setDefenceMin(attributes.getDefenceMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+
+            // 合成captain的攻击力
+            int captainAttackMax = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.ATTACK_MAX_KEY);
+            int captainAttackMin = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.ATTACK_MIN_KEY);
+            int captainDefenceMax = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.DEFENCE_MAX_KEY);
+            int captainDefenceMin = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.DEFENCE_MIN_KEY);
+
+            attributes.setAttackMax(attributes.getAttackMax()+captainAttackMax);
+            attributes.setAttackMin(attributes.getAttackMin()+captainAttackMin);
+            attributes.setDefenceMax(attributes.getDefenceMax()+captainDefenceMax);
+            attributes.setDefenceMin(attributes.getDefenceMin()+captainDefenceMin);
         }
+
         return attributes;
     }
 
@@ -138,10 +153,10 @@ public class TroopService {
             card.setId(cc.getCardId());
             card.setIcon(cc.getIcon());
             card.setName(cc.getName());
-            card.setAttackMax(cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-            card.setAttackMin(cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-            card.setDefenceMax(cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-            card.setAttackMin(cityCardHelper.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+            card.setAttackMax(DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+            card.setAttackMin(DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+            card.setDefenceMax(DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+            card.setAttackMin(DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
             cList.add(card);
         }
         ss.setCardList(cList);
@@ -232,9 +247,9 @@ public class TroopService {
         }
         // 检查小队卡牌中是否已经设定了兵种，如果设定了兵种卡的话，就不可以用其他的卡了
         // -1表示没有设置过兵种卡
-        if (cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) != uCardId &&
-                cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) != Configuration.SQUARD.DEFAULT_SQUARD_U_CARD_ID_VALUE) {
-            throw new SquardECardException("squard has " + cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) + " recuit uCardId=" + uCardId);
+        if (DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) != uCardId &&
+                DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) != Configuration.SQUARD_CITY_CARD.DEFAULT_SQUARD_U_CARD_ID_VALUE) {
+            throw new SquardECardException("squard has " + DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY) + " recuit uCardId=" + uCardId);
         }
 
         // 检查银币是否够
@@ -251,30 +266,30 @@ public class TroopService {
         city.setSilver(city.getSilver() - count * silverPerCard);
 
         // 检查是否已经超出小队卡的slot限制
-        int maxSlot = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY);
-        int curSlot = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY);
+        int maxSlot = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY);
+        int curSlot = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY);
         if (maxSlot < curSlot + count) {
             throw new SquardCardNotEnoughSlotException("cur is " + curSlot +
                     " new is " + count + " all is " + maxSlot);
         }
         // 提高小队卡的属性
-        int oldAttackMax = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY);
-        int oldAttackMin = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY);
-        int oldDefenceMax = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY);
-        int oldDefenceMin = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY);
-        int oldCurSlot = cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY);
+        int oldAttackMax = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY);
+        int oldAttackMin = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY);
+        int oldDefenceMax = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY);
+        int oldDefenceMin = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY);
+        int oldCurSlot = DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY);
 
         int addAttackMax = cardHelper.getCardSpecData(unitCard, Configuration.CARD.ATTACK_MAX_KEY) * count;
         int addAttackMin = cardHelper.getCardSpecData(unitCard, Configuration.CARD.ATTACK_MIN_KEY) * count;
         int addDefenceMax = cardHelper.getCardSpecData(unitCard, Configuration.CARD.DEFENCE_MAX_KEY) * count;
         int addDefenceMin = cardHelper.getCardSpecData(unitCard, Configuration.CARD.DEFENCE_MIN_KEY) * count;
 
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY, oldAttackMax + addAttackMax);
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY, oldAttackMin + addAttackMin);
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY, oldDefenceMax + addDefenceMax);
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY, oldDefenceMin + addDefenceMin);
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY, oldCurSlot + count);
-        cityCardHelper.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY, uCardId);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY, oldAttackMax + addAttackMax);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY, oldAttackMin + addAttackMin);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY, oldDefenceMax + addDefenceMax);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY, oldDefenceMin + addDefenceMin);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY, oldCurSlot + count);
+        DataUtils.putSquardLongData(squardCityCard.getData(), Configuration.CITY_CARD.U_CARD_ID_KEY, uCardId);
 
         // 更新city cityCard storage的相关信息
         cityHelper.updateSilver(city);
@@ -287,15 +302,15 @@ public class TroopService {
 
         // 生成HumanCardVO
         HumanCardVO cardVO = new HumanCardVO();
-        cardVO.setMaxSlot(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY));
-        cardVO.setCurSlot(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY));
+        cardVO.setMaxSlot(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY));
+        cardVO.setCurSlot(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY));
         cardVO.setName(squardCityCard.getName());
         cardVO.setId(squardCityCard.getId());
         cardVO.setIcon(squardCityCard.getIcon());
-        cardVO.setAttackMax(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-        cardVO.setAttackMin(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-        cardVO.setDefenceMax(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-        cardVO.setDefenceMin(cityCardHelper.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
+        cardVO.setAttackMax(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
+        cardVO.setAttackMin(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
+        cardVO.setDefenceMax(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
+        cardVO.setDefenceMin(DataUtils.getSquardIntData(squardCityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
 
         return cardVO;
     }
@@ -303,8 +318,9 @@ public class TroopService {
     public List<CaptainCityCardVO> getCaptainCityCards(long uid, long cid) throws CityCardNotExistsException, CityCardIsNotYoursException {
         List<CityCardCO> list = cityCardHelper.getCaptainCityCards(uid, cid);
         List<CaptainCityCardVO> returnList = new LinkedList<CaptainCityCardVO>();
-        for (CityCardCO co : list) {
-            CaptainCityCardVO vo = DTOUtils.toCaptainCityCardVO(co);
+        for (CityCardCO captainCityCard : list) {
+            SkillCO skillCO = captainHelper.getSkill(captainCityCard);
+            CaptainCityCardVO vo = DTOUtils.toCaptainCityCardVO(captainCityCard, skillCO);
             returnList.add(vo);
         }
         return returnList;
@@ -321,8 +337,9 @@ public class TroopService {
     }
 
     public CaptainCityCardVO getCaptainCityCard(long uid, long cid, long captainCityCardId) throws CityCardNotExistsException, CityCardIsNotYoursException {
-        CityCardCO co = cityCardHelper.get(cid, captainCityCardId);
-        return DTOUtils.toCaptainCityCardVO(co);
+        CityCardCO captainCityCard = cityCardHelper.get(cid, captainCityCardId);
+        SkillCO skillCO = captainHelper.getSkill(captainCityCard);
+        return DTOUtils.toCaptainCityCardVO(captainCityCard, skillCO);
     }
 
 

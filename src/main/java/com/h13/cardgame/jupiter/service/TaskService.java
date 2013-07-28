@@ -51,7 +51,7 @@ public class TaskService {
      * @throws EnergyNotEnoughException
      */
     public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException,
-            EnergyNotEnoughException, TaskIsOverException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException, UserDontHaveThisCityException {
+            EnergyNotEnoughException, TaskIsOverException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException, UserDontHaveThisCityException, CaptainStorageIsFullException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
         CityCO captain = cityHelper.get(uid, cid);
