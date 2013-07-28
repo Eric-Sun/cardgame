@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class CaptainStorageIsFullException extends Exception {
-    public static String CODE = "1010015";
+    public static String CODE = "10027";
 
     public CaptainStorageIsFullException(String msg) {
         super(msg);

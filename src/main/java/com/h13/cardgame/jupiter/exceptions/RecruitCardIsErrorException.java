@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class RecruitCardIsErrorException extends Exception {
-    public static String CODE = "1010015";
+    public static String CODE = "10011";
 
     public RecruitCardIsErrorException(String msg) {
         super(msg);

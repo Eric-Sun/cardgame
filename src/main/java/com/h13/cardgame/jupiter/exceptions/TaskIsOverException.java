@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class TaskIsOverException extends Exception {
-    public static String CODE = "1001";
+    public static String CODE = "10018";
 
     public TaskIsOverException(String msg) {
         super(msg);

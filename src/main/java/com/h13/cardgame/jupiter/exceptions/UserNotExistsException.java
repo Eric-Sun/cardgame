@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class UserNotExistsException extends Exception {
-    public static String CODE = "1001";
+    public static String CODE = "10021";
 
     public UserNotExistsException(String msg) {
         super(msg);

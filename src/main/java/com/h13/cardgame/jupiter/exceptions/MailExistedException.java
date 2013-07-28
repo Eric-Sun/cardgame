@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class MailExistedException extends Exception {
-    public static String CODE = "1010102";
+    public static String CODE = "10010";
 
     public MailExistedException(String msg) {
         super(msg);

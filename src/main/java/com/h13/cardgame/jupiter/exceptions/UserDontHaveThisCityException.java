@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class UserDontHaveThisCityException extends Exception {
-    public static String CODE = "1010014";
+    public static String CODE = "10024";
 
     public UserDontHaveThisCityException(String msg) {
         super(msg);

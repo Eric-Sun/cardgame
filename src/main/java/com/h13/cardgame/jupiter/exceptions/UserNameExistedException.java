@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class UserNameExistedException extends Exception {
-    public static String CODE = "1010101";
+    public static String CODE = "10019";
 
     public UserNameExistedException(String msg) {
         super(msg);

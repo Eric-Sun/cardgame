@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class SquardCardNotEnoughSlotException extends Exception {
-    public static String CODE = "1010012";
+    public static String CODE = "10013";
 
     public SquardCardNotEnoughSlotException(String msg) {
         super(msg);

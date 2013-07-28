@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class LevelIsTopException extends Exception {
-    public static String CODE = "1001";
+    public static String CODE = "10009";
 
     public LevelIsTopException(String msg) {
         super(msg);

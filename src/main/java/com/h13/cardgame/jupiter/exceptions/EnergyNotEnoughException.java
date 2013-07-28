@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class EnergyNotEnoughException extends Exception {
-    public static String CODE = "1010009";
+    public static String CODE = "10005";
 
     public EnergyNotEnoughException(String msg) {
         super(msg);

@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class SilverNotEnoughException extends Exception {
-    public static String CODE = "1010011";
+    public static String CODE = "10012";
 
     public SilverNotEnoughException(String msg) {
         super(msg);

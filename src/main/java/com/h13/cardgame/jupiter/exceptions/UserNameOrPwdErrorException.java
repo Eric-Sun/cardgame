@@ -8,7 +8,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class UserNameOrPwdErrorException extends Exception {
-    public static String CODE = "1010201";
+    public static String CODE = "10020";
 
     public UserNameOrPwdErrorException(String msg) {
         super(msg);

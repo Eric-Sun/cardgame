@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class IndexOfTroopHaveNoCardException extends Exception {
-    public static String CODE = "1010013";
+    public static String CODE = "10008";
 
     public IndexOfTroopHaveNoCardException(String msg) {
         super(msg);

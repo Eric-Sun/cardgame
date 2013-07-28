@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class TaskCompletedTooManyException extends Exception {
-    public static String CODE = "1010008";
+    public static String CODE = "10022";
 
     public TaskCompletedTooManyException(String msg) {
         super(msg);

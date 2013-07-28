@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class CityExistsException extends Exception {
-    public static String CODE = "1001";
+    public static String CODE = "10004";
 
     public CityExistsException(String msg) {
         super(msg);

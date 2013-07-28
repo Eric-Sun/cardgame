@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class CityCardIsOnListException extends Exception {
-    public static String CODE = "1010014";
+    public static String CODE = "10002";
 
     public CityCardIsOnListException(String msg) {
         super(msg);

@@ -7,7 +7,7 @@ package com.h13.cardgame.jupiter.exceptions;
  * Time: 下午4:05
  */
 public class SquardHaveCaptainException extends Exception {
-    public static String CODE = "1010015";
+    public static String CODE = "10030";
 
     public SquardHaveCaptainException(String msg) {
         super(msg);
