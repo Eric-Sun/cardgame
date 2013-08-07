@@ -43,13 +43,13 @@ public class TroopController {
             if (request.getParameter("pageNum") != null)
                 pageNum = new Integer(request.getParameter("pageNum"));
             List<AttackTargetVO> list = troopService.searchAttackTarget(uid, cid, pageNum);
-            return DTOUtils.getSucessResponse(uid, cid, list);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, list);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserNotExistsException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
@@ -65,13 +65,13 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             targetCid = new Long(request.getParameter("targetCid"));
             CombatResultVO result = troopService.attack(uid, cid, targetCid);
-            return DTOUtils.getSucessResponse(uid, cid, result);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, result);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -85,13 +85,13 @@ public class TroopController {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
             TroopVO troop = troopService.getTroop(cid);
-            return DTOUtils.getSucessResponse(uid, cid, troop);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, troop);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -106,19 +106,19 @@ public class TroopController {
             int index = new Integer(request.getParameter("index"));
             long ccId = new Long(request.getParameter("cityCardId"));
             TroopVO troop = troopService.onList(cid, index, ccId);
-            return DTOUtils.getSucessResponse(uid, cid, troop);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, troop);
         } catch (IndexOfTroopHaveAnotherCardException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardIsOnListException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsOnListException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsOnListException.CODE);
         }
     }
 
@@ -133,22 +133,22 @@ public class TroopController {
             int index = new Integer(request.getParameter("index"));
             long ccId = new Long(request.getParameter("cityCardId"));
             TroopVO troop = troopService.downList(cid, index, ccId);
-            return DTOUtils.getSucessResponse(uid, cid, troop);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, troop);
         } catch (IndexOfTroopHaveAnotherCardException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, IndexOfTroopHaveAnotherCardException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         } catch (IndexOfTroopHaveNoCardException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, IndexOfTroopHaveNoCardException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, IndexOfTroopHaveNoCardException.CODE);
         } catch (CityCardIsOnListException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsOnListException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsOnListException.CODE);
         }
     }
 
@@ -162,13 +162,13 @@ public class TroopController {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
             CombatAttributesVO ca = troopService.getCombatAttributes(cid);
-            return DTOUtils.getSucessResponse(uid, cid, ca);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, ca);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -190,34 +190,34 @@ public class TroopController {
             long uCardId = new Long(request.getParameter("uCardId"));
             HumanCardVO humanCardVO = troopService.recruit(uid, cid, sCardId,
                     sCityCard, count, uCardId);
-            return DTOUtils.getSucessResponse(uid, cid, humanCardVO);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, humanCardVO);
         } catch (SilverNotEnoughException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, SilverNotEnoughException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, SilverNotEnoughException.CODE);
         } catch (RecruitCardIsErrorException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, RecruitCardIsErrorException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, RecruitCardIsErrorException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardNotExistsException.CODE);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserNotExistsException.CODE);
         } catch (SquardCardNotEnoughSlotException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, SquardCardNotEnoughSlotException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, SquardCardNotEnoughSlotException.CODE);
         } catch (SquardECardException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, SquardECardException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, SquardECardException.CODE);
         } catch (EquipmentIsNotEnoughException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, EquipmentIsNotEnoughException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, EquipmentIsNotEnoughException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserDontHaveThisCityException.CODE);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 
@@ -238,13 +238,13 @@ public class TroopController {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
             List<CaptainCityCardVO> list = troopService.getCaptainCityCards(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, list);
+            return DTOUtils.getSucessResponse(request,response,uid, cid, list);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardNotExistsException.CODE);
         }
 
     }
@@ -259,13 +259,13 @@ public class TroopController {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
             List<SquardCityCardVO> list = troopService.getSquardCityCards(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, list);
+            return DTOUtils.getSucessResponse(request,response,uid, cid, list);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         }
 
     }
@@ -288,13 +288,13 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             long captainCityCardId = new Long(request.getParameter("captainCityCardId"));
             CaptainCityCardVO vo = troopService.getCaptainCityCard(uid, cid, captainCityCardId);
-            return DTOUtils.getSucessResponse(uid, cid, vo);
+            return DTOUtils.getSucessResponse(request,response,uid, cid, vo);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardNotExistsException.CODE);
         }
 
     }
@@ -317,13 +317,13 @@ public class TroopController {
             cid = new Long(request.getParameter("cid"));
             long squardCityCardId = new Long(request.getParameter("squardCityCardId"));
             SquardCityCardVO vo = troopService.getSquardCityCard(uid, cid, squardCityCardId);
-            return DTOUtils.getSucessResponse(uid, cid, vo);
+            return DTOUtils.getSucessResponse(request,response,uid, cid, vo);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request,response,uid, cid, CityCardIsNotYoursException.CODE);
         }
     }
 }

@@ -8,6 +8,8 @@ import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.DataUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import java.util.*;
  */
 @Service
 public class TroopService {
+    private Log LOG = LogFactory.getLog(PassportService.class);
 
     @Autowired
     TroopHelper troopHelper;
@@ -120,17 +123,18 @@ public class TroopService {
             attributes.setAttackMin(attributes.getAttackMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
             attributes.setDefenceMax(attributes.getDefenceMax() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
             attributes.setDefenceMin(attributes.getDefenceMin() + DataUtils.getSquardIntData(cc.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
-
+            LOG.debug("squards list attr: " + attributes);
             // 合成captain的攻击力
             int captainAttackMax = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.ATTACK_MAX_KEY);
             int captainAttackMin = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.ATTACK_MIN_KEY);
             int captainDefenceMax = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.DEFENCE_MAX_KEY);
             int captainDefenceMin = DataUtils.getSquardIntData(cc.getData(), Configuration.CAPTAIN_CITY_CARD.DEFENCE_MIN_KEY);
-
-            attributes.setAttackMax(attributes.getAttackMax()+captainAttackMax);
-            attributes.setAttackMin(attributes.getAttackMin()+captainAttackMin);
-            attributes.setDefenceMax(attributes.getDefenceMax()+captainDefenceMax);
-            attributes.setDefenceMin(attributes.getDefenceMin()+captainDefenceMin);
+            LOG.debug("captain attr: attackMax:" + captainAttackMax + " attackMin:" + captainAttackMin
+                    + " defenceMax:" + captainDefenceMax + " defenceMin:" + captainDefenceMin);
+            attributes.setAttackMax(attributes.getAttackMax() + captainAttackMax);
+            attributes.setAttackMin(attributes.getAttackMin() + captainAttackMin);
+            attributes.setDefenceMax(attributes.getDefenceMax() + captainDefenceMax);
+            attributes.setDefenceMin(attributes.getDefenceMin() + captainDefenceMin);
         }
 
         return attributes;

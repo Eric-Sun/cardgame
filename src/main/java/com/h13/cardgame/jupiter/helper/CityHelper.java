@@ -157,33 +157,10 @@ public class CityHelper {
     }
 
 
-    public void updateReward(long id, int exp, int silver) {
-        cityDAO.updateReward(id, exp, silver);
+    public void updateReward(CityCO city) {
+        cityDAO.updateReward(city);
     }
 
-
-    /**
-     * 当可以升级的时候返回下一个等级的信息，如果已经满级了，抛出异常
-     * 如果不可以升级返回null
-     *
-     * @param captain
-     * @param level
-     * @param toExp
-     * @return
-     * @throws LevelIsTopException
-     */
-    public LevelCO isLevelUp(CityCO captain, int level, int toExp) throws LevelIsTopException {
-        LevelCO levelCO = levelHelper.get(level);
-        if (levelCO.getExp() <= toExp) {
-            if (levelCO.isMax())
-                throw new LevelIsTopException("captain=" + captain + " level is top.");
-            // 可以升级了
-            int nextLevel = level + 1;
-            LevelCO nextLevelCO = levelHelper.get(nextLevel);
-            return nextLevelCO;
-        } else
-            return null;
-    }
 
     public List<Long> searchAttackTarget(long cid, int fromLevel, int toLevel, int pageNum, int pageSize) {
         List<Long> list = cityDAO.searchAttackTarget(cid, fromLevel, toLevel, pageNum, pageSize);
@@ -210,5 +187,21 @@ public class CityHelper {
         }
 
 
+    }
+
+    /**
+     * 尝试获得city，如果这个uid没有city返回null
+     *
+     * @param uid
+     * @return
+     */
+    public CityCO checkAndGetCity(long uid) {
+        try {
+            long cid = cityDAO.checkAndGetCityId(uid);
+            CityCO city = get(uid, cid);
+            return city;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

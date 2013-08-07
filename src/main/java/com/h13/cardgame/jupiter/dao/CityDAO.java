@@ -94,9 +94,9 @@ public class CityDAO {
     }
 
 
-    public void updateReward(long id, int exp, int silver) {
-        String sql = "update city set exp=exp+?, silver=silver+? where id=?";
-        q.update(sql, new Object[]{exp, silver, id});
+    public void updateReward(CityCO city) {
+        String sql = "update city set exp=?, silver=? where id=?";
+        q.update(sql, new Object[]{city.getExp(), city.getSilver(), city.getId()});
     }
 
     public List<Long> searchAttackTarget(long cid, int fromLevel, int toLevel, int pageNum, int pageSize) {
@@ -126,5 +126,15 @@ public class CityDAO {
     public void updateBarSize(long cityId, int barSize) {
         String sql = "update city set bar_size=? where id=?";
         q.update(sql, new Object[]{barSize, cityId});
+    }
+
+    public void updateLevel(CityCO city) {
+        String sql = "update city set level=? where id=?";
+        q.update(sql, new Object[]{city.getLevel(), city.getId()});
+    }
+
+    public long checkAndGetCityId(long uid) {
+        String sql = "select id from city where user_id=?";
+        return j.queryForLong(sql, new Object[]{uid});
     }
 }

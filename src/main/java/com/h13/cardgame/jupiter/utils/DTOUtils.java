@@ -5,23 +5,25 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.CardCO;
+import com.h13.cardgame.cache.co.CityCO;
 import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.co.SkillCO;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.BaseDTO;
 import com.h13.cardgame.jupiter.Constants;
-import com.h13.cardgame.jupiter.vo.CaptainCardVO;
-import com.h13.cardgame.jupiter.vo.CaptainCityCardVO;
-import com.h13.cardgame.jupiter.vo.SkillVO;
-import com.h13.cardgame.jupiter.vo.SquardCityCardVO;
+import com.h13.cardgame.jupiter.vo.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * DTO的util
  */
 public class DTOUtils {
     private static Log LOG = LogFactory.getLog(DTOUtils.class);
+    private static String CALLBACK_KEY = "callback";
 
     /**
      * 返回的是一个类似于执行的请求，没有任何返回结果的可能性
@@ -30,10 +32,16 @@ public class DTOUtils {
      * @param cid
      * @return
      */
-    public static String getOriginalResponse(long uid, long cid) {
+    public static String getOriginalResponse(HttpServletRequest request, HttpServletResponse response,
+                                             long uid, long cid) {
+        String callback = request.getParameter(CALLBACK_KEY);
         List<Object> list = new ArrayList<Object>();
         list.add(new BaseDTO(uid, cid, Constants.ResponseStatus.SUCCESS));
-        String json = JSON.toJSONString(list);
+        String json = null;
+        if (callback == null)
+            json = JSON.toJSONString(list);
+        else
+            json = callback + "(" + JSON.toJSONString(list) + ")";
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;
     }
@@ -46,13 +54,19 @@ public class DTOUtils {
      * @param info
      * @return
      */
-    public static String getSucessResponse(long uid, long cid, Object... info) {
+    public static String getSucessResponse(HttpServletRequest request, HttpServletResponse response,
+                                           long uid, long cid, Object... info) {
+        String callback = request.getParameter(CALLBACK_KEY);
         List<Object> list = new ArrayList<Object>();
         list.add(new BaseDTO(uid, cid, Constants.ResponseStatus.SUCCESS));
         for (Object obj : info) {
             list.add(obj);
         }
-        String json = JSON.toJSONString(list);
+        String json = null;
+        if (callback == null)
+            json = JSON.toJSONString(list);
+        else
+            json = callback + "(" + JSON.toJSONString(list) + ")";
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;
     }
@@ -65,10 +79,16 @@ public class DTOUtils {
      * @param errorCode
      * @return
      */
-    public static String getFailureResponse(long uid, long cid, String errorCode) {
+    public static String getFailureResponse(HttpServletRequest request, HttpServletResponse response,
+                                            long uid, long cid, String errorCode) {
+        String callback = request.getParameter(CALLBACK_KEY);
         List<Object> list = new ArrayList<Object>();
         list.add(new BaseDTO(uid, cid, Constants.ResponseStatus.FAILURE, errorCode));
-        String json = JSON.toJSONString(list);
+        String json = null;
+        if (callback == null)
+            json = JSON.toJSONString(list);
+        else
+            json = callback + "(" + JSON.toJSONString(list) + ")";
         LogWriter.info(LogWriter.RESPONSE, json);
         return json;
     }
@@ -116,6 +136,22 @@ public class DTOUtils {
         vo.setIcon(cityCard.getIcon());
         vo.setId(cityCard.getId());
         vo.setName(cityCard.getName());
+        return vo;
+    }
+
+    public static CityVO toCityVO(CityCO city) {
+        CityVO vo = new CityVO();
+        vo.setId(city.getId());
+        vo.setEnergy(city.getEnergy());
+        vo.setExp(city.getExp());
+        vo.setGold(city.getGold());
+        vo.setLevel(city.getLevel());
+        vo.setName(city.getName());
+        vo.setSilver(city.getSilver());
+        vo.setUserId(city.getUserId());
+        vo.setBarSize(city.getBarSize());
+        vo.setCooldownStatus(city.getCooldownStatus());
+        vo.setTaskStatus(city.getTaskStatus());
         return vo;
     }
 }

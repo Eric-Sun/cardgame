@@ -36,16 +36,16 @@ public class SquardController {
             long squardCityCardId = new Long(request.getParameter("squardCityCardId"));
             long captainCityCardId = new Long(request.getParameter("captainCityCardId"));
             squardService.onCaptain(uid, cid, squardCityCardId, captainCityCardId);
-            return DTOUtils.getOriginalResponse(uid, cid);
+            return DTOUtils.getOriginalResponse(request, response, uid, cid);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, CityCardNotExistsException.CODE);
         } catch (SquardHaveCaptainException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, SquardHaveCaptainException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, SquardHaveCaptainException.CODE);
         }
     }
 
@@ -60,16 +60,16 @@ public class SquardController {
             uid = new Long(request.getParameter("uid"));
             long squardCityCardId = new Long(request.getParameter("squardCityCardId"));
             squardService.offCaptain(uid, cid, squardCityCardId);
-            return DTOUtils.getOriginalResponse(uid, cid);
+            return DTOUtils.getOriginalResponse(request, response, uid, cid);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, CityCardNotExistsException.CODE);
         } catch (SquardDontHaveCaptainException e) {
             LogWriter.warn(LogWriter.PASSPORT_REGIETER, e);
-            return DTOUtils.getFailureResponse(-1, -1, SquardDontHaveCaptainException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, -1, SquardDontHaveCaptainException.CODE);
         }
     }
 

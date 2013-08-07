@@ -8,6 +8,7 @@ import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.service.CityService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
+import com.h13.cardgame.jupiter.vo.CityVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +41,14 @@ public class CityController {
         try {
             cid = new Long(request.getParameter("cid"));
             uid = new Long(request.getParameter("uid"));
-            CityCO city = cityService.get(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, city);
+            CityVO city = cityService.get(uid, cid);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, city);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserNotExistsException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
@@ -59,13 +60,13 @@ public class CityController {
             uid = new Long(request.getParameter("uid"));
             String name = request.getParameter("name");
             CityCO city = cityService.create(uid, name);
-            return DTOUtils.getSucessResponse(uid, city.getId(), JSON.toJSONString(city));
+            return DTOUtils.getSucessResponse(request, response, uid, city.getId(), JSON.toJSONString(city));
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(uid, -1, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, -1, UserNotExistsException.CODE);
         } catch (CityExistsException e) {
             LogWriter.warn(LogWriter.CITY, e);
-            return DTOUtils.getFailureResponse(uid, -1, CityExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, -1, CityExistsException.CODE);
         }
     }
 

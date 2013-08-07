@@ -47,19 +47,19 @@ public class BarController {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
             BarVO bar = barService.show(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, bar);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, bar);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, CityCardIsNotYoursException.CODE);
         } catch (CityCardNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, CityCardNotExistsException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserDontHaveThisCityException.CODE);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserNotExistsException.CODE);
         }
     }
 
@@ -80,7 +80,7 @@ public class BarController {
         cid = new Long(request.getParameter("cid"));
         long cardId = new Long(request.getParameter("cardId"));
         CaptainCardVO card = barService.getCaptainCard(uid, cid, cardId);
-        return DTOUtils.getSucessResponse(uid, cid, card);
+        return DTOUtils.getSucessResponse(request, response, uid, cid, card);
     }
 
 
@@ -95,13 +95,13 @@ public class BarController {
             cid = new Long(request.getParameter("cid"));
             long cardId = new Long(request.getParameter("cardId"));
             barService.recruit(uid, cid, cardId);
-            return DTOUtils.getOriginalResponse(uid, cid);
+            return DTOUtils.getOriginalResponse(request, response, uid, cid);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, CityCardIsNotYoursException.CODE);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CityCardIsNotYoursException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, CityCardIsNotYoursException.CODE);
         }
     }
 }

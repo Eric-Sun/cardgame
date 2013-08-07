@@ -31,7 +31,7 @@ public class CommonController {
     @ResponseBody
     public String units(HttpServletRequest request, HttpServletResponse response) throws LoadException {
         List<UnitsCardVO> list = commonService.getAllUnitsCards();
-        return DTOUtils.getSucessResponse(-1, -1, list);
+        return DTOUtils.getSucessResponse(request, response, -1, -1, list);
     }
 
 

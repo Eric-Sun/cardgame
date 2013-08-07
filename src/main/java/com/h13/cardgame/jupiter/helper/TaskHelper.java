@@ -6,6 +6,7 @@ import com.h13.cardgame.cache.service.TaskCache;
 import com.h13.cardgame.cache.service.TaskGroupCache;
 import com.h13.cardgame.jupiter.dao.TaskDAO;
 import com.h13.cardgame.jupiter.dao.TaskGroupDAO;
+import com.h13.cardgame.jupiter.exceptions.LevelIsTopException;
 import com.h13.cardgame.jupiter.exceptions.TaskGroupIsNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
 import com.h13.cardgame.jupiter.utils.RandomUtils;
@@ -153,19 +154,22 @@ public class TaskHelper {
     /**
      * 进行任务奖励
      *
+     * @param city
      * @param task
      * @return
      */
-    public TaskRewardResultVO reward(CityCO city, TaskCO task)  {
+    public TaskRewardResultVO reward(CityCO city, TaskCO task) throws LevelIsTopException {
+        boolean addLevelFlag = false;
         DropGroupCO dropGroup = dropGroupService.get(task.getDropGroupId());
         // 依次判断 exp ,silver 等是否有问题
         int exp = RandomUtils.randomCommonItem(dropGroup.getData().getExp());
-        int silver =RandomUtils.randomCommonItem(dropGroup.getData().getSilver());
-        long cardId = RandomUtils.randomCard(dropGroup.getData().getCardDropList(),dropGroup.getData().getWeightSum());
+        int silver = RandomUtils.randomCommonItem(dropGroup.getData().getSilver());
+        long cardId = RandomUtils.randomCard(dropGroup.getData().getCardDropList(), dropGroup.getData().getWeightSum());
 
-        city.setExp(city.getExp() + exp);
+        if (levelHelper.addLevelExp(city, exp))
+            addLevelFlag = true;
         city.setSilver(city.getSilver() + silver);
-        cityHelper.updateReward(city.getId(), exp, silver);
+        cityHelper.updateReward(city);
 
         // add package
         CardCO cardCO = cardHelper.get(cardId);
@@ -179,7 +183,7 @@ public class TaskHelper {
                 cardHelper.addEquipmentCard(city, cardCO);
                 break;
             case CAPTAIN:
-                cardHelper.addCaptainCard(city,cardCO);
+                cardHelper.addCaptainCard(city, cardCO);
             default:
                 cardHelper.addSquardCard(city, cardCO);
         }
@@ -188,11 +192,10 @@ public class TaskHelper {
         vo.setCard(cityCardVO);
         vo.setExp(exp);
         vo.setSilver(silver);
+        if (addLevelFlag)
+            vo.setCityStatus(TaskRewardResultVO.LEVEL_UP);
         return vo;
     }
-
-
-
 
 
 }

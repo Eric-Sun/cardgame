@@ -51,42 +51,45 @@ public class TaskController {
             if (!flag) {
                 // 需要获取下一个任务
                 List<TaskVO> taskList = taskService.nextTask(uid, cid);
-                return DTOUtils.getSucessResponse(uid, cid, resultList.get(0), taskList);
+                return DTOUtils.getSucessResponse(request, response, uid, cid, resultList.get(0), taskList);
             }
-            return DTOUtils.getSucessResponse(uid, cid, resultList.get(0));
+            return DTOUtils.getSucessResponse(request, response, uid, cid, resultList.get(0));
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserNotExistsException.CODE);
         } catch (EnergyNotEnoughException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, EnergyNotEnoughException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, EnergyNotEnoughException.CODE);
         } catch (TaskIsOverException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskIsOverException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, TaskIsOverException.CODE);
         } catch (TaskCompletedTooManyException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskCompletedTooManyException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, TaskCompletedTooManyException.CODE);
         } catch (TaskIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskIsNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, TaskIsNotExistsException.CODE);
         } catch (TaskGroupIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskGroupIsNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, TaskGroupIsNotExistsException.CODE);
         } catch (EquipmentStorageIsFullException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, EquipmentStorageIsFullException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, EquipmentStorageIsFullException.CODE);
         } catch (TaskIsCooldownException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, TaskIsCooldownException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, TaskIsCooldownException.CODE);
         } catch (SquardStorageIsFullException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, SquardStorageIsFullException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, SquardStorageIsFullException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, UserDontHaveThisCityException.CODE);
         } catch (CaptainStorageIsFullException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(-1, cid, CaptainStorageIsFullException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, CaptainStorageIsFullException.CODE);
+        } catch (LevelIsTopException e) {
+            LogWriter.warn(LogWriter.TASK, e);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, LevelIsTopException.CODE);
         }
     }
 
@@ -101,19 +104,19 @@ public class TaskController {
             uid = new Long(request.getParameter("uid"));
             List<TaskVO> taskList = taskService.task(uid, cid);
             List<TaskGroupVO> taskGroupList = taskService.taskGroup(uid, cid);
-            return DTOUtils.getSucessResponse(uid, cid, taskGroupList, taskList);
+            return DTOUtils.getSucessResponse(request, response, uid, cid, taskGroupList, taskList);
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserNotExistsException.CODE);
         } catch (TaskIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, TaskIsNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, TaskIsNotExistsException.CODE);
         } catch (TaskGroupIsNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, TaskGroupIsNotExistsException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, TaskGroupIsNotExistsException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(uid, cid, UserDontHaveThisCityException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, UserDontHaveThisCityException.CODE);
         }
     }
 
