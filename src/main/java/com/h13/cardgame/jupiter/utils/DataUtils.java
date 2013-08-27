@@ -10,23 +10,23 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class DataUtils {
-    public static long getSquardLongData(Map data, String key) {
+    public static long getLongData(Map data, String key) {
         return new Long(((Map<String, String>) data).get(key).toString());
     }
 
-    public static int getSquardIntData(Map data, String key) {
+    public static int getIntData(Map data, String key) {
         return new Integer(((Map<String, String>) data).get(key).toString());
     }
 
-    public static String getSquardStringData(Map data, String key) {
+    public static String getStringData(Map data, String key) {
         return ((Map<String, String>) data).get(key).toString();
     }
 
-    public static void putSquardLongData(Map data, String key, Object value) {
+    public static void putLongData(Map data, String key, Object value) {
         ((Map<String, String>) data).put(key, value.toString());
     }
 
-    public static void putSquardStringData(Map data, String key, Object value) {
+    public static void putStringData(Map data, String key, Object value) {
         ((Map<String, String>) data).put(key, value.toString());
     }
 }

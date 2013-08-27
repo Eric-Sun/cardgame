@@ -60,20 +60,6 @@ public class StorageCO {
         this.sMax = sMax;
     }
 
-    @Override
-    public String toString() {
-        return "StorageCO{" +
-                "id=" + id +
-                ", cityId=" + cityId +
-                ", sMax=" + sMax +
-                ", sCurrent=" + sCurrent +
-                ", sCardData=" + sCardData +
-                ", eMax=" + eMax +
-                ", eCurrent=" + eCurrent +
-                ", eCardData=" + eCardData +
-                '}';
-    }
-
     public long getId() {
         return id;
     }
@@ -136,6 +122,23 @@ public class StorageCO {
 
     public void setECardData(Map<String, String> eCardData) {
         this.eCardData = eCardData;
+    }
+
+    @Override
+    public String toString() {
+        return "StorageCO{" +
+                "id=" + id +
+                ", cityId=" + cityId +
+                ", sMax=" + sMax +
+                ", sCurrent=" + sCurrent +
+                ", sCardData=" + sCardData +
+                ", eMax=" + eMax +
+                ", eCurrent=" + eCurrent +
+                ", eCardData=" + eCardData +
+                ", captainCardData=" + captainCardData +
+                ", captainCurrent=" + captainCurrent +
+                ", captainMax=" + captainMax +
+                '}';
     }
 }
 

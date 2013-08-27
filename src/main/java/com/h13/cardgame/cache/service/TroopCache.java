@@ -1,10 +1,6 @@
 package com.h13.cardgame.cache.service;
 
-import com.alibaba.fastjson.JSON;
-import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.co.TroopCO;
-import com.h13.cardgame.config.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +19,17 @@ public class TroopCache {
     private static String PREFIX = "cg:troop:";
 
     @Resource(name = "troopCOTemplate")
-    private RedisTemplate<String, TroopCO> squardCOTemplate;
+    private RedisTemplate<String, TroopCO> troopCOTemplate;
 
-    public void put(TroopCO squard) {
-        String key = PREFIX + squard.getCityId();
-        squardCOTemplate.opsForValue().set(key, squard);
+    public void put(TroopCO troop) {
+        String key = PREFIX + troop.getCityId();
+        troopCOTemplate.opsForValue().set(key, troop);
     }
 
     public TroopCO get(long cid) {
         String key = PREFIX + cid;
-        TroopCO squard = squardCOTemplate.opsForValue().get(key);
-        return squard;
+        TroopCO troop = troopCOTemplate.opsForValue().get(key);
+        return troop;
     }
 
 

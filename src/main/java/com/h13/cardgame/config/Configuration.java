@@ -15,6 +15,9 @@ public class Configuration {
         public static String CAPTAIN_INIT_TITLE_EXP = "captain.titleExp.init";
         public static String CAPTAIN_INIT_LEVEL = "captain.level.init";
         public static String CAPTAIN_INIT_LEVEL_EXP = "captain.levelExp.init";
+        public static String BAR_FLUSH_HOUR = "bar.flush.hour";
+        public static String BOARD_WORLD_CACHE_LIST_SIZE = "board.world.cache.list.size";
+        public static String BOARD_WORLD_SHOW_SIZE = "board.world.show.size";
     }
 
     public static class City {
@@ -65,8 +68,8 @@ public class Configuration {
         public static int INIT_DEFENCE_MIN = 0;
     }
 
-    public static class SQUARD_CITY_CARD {
-        public static int DEFAULT_SQUARD_U_CARD_ID_VALUE = -1;
+    public static class SQUAD_CITY_CARD {
+        public static int DEFAULT_SQUAD_U_CARD_ID_VALUE = -1;
         public static String CAPTAIN_ID_KEY = "captainId";
         public static int DEFAULT_CAPTAIN_ID_VALUE = 0;
         public static String CAPTAIN_ATTACK_MAX_KEY = "captainAttackMax";

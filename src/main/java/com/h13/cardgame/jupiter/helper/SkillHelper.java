@@ -2,7 +2,6 @@ package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.co.SkillCO;
 import com.h13.cardgame.cache.service.SkillCache;
-import com.h13.cardgame.jupiter.dao.CityCardDAO;
 import com.h13.cardgame.jupiter.dao.SkillDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

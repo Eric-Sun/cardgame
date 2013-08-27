@@ -1,10 +1,10 @@
 package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.co.CityCO;
-import com.h13.cardgame.cache.co.LevelCO;
+import com.h13.cardgame.cache.co.CityLevelCO;
 import com.h13.cardgame.cache.service.LevelCache;
 import com.h13.cardgame.jupiter.dao.CityDAO;
-import com.h13.cardgame.jupiter.dao.LevelDAO;
+import com.h13.cardgame.jupiter.dao.CityLevelDAO;
 import com.h13.cardgame.jupiter.exceptions.LevelIsTopException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,22 +20,22 @@ import org.springframework.stereotype.Service;
 public class LevelHelper {
 
     @Autowired
-    LevelDAO levelDAO;
+    CityLevelDAO cityLevelDAO;
     @Autowired
     LevelCache levelCache;
     @Autowired
     CityDAO cityDAO;
 
-    public LevelCO get(int level) {
-        LevelCO levelCO = levelCache.get(level);
-        if (levelCO == null) {
+    public CityLevelCO get(int level) {
+        CityLevelCO cityLevelCO = levelCache.get(level);
+        if (cityLevelCO == null) {
             // load from db
-            levelCO = levelDAO.get(level);
-            if (levelCO == null)
+            cityLevelCO = cityLevelDAO.get(level);
+            if (cityLevelCO == null)
                 return null;
-            levelCache.put(levelCO);
+            levelCache.put(cityLevelCO);
         }
-        return levelCO;
+        return cityLevelCO;
     }
 
 
@@ -48,17 +48,17 @@ public class LevelHelper {
      * @throws com.h13.cardgame.jupiter.exceptions.LevelIsTopException
      *
      */
-    public LevelCO isLevelUp(CityCO city) throws LevelIsTopException {
+    public CityLevelCO isLevelUp(CityCO city) throws LevelIsTopException {
         int level = city.getLevel();
         int toExp = city.getExp();
-        LevelCO levelCO = get(level);
-        if (levelCO.getExp() <= toExp) {
-            if (levelCO.isMax())
+        CityLevelCO cityLevelCO = get(level);
+        if (cityLevelCO.getExp() <= toExp) {
+            if (cityLevelCO.isMax())
                 throw new LevelIsTopException("city=" + city + " level is top.");
             // 可以升级了
             int nextLevel = level + 1;
-            LevelCO nextLevelCO = get(nextLevel);
-            return nextLevelCO;
+            CityLevelCO nextCityLevelCO = get(nextLevel);
+            return nextCityLevelCO;
         } else
             return null;
     }

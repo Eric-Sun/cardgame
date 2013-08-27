@@ -30,11 +30,22 @@
     <!-- captain card -->
     <bean id="captainCardCOSerializer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CityCardCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CaptainCityCardCO"/>
     </bean>
-    <bean id="captainCardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+    <bean id="captainCityCardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="captainCardCOSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- squad card -->
+    <bean id="squadCardCOSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.SquadCityCardCO"/>
+    </bean>
+    <bean id="squadCityCardCOTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="squadCardCOSerializer">
     </bean>
     <!-- -->
 
@@ -48,6 +59,25 @@
           p:valueSerializer-ref="storageCOSerializer">
     </bean>
     <!-- -->
+
+    <!-- board count -->
+    <bean id="boardCountTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="redisLongRedisSerializer">
+    </bean>
+    <!-- -->
+
+    <!-- board world -->
+    <bean id="boardMessageSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.BoardMessageCO"/>
+    </bean>
+    <bean id="boardWorldTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="boardMessageSerializer">
+    </bean>
+    <!-- -->
+
 
     <!-- troop -->
     <bean id="troopCOSerializer"
@@ -118,7 +148,7 @@
     <!-- level -->
     <bean id="levelCOSerailizer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.LevelCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CityLevelCO"/>
     </bean>
 
 
@@ -177,7 +207,6 @@
           p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
           p:valueSerializer-ref="unitsCardSerailizer">
     </bean>
-
 
 
     <!-- config -->

@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.h13.cardgame.cache.co.CardCO;
-import com.h13.cardgame.cache.co.CityCO;
-import com.h13.cardgame.cache.co.CityCardCO;
-import com.h13.cardgame.cache.co.SkillCO;
-import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.jupiter.BaseDTO;
 import com.h13.cardgame.jupiter.Constants;
 import com.h13.cardgame.jupiter.vo.*;
@@ -89,22 +85,21 @@ public class DTOUtils {
             json = JSON.toJSONString(list);
         else
             json = callback + "(" + JSON.toJSONString(list) + ")";
-        LogWriter.info(LogWriter.RESPONSE, json);
+        LogWriter.error(LogWriter.RESPONSE, json);
         return json;
     }
 
 
-    public static CaptainCityCardVO toCaptainCityCardVO(CityCardCO cityCard, SkillCO skillCO) {
+    public static CaptainCityCardVO toCaptainCityCardVO(CaptainCityCardCO captainCityCardCO, SkillCO skillCO) {
         CaptainCityCardVO vo = new CaptainCityCardVO();
-        vo.setCardId(cityCard.getCardId());
-        vo.setDesc(cityCard.getDesc());
-        vo.setIcon(cityCard.getIcon());
-        vo.setId(cityCard.getId());
-        vo.setName(cityCard.getName());
-        vo.setLevel(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CAPTAIN_CITY_CARD.LEVEL_KEY));
-        vo.setLevelExp(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CAPTAIN_CITY_CARD.LEVEL_EXP_KEY));
-        vo.setTitle(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CAPTAIN_CITY_CARD.TITLE_KEY));
-        vo.setTitleExp(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CAPTAIN_CITY_CARD.TITLE_EXP_KEY));
+        vo.setCardId(captainCityCardCO.getCardId());
+        vo.setIcon(captainCityCardCO.getIcon());
+        vo.setId(captainCityCardCO.getId());
+        vo.setName(captainCityCardCO.getName());
+        vo.setLevel(captainCityCardCO.getLevel());
+        vo.setLevelExp(captainCityCardCO.getLevelExp());
+        vo.setTitle(captainCityCardCO.getTitle());
+        vo.setTitleExp(captainCityCardCO.getTitleExp());
 
         SkillVO skillVO = new SkillVO();
         skillVO.setId(skillCO.getId());
@@ -123,19 +118,18 @@ public class DTOUtils {
         return vo;
     }
 
-    public static SquardCityCardVO toSquardCityCardVO(CityCardCO cityCard) {
-        SquardCityCardVO vo = new SquardCityCardVO();
-        vo.setAttackMax(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MAX_KEY));
-        vo.setAttackMin(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.ATTACK_MIN_KEY));
-        vo.setDefenceMax(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MAX_KEY));
-        vo.setDefenceMin(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.DEFENCE_MIN_KEY));
-        vo.setMaxSlot(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.MAX_SLOT_KEY));
-        vo.setCurSlot(DataUtils.getSquardIntData(cityCard.getData(), Configuration.CITY_CARD.CUR_SLOT_KEY));
-        vo.setCardId(cityCard.getCardId());
-        vo.setDesc(cityCard.getDesc());
-        vo.setIcon(cityCard.getIcon());
-        vo.setId(cityCard.getId());
-        vo.setName(cityCard.getName());
+    public static SquadCityCardVO toSquadCityCardVO(SquadCityCardCO squadCityCardCO) {
+        SquadCityCardVO vo = new SquadCityCardVO();
+        vo.setAttackMax(squadCityCardCO.getAttackMax());
+        vo.setAttackMin(squadCityCardCO.getAttackMin());
+        vo.setDefenceMax(squadCityCardCO.getDefenceMax());
+        vo.setDefenceMin(squadCityCardCO.getDefenceMin());
+        vo.setMaxSlot(squadCityCardCO.getMaxSlot());
+        vo.setCurSlot(squadCityCardCO.getCurSlot());
+        vo.setCardId(squadCityCardCO.getCardId());
+        vo.setIcon(squadCityCardCO.getIcon());
+        vo.setId(squadCityCardCO.getId());
+        vo.setName(squadCityCardCO.getName());
         return vo;
     }
 
@@ -153,5 +147,37 @@ public class DTOUtils {
         vo.setCooldownStatus(city.getCooldownStatus());
         vo.setTaskStatus(city.getTaskStatus());
         return vo;
+    }
+
+
+    /**
+     * 生成一个空的卡牌，用于占位
+     *
+     * @return
+     */
+    public static CityCardVO newNullCityCardVO() {
+        CityCardVO vo = new CityCardVO();
+        vo.setFlag(CityCardVO.NULL);
+        return vo;
+    }
+
+    public static BoardMessageVO toBoardMessageVO(BoardMessageCO boardMessageCO) {
+        BoardMessageVO boardMessageVO = new BoardMessageVO();
+        boardMessageVO.setCityId(boardMessageCO.getCityId());
+        boardMessageVO.setTs(boardMessageCO.getTs());
+        boardMessageVO.setCityName(boardMessageCO.getCityName());
+        boardMessageVO.setContent(boardMessageCO.getContent());
+        boardMessageVO.setId(boardMessageCO.getId());
+        return boardMessageVO;
+    }
+
+    public static MessageBoxVO toMessageBoxVO(MessageBoxCO messageBoxCO) {
+        MessageBoxVO messageBoxVO = new MessageBoxVO();
+        messageBoxVO.setId(messageBoxCO.getId());
+        messageBoxVO.setCreateTime(messageBoxCO.getCreateTime());
+        messageBoxVO.setContent(messageBoxCO.getContent());
+        messageBoxVO.setToCityId(messageBoxCO.getToCityId());
+        messageBoxVO.setFromCityId(messageBoxCO.getFromCityId());
+        return messageBoxVO;
     }
 }

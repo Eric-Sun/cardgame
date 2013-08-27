@@ -21,14 +21,19 @@ public class BarCache {
     @Resource(name = "barTemplate")
     private RedisTemplate<String, BarCO> barCOTemplate;
 
-    public void put(BarCO bar) {
+    public void put(BarCO bar, long l) {
         String key = PREFIX + bar.getCityId();
-        barCOTemplate.opsForValue().set(key, bar);
+        barCOTemplate.opsForValue().set(key, bar, l);
     }
 
     public BarCO get(long cid) {
         String key = PREFIX + cid;
         BarCO bar = barCOTemplate.opsForValue().get(key);
         return bar;
+    }
+
+    public void delete(BarCO barCO) {
+        String key = PREFIX + barCO.getCityId();
+        barCOTemplate.delete(key);
     }
 }

@@ -15,7 +15,7 @@ public enum CardType {
     /**
      * 小队卡牌
      */
-    SQUARD,
+    SQUAD,
     /**
      * 兵种卡牌
      */

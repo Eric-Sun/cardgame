@@ -6,8 +6,6 @@ import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
 import com.h13.cardgame.jupiter.vo.TaskVO;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,9 +76,9 @@ public class TaskController {
         } catch (TaskIsCooldownException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(request, response, -1, cid, TaskIsCooldownException.CODE);
-        } catch (SquardStorageIsFullException e) {
+        } catch (SquadStorageIsFullException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(request, response, -1, cid, SquardStorageIsFullException.CODE);
+            return DTOUtils.getFailureResponse(request, response, -1, cid, SquadStorageIsFullException.CODE);
         } catch (UserDontHaveThisCityException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(request, response, -1, cid, UserDontHaveThisCityException.CODE);
@@ -100,8 +98,8 @@ public class TaskController {
         long cid = -1;
         long uid = -1;
         try {
-            cid = new Long(request.getParameter("cid"));
             uid = new Long(request.getParameter("uid"));
+            cid = new Long(request.getParameter("cid"));
             List<TaskVO> taskList = taskService.task(uid, cid);
             List<TaskGroupVO> taskGroupList = taskService.taskGroup(uid, cid);
             return DTOUtils.getSucessResponse(request, response, uid, cid, taskGroupList, taskList);

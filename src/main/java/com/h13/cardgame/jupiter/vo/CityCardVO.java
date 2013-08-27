@@ -9,6 +9,8 @@ package com.h13.cardgame.jupiter.vo;
  */
 public class CityCardVO {
 
+    public static byte NULL = 0;
+    public static byte NORMAL = 1;
     private long id;
     private String name;
     private String icon;
@@ -17,6 +19,15 @@ public class CityCardVO {
     private int attackMax;
     private int defenceMin;
     private int defenceMax;
+    private byte flag;
+
+    public byte getFlag() {
+        return flag;
+    }
+
+    public void setFlag(byte flag) {
+        this.flag = flag;
+    }
 
     public long getCardId() {
         return cardId;

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,7 +42,6 @@ public class TaskLoaderService {
     public void load() throws LoadException {
         try {
             List<TaskGroupCO> taskGroupCOList = taskGroupDAO.getAllTaskGroup();
-
             for (TaskGroupCO group : taskGroupCOList) {
                 List<TaskCO> taskList = taskDAO.getTaskByGroupId(group.getId());
                 for (TaskCO task : taskList) {

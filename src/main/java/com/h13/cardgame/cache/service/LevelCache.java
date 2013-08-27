@@ -1,9 +1,6 @@
 package com.h13.cardgame.cache.service;
 
-import com.alibaba.fastjson.JSON;
-import com.h13.cardgame.cache.co.DropGroupCO;
-import com.h13.cardgame.cache.co.LevelCO;
-import com.h13.cardgame.config.Configuration;
+import com.h13.cardgame.cache.co.CityLevelCO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +19,16 @@ public class LevelCache {
     private static String PREFIX = "cg:system:level:";
 
     @Resource(name = "redisStringLevelCOTemplate")
-    private RedisTemplate<String, LevelCO> levelCOTemplate;
-    public void put(LevelCO level) {
+    private RedisTemplate<String, CityLevelCO> levelCOTemplate;
+    public void put(CityLevelCO level) {
         String key = PREFIX + level.getLevel();
         levelCOTemplate.opsForValue().set(key, level);
     }
 
-    public LevelCO get(int level) {
+    public CityLevelCO get(int level) {
         String key = PREFIX + level;
-        LevelCO levelCO = levelCOTemplate.opsForValue().get(key);
-        return levelCO;
+        CityLevelCO cityLevelCO = levelCOTemplate.opsForValue().get(key);
+        return cityLevelCO;
     }
 
 

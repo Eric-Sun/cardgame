@@ -1,9 +1,9 @@
 package com.h13.cardgame.config.service;
 
-import com.h13.cardgame.cache.co.LevelCO;
+import com.h13.cardgame.cache.co.CityLevelCO;
 import com.h13.cardgame.cache.service.LevelCache;
 import com.h13.cardgame.config.exception.LoadException;
-import com.h13.cardgame.jupiter.dao.LevelDAO;
+import com.h13.cardgame.jupiter.dao.CityLevelDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ import java.util.List;
 public class LevelLoaderService {
     private static Log LOG = LogFactory.getLog(LevelLoaderService.class);
     @Autowired
-    LevelDAO levelDAO;
+    CityLevelDAO cityLevelDAO;
 
     @Autowired
     LevelCache levelCache;
 
     public void load() throws LoadException {
         try {
-            List<LevelCO> levelList = levelDAO.getAllLevels();
-            for (LevelCO level : levelList) {
+            List<CityLevelCO> levelList = cityLevelDAO.getAllLevels();
+            for (CityLevelCO level : levelList) {
                 levelCache.put(level);
                 LOG.info("Loaded level "+level.toString());
             }

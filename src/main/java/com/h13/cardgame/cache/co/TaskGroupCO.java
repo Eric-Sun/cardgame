@@ -78,6 +78,7 @@ public class TaskGroupCO {
                 ", name='" + name + '\'' +
                 ", nextTaskGroupId=" + nextTaskGroupId +
                 ", taskIdList=" + taskIdList +
+                ", isLast=" + isLast +
                 '}';
     }
 }

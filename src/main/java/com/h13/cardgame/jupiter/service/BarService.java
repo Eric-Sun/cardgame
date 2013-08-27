@@ -2,14 +2,12 @@ package com.h13.cardgame.jupiter.service;
 
 import com.h13.cardgame.cache.co.BarCO;
 import com.h13.cardgame.cache.co.CardCO;
-import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.jupiter.exceptions.CityCardIsNotYoursException;
 import com.h13.cardgame.jupiter.exceptions.CityCardNotExistsException;
 import com.h13.cardgame.jupiter.exceptions.UserDontHaveThisCityException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.helper.BarHelper;
 import com.h13.cardgame.jupiter.helper.CardHelper;
-import com.h13.cardgame.jupiter.helper.CityCardHelper;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
 import com.h13.cardgame.jupiter.vo.BarVO;
 import com.h13.cardgame.jupiter.vo.CaptainCardVO;

@@ -13,9 +13,9 @@
 
 todo:
     captain level upgrade      ok
-    squard绑定captain          ok
+    squad绑定captain          ok
         on                                    ok
-        down 更新squard attack              ok
+        down 更新squad attack              ok
         units的attack和captain attack分开存储   ok
 
     captain title 的技能

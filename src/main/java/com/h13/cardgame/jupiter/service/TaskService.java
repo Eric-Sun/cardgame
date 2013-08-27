@@ -1,10 +1,8 @@
 package com.h13.cardgame.jupiter.service;
 
-import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.helper.*;
-import com.h13.cardgame.jupiter.utils.LogWriter;
 import com.h13.cardgame.jupiter.vo.TaskGroupVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardVO;
@@ -51,11 +49,11 @@ public class TaskService {
      * @throws EnergyNotEnoughException
      */
     public List<Object> d(long uid, long cid, long taskId) throws UserNotExistsException,
-            EnergyNotEnoughException, TaskIsOverException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquardStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException, UserDontHaveThisCityException, CaptainStorageIsFullException, LevelIsTopException {
+            EnergyNotEnoughException, TaskIsOverException, TaskCompletedTooManyException, EquipmentStorageIsFullException, SquadStorageIsFullException, TaskIsCooldownException, TaskIsNotExistsException, TaskGroupIsNotExistsException, UserDontHaveThisCityException, CaptainStorageIsFullException, LevelIsTopException {
         List<Object> resultList = new ArrayList<Object>();
         // 检测他完成的这个任务，在这个人物中是不是应该可以被完成
-        CityCO captain = cityHelper.get(uid, cid);
-        long taskGroupId = captain.getTaskStatus().getTaskGroupId();
+        CityCO city = cityHelper.get(uid, cid);
+        long taskGroupId = city.getTaskStatus().getTaskGroupId();
         TaskGroupCO taskGroup = taskHelper.getTaskGroup(taskGroupId);
         List<Long> idList = taskGroup.getTaskIdList();
         if (!idList.contains(taskId)) {
@@ -65,16 +63,15 @@ public class TaskService {
         StorageCO storage = storageHelper.getByCid(cid);
         storageHelper.checkAllStorageIsFull(storage);
         // 重新获取captain，然后进行任务完成的逻辑
-        captain = cityHelper.get(uid, cid);
         TaskCO task = taskHelper.getTask(taskId);
-        CityTaskStatusCO taskInfo = captain.getTaskStatus();
+        CityTaskStatusCO taskInfo = city.getTaskStatus();
         if (taskInfo.getTaskMap().get(taskId) == null
                 || taskInfo.getTaskMap().get(taskId).isCanBeDo()) {
             // 可以完成任务
             // 先进行任务是否可以完成的判断，也就是资源是否足够
-            if (captain.getEnergy() < task.getCondition().getEnergy()) {
+            if (city.getEnergy() < task.getCondition().getEnergy()) {
                 throw new EnergyNotEnoughException("captainId = " + cid + " need " + task.getCondition().getEnergy()
-                        + " have " + captain.getEnergy());
+                        + " have " + city.getEnergy());
             }
             // 当任务完成次数过多的时候也无法完成
             if (taskInfo.getTaskMap().get(taskId) != null &&
@@ -82,16 +79,16 @@ public class TaskService {
                 throw new TaskCompletedTooManyException("uid=" + uid + " cid=" + cid + " taskId=" + taskId);
             }
             // 减去相应的energy
-            cityHelper.subEnergy(captain, task.getCondition().getEnergy());
-            // 完成任务并且把captain写回缓存，并且更新数据库的energy
-            taskHelper.addTaskInfo(captain, taskId);
-            // 奖励
-            TaskRewardResultVO result = taskHelper.reward(captain, task);
+            cityHelper.subEnergy(city, task.getCondition().getEnergy());
+            // 完成任务
+            taskHelper.updateTaskInfo(city, taskId);
+            // 获得奖励奖励，并且把获得的奖励插入数据库中
+            TaskRewardResultVO result = taskHelper.reward(city, task);
             resultList.add(result);
             if (task.getCooldown() != 0)
-                cooldownHelper.addTaskCooldown(captain, task);
+                cooldownHelper.addTaskCooldown(city, task);
             // 保存用户的新的状态
-            cityHelper.cache(captain);
+            cityHelper.cache(city);
             if (taskHelper.isLastTaskInGroup(task)) {
                 if (taskHelper.isLastTaskGroup(taskGroup)) {
                     throw new TaskIsOverException("");
@@ -188,6 +185,7 @@ public class TaskService {
 
 
     /**
+     * 用户在访问的开始时候看看是否有任务的冷却已经到了，并且修改状态
      * @param cid
      * @param uid
      */

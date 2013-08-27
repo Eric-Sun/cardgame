@@ -1,8 +1,8 @@
 package com.h13.cardgame.jupiter.helper;
 
 import com.h13.cardgame.cache.co.CityCO;
+import com.h13.cardgame.cache.co.CityLevelCO;
 import com.h13.cardgame.cache.co.CityTaskStatusCO;
-import com.h13.cardgame.cache.co.LevelCO;
 import com.h13.cardgame.cache.service.CityCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.dao.CityDAO;
@@ -40,10 +40,14 @@ public class CityHelper {
     CooldownHelper cooldownHelper;
 
     /**
-     * 从缓存中获取city
+     * 通过uid和cid获得city信息，会检查cid是否会跟uid匹配，
+     * 如果不匹配的话会抛出<code>UserDontHaveThisCityException</code>异常
      *
-     * @param uid@return
+     * @param uid
+     * @param cid
      * @throws com.h13.cardgame.jupiter.exceptions.UserNotExistsException
+     *
+     * @throws com.h13.cardgame.jupiter.exceptions.UserDontHaveThisCityException
      *
      */
     public CityCO get(long uid, long cid) throws UserNotExistsException, UserDontHaveThisCityException {
@@ -56,6 +60,7 @@ public class CityHelper {
         if (city.getUserId() != uid) {
             throw new UserDontHaveThisCityException("uid=" + uid + " no have the city. cid=" + cid);
         }
+        LOG.debug("loaded city." + city);
         return city;
     }
 
@@ -72,7 +77,7 @@ public class CityHelper {
      */
     public boolean addEnergy(CityCO city, int value) throws UserNotExistsException {
         //获得当前这个人物的满级的energy
-        LevelCO level = levelHelper.get(city.getLevel());
+        CityLevelCO level = levelHelper.get(city.getLevel());
         if (level.getEnergy() <= city.getEnergy() + value) {
             // full
             city.setEnergy(level.getEnergy());
@@ -177,7 +182,7 @@ public class CityHelper {
      * @param city
      */
     public void tryAddEnergy(CityCO city) throws UserNotExistsException {
-        LevelCO level = levelHelper.get(city.getLevel());
+        CityLevelCO level = levelHelper.get(city.getLevel());
         if (city.getEnergy() == level.getExp()) {
             // 已经满了，删除掉city中的能量cooldown
             cooldownHelper.removeEnerygyCooldown(city);

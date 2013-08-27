@@ -12,12 +12,13 @@ import com.h13.cardgame.jupiter.exceptions.TaskIsNotExistsException;
 import com.h13.cardgame.jupiter.utils.RandomUtils;
 import com.h13.cardgame.jupiter.vo.CityCardVO;
 import com.h13.cardgame.jupiter.vo.TaskRewardResultVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,7 @@ import java.util.Random;
  */
 @Service
 public class TaskHelper {
+    private static Log LOG = LogFactory.getLog(TaskHelper.class);
     @Autowired
     private TaskCache taskCache;
     @Autowired
@@ -43,6 +45,12 @@ public class TaskHelper {
     @Autowired
     private CityHelper cityHelper;
 
+    @Autowired
+    CaptainCityCardHelper captainCityCardHelper;
+    @Autowired
+    SquadCityCardHelper squadCityCardHelper;
+    @Autowired
+    StorageHelper storageHelper;
     @Autowired
     private LevelHelper levelHelper;
 
@@ -62,6 +70,7 @@ public class TaskHelper {
             taskGroup = taskGroupDAO.get(taskGroupId);
             taskGroupCache.put(taskGroup);
         }
+        LOG.debug("loaded taskGroup. " + taskGroup);
         return taskGroup;
     }
 
@@ -71,16 +80,16 @@ public class TaskHelper {
             task = taskDAO.getTask(taskId);
             taskCache.put(task);
         }
+        LOG.debug("loaded task. " + task);
         return task;
     }
 
     /**
-     * 完成任务
-     *
+     * 更新完成任务的状态等
      * @param captain
      * @param taskId
      */
-    public void addTaskInfo(CityCO captain, long taskId) {
+    public void updateTaskInfo(CityCO captain, long taskId) {
         CityTaskStatusCO taskInfo = captain.getTaskStatus();
         if (taskInfo.getTaskMap().get(taskId) == null) {
             taskInfo.getTaskMap().put(taskId, new CityPerTaskCO(1, false));
@@ -180,12 +189,12 @@ public class TaskHelper {
         cityCardVO.setIcon(cardCO.getIcon());
         switch (cardCO.getCardType()) {
             case EQUIPMENT:
-                cardHelper.addEquipmentCard(city, cardCO);
+                storageHelper.addEquipmentCard(city, cardCO);
                 break;
             case CAPTAIN:
-                cardHelper.addCaptainCard(city, cardCO);
+                captainCityCardHelper.addCaptainCard(city, cardCO);
             default:
-                cardHelper.addSquardCard(city, cardCO);
+                squadCityCardHelper.addSquadCard(city, cardCO);
         }
 
         TaskRewardResultVO vo = new TaskRewardResultVO();

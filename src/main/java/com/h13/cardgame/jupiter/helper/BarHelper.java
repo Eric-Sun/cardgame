@@ -4,13 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.h13.cardgame.cache.co.BarCO;
 import com.h13.cardgame.cache.co.CardCO;
 import com.h13.cardgame.cache.co.CityCO;
-import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.cache.service.BarCache;
 import com.h13.cardgame.config.Configuration;
 import com.h13.cardgame.jupiter.exceptions.UserDontHaveThisCityException;
 import com.h13.cardgame.jupiter.exceptions.UserNotExistsException;
 import com.h13.cardgame.jupiter.utils.RandomUtils;
 import com.h13.cardgame.jupiter.vo.BarRandomGroupVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Service
 public class BarHelper {
+    private static Log LOG = LogFactory.getLog(BarHelper.class);
 
     @Autowired
     private CityHelper cityHelper;
@@ -38,6 +40,8 @@ public class BarHelper {
 
     @Autowired
     private CardHelper cardHelper;
+    @Autowired
+    private CaptainCityCardHelper captainCityCardHelper;
 
     /**
      * 刷新酒馆
@@ -45,13 +49,17 @@ public class BarHelper {
      * @param cityId
      */
     public BarCO flushBar(long uid, long cityId) throws UserNotExistsException, UserDontHaveThisCityException {
+        int hour = new Integer(configHelper.get(Configuration.CONFIG.BAR_FLUSH_HOUR));
+        long lastFlush = hour * 60 * 60 * 1000L;
         CityCO city = cityHelper.get(uid, cityId);
         int barSize = city.getBarSize();
         BarCO bar = new BarCO();
         bar.setCityId(cityId);
         bar.setSize(barSize);
         bar.setList(doRandomCardList(barSize));
-        barCache.put(bar);
+        bar.setLastFlush(lastFlush);
+        barCache.put(bar, lastFlush);
+        LOG.debug("flushed bar. " + bar);
         return bar;
     }
 
@@ -65,13 +73,24 @@ public class BarHelper {
      * @throws UserDontHaveThisCityException
      */
     public void recruit(long uid, long cityId, long cardId) throws UserNotExistsException, UserDontHaveThisCityException {
+        int hour = new Integer(configHelper.get(Configuration.CONFIG.BAR_FLUSH_HOUR));
         CityCO city = cityHelper.get(uid, cityId);
         CardCO card = cardHelper.get(cardId);
-        cardHelper.addCaptainCard(city, card);
+        captainCityCardHelper.addCaptainCard(city, card);
         // 从酒馆把这个队长删除掉
         BarCO bar = barCache.get(cityId);
         bar.getList().remove(cardId + "");
-        barCache.put(bar);
+        LOG.info("recruit card from bar. cityId=" + cityId + " cardId=" + cardId);
+        long lastFlush = bar.getLastFlush();
+        long current = System.currentTimeMillis();
+        long interval = current - lastFlush;
+        if (interval > 0) {
+            barCache.put(bar, interval);
+            LOG.debug("flushed bar. " + bar);
+        } else {
+            barCache.delete(bar);
+            LOG.debug("delete bar cuz recruit.. " + bar);
+        }
     }
 
 

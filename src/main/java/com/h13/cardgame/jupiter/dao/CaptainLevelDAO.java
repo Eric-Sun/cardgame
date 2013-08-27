@@ -1,6 +1,7 @@
 package com.h13.cardgame.jupiter.dao;
 
 import com.h13.cardgame.cache.co.CaptainLevelCO;
+import com.h13.cardgame.jupiter.JdbcQueueTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +21,9 @@ public class CaptainLevelDAO {
 
     @Autowired
     JdbcTemplate j;
+
+    @Autowired
+    JdbcQueueTemplate q;
 
     public List<CaptainLevelCO> getAll() {
         String sql = "select id,name,attack_min_rate,attack_max_rate,defence_min_rate,defence_max_rate,exp from captain_level";

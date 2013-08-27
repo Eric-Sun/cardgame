@@ -1,15 +1,13 @@
 package com.h13.cardgame.jupiter.helper;
 
 import com.alibaba.fastjson.JSON;
-import com.h13.cardgame.cache.co.CityCardCO;
-import com.h13.cardgame.cache.co.LevelCO;
-import com.h13.cardgame.cache.co.StorageCO;
+import com.h13.cardgame.cache.co.*;
 import com.h13.cardgame.cache.service.StorageCache;
 import com.h13.cardgame.jupiter.CardType;
 import com.h13.cardgame.jupiter.dao.StorageDAO;
 import com.h13.cardgame.jupiter.exceptions.CaptainStorageIsFullException;
 import com.h13.cardgame.jupiter.exceptions.EquipmentStorageIsFullException;
-import com.h13.cardgame.jupiter.exceptions.SquardStorageIsFullException;
+import com.h13.cardgame.jupiter.exceptions.SquadStorageIsFullException;
 import com.h13.cardgame.jupiter.utils.LogWriter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +43,7 @@ public class StorageHelper {
             storageCO = storageDAO.getByCid(cid);
             cache(storageCO);
         }
+        LOG.debug("loaded storage. " + storageCO);
         return storageCO;
     }
 
@@ -57,7 +56,7 @@ public class StorageHelper {
      * @param cCardId
      * @param storageCO
      */
-    public void addToSquardPackage(long uid, long cid, long cardId, long cCardId, StorageCO storageCO) {
+    public void addToSquadPackage(long uid, long cid, long cardId, long cCardId, StorageCO storageCO) {
         if (storageCO.getSCardData().containsKey(cardId + "")) {
             storageCO.getSCardData().get(cardId + "").add(cCardId + "");
         } else {
@@ -65,9 +64,9 @@ public class StorageHelper {
             ccList.add(cCardId + "");
             storageCO.getSCardData().put(cardId + "", ccList);
         }
-        int current = generateStorageCurrentSizeFromData(storageCO, CardType.SQUARD);
+        int current = generateStorageCurrentSizeFromData(storageCO, CardType.SQUAD);
         storageDAO.updateSCardData(cid, current, JSON.toJSONString(storageCO.getSCardData()));
-        LogWriter.info(LogWriter.PACKAGE, "add squard package", uid, cid, cardId, cCardId);
+        LogWriter.info(LogWriter.PACKAGE, "add squad package", uid, cid, cardId, cCardId);
     }
 
     /**
@@ -118,7 +117,7 @@ public class StorageHelper {
      * @param storage
      * @return
      */
-    public boolean isSquardStorageFull(StorageCO storage) {
+    public boolean isSquadStorageFull(StorageCO storage) {
         return storage.getSCurrent() >= storage.getSMax() ? true : false;
     }
 
@@ -143,7 +142,7 @@ public class StorageHelper {
      * @param cid
      */
     public StorageCO create(long cid) {
-        LevelCO level = levelHelper.get(1);
+        CityLevelCO level = levelHelper.get(1);
         StorageCO storage = new StorageCO();
         storage.setCityId(cid);
         storage.setSMax(level.getSStorageSize());
@@ -163,7 +162,7 @@ public class StorageHelper {
      * @param storageCO
      * @return
      */
-    public int getSquardStorageCurrentSize(StorageCO storageCO) {
+    public int getSquadStorageCurrentSize(StorageCO storageCO) {
         return storageCO.getSCurrent();
     }
 
@@ -198,8 +197,8 @@ public class StorageHelper {
      * @param cid
      * @param storage
      */
-    public void updateSquardCardData(long cid, StorageCO storage) {
-        int current = getSquardStorageCurrentSize(storage);
+    public void updateSquadCardData(long cid, StorageCO storage) {
+        int current = getSquadStorageCurrentSize(storage);
         storageDAO.updateSCardData(cid, current, JSON.toJSONString(storage.getSCardData()));
     }
 
@@ -221,7 +220,7 @@ public class StorageHelper {
      */
     private int generateStorageCurrentSizeFromData(StorageCO storageCO, CardType cardType) {
         switch (cardType) {
-            case SQUARD:
+            case SQUAD:
                 Map<String, List<String>> dataMap = storageCO.getSCardData();
                 int i = 0;
                 for (String key : dataMap.keySet()) {
@@ -246,13 +245,20 @@ public class StorageHelper {
         return 0;
     }
 
-    public void checkAllStorageIsFull(StorageCO storage) throws EquipmentStorageIsFullException, SquardStorageIsFullException, CaptainStorageIsFullException {
-        if (isEquipmentStorageFull(storage))
+    public void checkAllStorageIsFull(StorageCO storage) throws EquipmentStorageIsFullException, SquadStorageIsFullException, CaptainStorageIsFullException {
+        if (isEquipmentStorageFull(storage)) {
+            LOG.debug("equipment storage is full . cityId = " + storage.getCityId());
             throw new EquipmentStorageIsFullException("cid=" + storage.getCityId() + " equipment storage is full.");
-        if (isCaptainStorageFull(storage))
-            throw new CaptainStorageIsFullException("cid=" + storage.getCityId() + " equipment storage is full.");
-        if (isSquardStorageFull(storage))
-            throw new SquardStorageIsFullException("cid=" + storage.getCityId() + " squard storage is full.");
+        }
+        if (isCaptainStorageFull(storage)) {
+            LOG.debug("captain storage is full . cityId = " + storage.getCityId());
+            throw new CaptainStorageIsFullException("cid=" + storage.getCityId() + " captain storage is full.");
+        }
+        if (isSquadStorageFull(storage)) {
+            LOG.debug("squad storage is full . cityId = " + storage.getCityId());
+            throw new SquadStorageIsFullException("cid=" + storage.getCityId() + " squad storage is full.");
+        }
+        LOG.debug("storage is not full . cityId = " + storage.getCityId());
     }
 
 
@@ -262,20 +268,34 @@ public class StorageHelper {
      * @param storage
      * @return
      */
-    public boolean haveTheCaptainCard(StorageCO storage, CityCardCO captainCityCard) {
-        return storage.getCaptainCardData().get(captainCityCard.getCardId()+"").contains(captainCityCard.getId()+"");
+    public boolean haveTheCaptainCard(StorageCO storage, CaptainCityCardCO captainCityCard) {
+        return storage.getCaptainCardData().get(captainCityCard.getCardId() + "").contains(captainCityCard.getId() + "");
     }
 
     /**
      * 从小队城市卡仓库中去掉这张卡
      *
      * @param storageCO
-     * @param cityCard
+     * @param captainCityCardCO
      */
-    public void removeCaptainCityCard(StorageCO storageCO, CityCardCO cityCard) {
+    public void removeCaptainCityCard(StorageCO storageCO, CaptainCityCardCO captainCityCardCO) {
         Map<String, List<String>> data = storageCO.getCaptainCardData();
-        List<String> list = data.get(cityCard.getCardId() + "");
-        list.remove(cityCard.getId() + "");
-        LOG.debug("storage remove card. cityId=" + storageCO.getCityId() + " cityCardId=" + cityCard.getId());
+        List<String> list = data.get(captainCityCardCO.getCardId() + "");
+        list.remove(captainCityCardCO.getId() + "");
+        LOG.debug("storage remove card. cityId=" + storageCO.getCityId() + " captainCityCardCO=" + captainCityCardCO.getId());
     }
+
+    /**
+     * 添加一张军备牌，存在军备仓库中
+     *
+     * @param city
+     * @param card
+     */
+    public void addEquipmentCard(CityCO city, CardCO card) {
+        // add to package
+        StorageCO storageCO = getByCid(city.getId());
+        addToEquipmentPackage(city.getUserId(), city.getId(), card.getId(), storageCO);
+        cache(storageCO);
+    }
+
 }

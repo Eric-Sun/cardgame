@@ -12,8 +12,17 @@ import java.util.List;
  */
 public class BarCO {
     private long cityId;
+    private long lastFlush;
     private int size;
     private List<String> list = new LinkedList<String>();
+
+    public long getLastFlush() {
+        return lastFlush;
+    }
+
+    public void setLastFlush(long lastFlush) {
+        this.lastFlush = lastFlush;
+    }
 
     public long getCityId() {
         return cityId;
@@ -37,5 +46,15 @@ public class BarCO {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return "BarCO{" +
+                "cityId=" + cityId +
+                ", lastFlush=" + lastFlush +
+                ", size=" + size +
+                ", list=" + list +
+                '}';
     }
 }

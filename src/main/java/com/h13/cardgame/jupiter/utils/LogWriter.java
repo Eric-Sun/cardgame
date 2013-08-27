@@ -50,6 +50,10 @@ public class LogWriter {
         LOG.error(catalog + "|" + msg, t);
     }
 
+    public static void error(String catalog, String msg) {
+        LOG.error(catalog + "|" + msg);
+    }
+
     public static void error(String catalog, Throwable t) {
         LOG.error(catalog + "|", t);
     }

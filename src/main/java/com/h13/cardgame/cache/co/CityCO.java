@@ -23,6 +23,7 @@ public class CityCO {
     private int barSize;
     private Map<String, String> cooldownStatus = new HashMap<String, String>();
 
+
     public Map<String, String> getCooldownStatus() {
         return cooldownStatus;
     }
@@ -123,6 +124,8 @@ public class CityCO {
                 ", gold=" + gold +
                 ", silver=" + silver +
                 ", taskStatus=" + taskStatus +
+                ", barSize=" + barSize +
+                ", cooldownStatus=" + cooldownStatus +
                 '}';
     }
 }

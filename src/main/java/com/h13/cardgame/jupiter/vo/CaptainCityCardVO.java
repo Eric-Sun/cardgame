@@ -12,7 +12,6 @@ public class CaptainCityCardVO {
     private long cardId;
     private String name;
     private String icon;
-    private String desc;
     private int level;
     private int levelExp;
     private int title;
@@ -66,7 +65,6 @@ public class CaptainCityCardVO {
                 ", cardId=" + cardId +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
-                ", desc='" + desc + '\'' +
                 '}';
     }
 
@@ -102,11 +100,4 @@ public class CaptainCityCardVO {
         this.icon = icon;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 }

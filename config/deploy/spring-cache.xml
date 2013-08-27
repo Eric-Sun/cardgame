@@ -118,7 +118,7 @@
     <!-- level -->
     <bean id="levelCOSerailizer"
           class="com.h13.cardgame.cache.FastJsonRedisSerializer">
-        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.LevelCO"/>
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.CityLevelCO"/>
     </bean>
 
 

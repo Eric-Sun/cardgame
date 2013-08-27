@@ -1,6 +1,5 @@
 package com.h13.cardgame.jupiter.controller;
 
-import com.h13.cardgame.cache.co.CityCardCO;
 import com.h13.cardgame.jupiter.exceptions.*;
 import com.h13.cardgame.jupiter.service.TroopService;
 import com.h13.cardgame.jupiter.utils.DTOUtils;
@@ -203,12 +202,12 @@ public class TroopController {
         } catch (UserNotExistsException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(request, response, uid, cid, UserNotExistsException.CODE);
-        } catch (SquardCardNotEnoughSlotException e) {
+        } catch (SquadCardNotEnoughSlotException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(request, response, uid, cid, SquardCardNotEnoughSlotException.CODE);
-        } catch (SquardECardException e) {
+            return DTOUtils.getFailureResponse(request, response, uid, cid, SquadCardNotEnoughSlotException.CODE);
+        } catch (SquadECardException e) {
             LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(request, response, uid, cid, SquardECardException.CODE);
+            return DTOUtils.getFailureResponse(request, response, uid, cid, SquadECardException.CODE);
         } catch (EquipmentIsNotEnoughException e) {
             LogWriter.warn(LogWriter.TASK, e);
             return DTOUtils.getFailureResponse(request, response, uid, cid, EquipmentIsNotEnoughException.CODE);
@@ -250,15 +249,15 @@ public class TroopController {
     }
 
 
-    @RequestMapping("/squardCityCards")
+    @RequestMapping("/squadCityCards")
     @ResponseBody
-    public String squardCityCards(HttpServletRequest request, HttpServletResponse response) {
+    public String squadCityCards(HttpServletRequest request, HttpServletResponse response) {
         long uid = -1;
         long cid = -1;
         try {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
-            List<SquardCityCardVO> list = troopService.getSquardCityCards(uid, cid);
+            List<SquadCityCardVO> list = troopService.getSquadCityCards(uid, cid);
             return DTOUtils.getSucessResponse(request,response,uid, cid, list);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);
@@ -307,16 +306,16 @@ public class TroopController {
      * @param response
      * @return
      */
-    @RequestMapping("/squardCityCard")
+    @RequestMapping("/squadCityCard")
     @ResponseBody
-    public String squardCityCard(HttpServletRequest request, HttpServletResponse response) {
+    public String squadCityCard(HttpServletRequest request, HttpServletResponse response) {
         long uid = -1;
         long cid = -1;
         try {
             uid = new Long(request.getParameter("uid"));
             cid = new Long(request.getParameter("cid"));
-            long squardCityCardId = new Long(request.getParameter("squardCityCardId"));
-            SquardCityCardVO vo = troopService.getSquardCityCard(uid, cid, squardCityCardId);
+            long squadCityCardId = new Long(request.getParameter("squadCityCardId"));
+            SquadCityCardVO vo = troopService.getSquadCityCard(uid, cid, squadCityCardId);
             return DTOUtils.getSucessResponse(request,response,uid, cid, vo);
         } catch (CityCardIsNotYoursException e) {
             LogWriter.warn(LogWriter.TASK, e);

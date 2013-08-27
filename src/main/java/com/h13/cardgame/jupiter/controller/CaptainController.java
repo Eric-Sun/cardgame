@@ -23,27 +23,6 @@ public class CaptainController {
     @Autowired
     CaptainService captainService;
 
-    @RequestMapping("")
-    @ResponseBody
-    public String index(HttpServletRequest request, HttpServletResponse response) {
-        long cid = -1;
-        long uid = -1;
-        long captainCityCardId = -1;
-        try {
-            cid = new Long(request.getParameter("cid"));
-            uid = new Long(request.getParameter("uid"));
-            captainCityCardId = new Long(request.getParameter("captainCityCardId"));
-            CaptainCityCardVO captainCityCard = captainService.get(uid, cid, captainCityCardId);
-            return DTOUtils.getSucessResponse(request, response, uid, cid, captainCityCard);
-        } catch (CityCardIsNotYoursException e) {
-            LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(request, response, -1, cid, SilverNotEnoughException.CODE);
-        } catch (CityCardNotExistsException e) {
-            LogWriter.warn(LogWriter.TASK, e);
-            return DTOUtils.getFailureResponse(request, response, -1, cid, SilverNotEnoughException.CODE);
-        }
-    }
-
     @RequestMapping("/upgradeLevel")
     public String upgradeLevel(HttpServletRequest request, HttpServletResponse response) {
         long cid = -1;
