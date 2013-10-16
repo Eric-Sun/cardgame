@@ -180,4 +180,14 @@ public class DTOUtils {
         messageBoxVO.setFromCityId(messageBoxCO.getFromCityId());
         return messageBoxVO;
     }
+
+    public static LeagueVO toLeagueVO(LeagueCO leagueCO) {
+        LeagueVO leagueVO = new LeagueVO();
+        leagueVO.setName(leagueCO.getName());
+        leagueVO.setLeaderId(leagueCO.getLeaderId());
+        leagueVO.setMaxSize(leagueCO.getMaxSize());
+        leagueVO.setId(leagueCO.getId());
+        leagueVO.setCurSize(leagueCO.getCurSize());
+        return leagueVO;
+    }
 }

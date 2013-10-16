@@ -78,6 +78,17 @@
     </bean>
     <!-- -->
 
+    <!-- league -->
+    <bean id="leagueSerializer"
+          class="com.h13.cardgame.cache.FastJsonRedisSerializer">
+        <constructor-arg type="java.lang.Class" value="com.h13.cardgame.cache.co.LeagueCO"/>
+    </bean>
+    <bean id="leagueTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory" p:keySerializer-ref="redisStringRedisSerializer"
+          p:valueSerializer-ref="leagueSerializer">
+    </bean>
+    <!-- -->
+
 
     <!-- troop -->
     <bean id="troopCOSerializer"

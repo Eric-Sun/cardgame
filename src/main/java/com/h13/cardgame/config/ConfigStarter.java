@@ -36,6 +36,8 @@ public class ConfigStarter {
     CaptainLevelLoaderService captainLevelLoaderService;
     @Autowired
     CaptainTitleLoaderService captainTitleLoaderService;
+    @Autowired
+    LeagueLevelLoaderService leagueLevelLoaderService;
 
     public void init() {
         try {
@@ -48,6 +50,7 @@ public class ConfigStarter {
             unitsCardLoaderService.load();
             captainLevelLoaderService.load();
             captainTitleLoaderService.load();
+            leagueLevelLoaderService.load();
             LOG.info("load all info successfully");
         } catch (Exception e) {
             LOG.error("load all info error.", e);
